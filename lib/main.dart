@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:taxia/constants/app_colors.dart';
-import 'package:taxia/permissions/permission_page.dart';
+import 'package:taxia/views/permissions/permission_page.dart';
 
 void main() {
   runApp(const MyApp());
