@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:taxia/constants/app_colors.dart';
+import 'package:taxia/views/authentication/login_page.dart';
 import 'package:taxia/views/permissions/permission_page.dart';
 
 void main() {
@@ -18,7 +19,7 @@ class MyApp extends StatelessWidget {
         primaryColor: AppColors.primaryColor,
         dividerColor: Colors.transparent,
       ),
-      home: PermissionsPage(),
+      home: LoginPage(),
     );
   }
 }

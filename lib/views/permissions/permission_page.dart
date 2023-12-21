@@ -12,7 +12,6 @@ class PermissionsPage extends StatefulWidget {
 class _PermissionsPageState extends State<PermissionsPage> {
   @override
   Widget build(BuildContext context) {
-    //Get Screen Width and Height
     double screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
@@ -41,7 +40,7 @@ class _PermissionsPageState extends State<PermissionsPage> {
                 style: TextStyle(
                   fontSize: 15,
                   fontWeight: FontWeight.w400,
-                  color: AppColors.textColorGray,
+                  color: AppColors.grayColor,
                 ),
                 textAlign: TextAlign.center,
               ),
@@ -66,7 +65,7 @@ class _PermissionsPageState extends State<PermissionsPage> {
                       style: TextStyle(
                         fontSize: 15,
                         fontWeight: FontWeight.w400,
-                        color: AppColors.textColorGray,
+                        color: AppColors.grayColor,
                       ),
                     ),
                   ),
@@ -95,7 +94,7 @@ class _PermissionsPageState extends State<PermissionsPage> {
                       style: TextStyle(
                         fontSize: 15,
                         fontWeight: FontWeight.w400,
-                        color: AppColors.textColorGray,
+                        color: AppColors.grayColor,
                       ),
                     ),
                   ),
@@ -124,7 +123,7 @@ class _PermissionsPageState extends State<PermissionsPage> {
                       style: TextStyle(
                         fontSize: 15,
                         fontWeight: FontWeight.w400,
-                        color: AppColors.textColorGray,
+                        color: AppColors.grayColor,
                       ),
                     ),
                   ),
@@ -153,7 +152,7 @@ class _PermissionsPageState extends State<PermissionsPage> {
                       style: TextStyle(
                         fontSize: 15,
                         fontWeight: FontWeight.w400,
-                        color: AppColors.textColorGray,
+                        color: AppColors.grayColor,
                       ),
                     ),
                   ),
@@ -182,7 +181,7 @@ class _PermissionsPageState extends State<PermissionsPage> {
                       style: TextStyle(
                         fontSize: 15,
                         fontWeight: FontWeight.w400,
-                        color: AppColors.textColorGray,
+                        color: AppColors.grayColor,
                       ),
                     ),
                   ),
@@ -211,7 +210,7 @@ class _PermissionsPageState extends State<PermissionsPage> {
                       style: TextStyle(
                         fontSize: 15,
                         fontWeight: FontWeight.w400,
-                        color: AppColors.textColorGray,
+                        color: AppColors.grayColor,
                       ),
                     ),
                   ),
@@ -233,7 +232,7 @@ class _PermissionsPageState extends State<PermissionsPage> {
                     style: TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.w400,
-                      color: AppColors.textColorGray,
+                      color: AppColors.grayColor,
                     ),
                   ),
                   SizedBox(
@@ -245,7 +244,7 @@ class _PermissionsPageState extends State<PermissionsPage> {
                       style: TextStyle(
                         fontSize: 15,
                         fontWeight: FontWeight.w400,
-                        color: AppColors.textColorGray,
+                        color: AppColors.grayColor,
                       ),
                     ),
                   )
@@ -262,7 +261,7 @@ class _PermissionsPageState extends State<PermissionsPage> {
                     style: TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.w400,
-                      color: AppColors.textColorGray,
+                      color: AppColors.grayColor,
                     ),
                   ),
                   SizedBox(
@@ -285,7 +284,7 @@ class _PermissionsPageState extends State<PermissionsPage> {
                           style: TextStyle(
                             fontSize: 15,
                             fontWeight: FontWeight.w400,
-                            color: AppColors.textColorGray,
+                            color: AppColors.grayColor,
                           ),
                         ),
                       ],
