@@ -1,0 +1,12 @@
+import 'package:flutter/material.dart';
+
+class AppColors {
+  static const Color primaryColor = Color.fromARGB(255, 255, 255, 255);
+  static const Color accentColor = Color.fromARGB(225, 225, 225, 0);
+
+  // Text colors
+  static const Color textColor = Color.fromARGB(255, 40, 45, 75);
+
+  // Other colors
+  static const Color errorColor = Colors.red;
+}
