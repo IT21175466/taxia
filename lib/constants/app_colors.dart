@@ -6,11 +6,13 @@ class AppColors {
 
   // Text colors
   static const Color textColor = Color.fromARGB(255, 0, 0, 0);
-  static const Color textColorGray = Color.fromARGB(255, 98, 103, 106);
+
+  //Gray
+  static const Color grayColor = Color.fromARGB(255, 98, 103, 106);
 
   // Other colors
   static const Color errorColor = Colors.red;
 
   // Button colors
-  static const Color buttonColor = Colors.blueAccent;
+  static const Color buttonColor = Color.fromARGB(225, 225, 225, 0);
 }
