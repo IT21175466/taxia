@@ -4,6 +4,10 @@ import 'package:taxia/constants/app_colors.dart';
 import 'package:taxia/providers/country_select_provider.dart';
 import 'package:taxia/providers/permission_provider.dart';
 import 'package:taxia/routes/app_routes.dart';
+import 'package:taxia/providers/user_type_provider.dart';
+import 'package:taxia/views/authentication/login_page.dart';
+import 'package:taxia/views/authentication/phone_validation_page.dart';
+import 'package:taxia/views/authentication/type_selection.dart';
 
 void main() {
   runApp(const MyApp());
@@ -18,6 +22,7 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (context) => CountrySelectProvider()),
         ChangeNotifierProvider(create: (context) => PermissionProvider()),
+        ChangeNotifierProvider(create: (context) => UserTypeProvider()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
