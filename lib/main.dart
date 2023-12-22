@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:taxia/constants/app_colors.dart';
 import 'package:taxia/providers/country_select_provider.dart';
+import 'package:taxia/providers/permission_provider.dart';
 import 'package:taxia/routes/app_routes.dart';
 
 void main() {
@@ -16,6 +17,7 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => CountrySelectProvider()),
+        ChangeNotifierProvider(create: (context) => PermissionProvider()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
