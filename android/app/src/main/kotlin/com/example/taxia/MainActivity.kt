@@ -1,4 +1,4 @@
-package com.example.taxia
+package taxia,com.kr
 
 import io.flutter.embedding.android.FlutterActivity
 
