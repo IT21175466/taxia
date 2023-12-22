@@ -46,13 +46,26 @@ class _OTPVerifyPageState extends State<OTPVerifyPage> {
             ),
             PhoneTextField(controller: phoneController, labelText: "OTP"),
             SizedBox(
-              height: 20,
+              height: 25,
             ),
             CustomButton(
                 text: "OK",
                 height: 50,
                 width: screenWidth,
                 backgroundColor: AppColors.accentColor),
+            SizedBox(
+              height: 15,
+            ),
+            Align(
+              alignment: Alignment.center,
+              child: Text(
+                'Edit Phone Number',
+                style: TextStyle(
+                  fontSize: 13,
+                  color: AppColors.textColor,
+                ),
+              ),
+            ),
           ],
         ),
       ),
