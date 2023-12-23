@@ -1,7 +1,7 @@
 import 'package:fl_country_code_picker/fl_country_code_picker.dart';
 import 'package:flutter/material.dart';
 
-class CountrySelectProvider extends ChangeNotifier {
+class PhoneNumberProvider extends ChangeNotifier {
   final countryPicker = const FlCountryCodePicker();
   CountryCode? countryCode;
 

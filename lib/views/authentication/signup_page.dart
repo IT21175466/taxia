@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:taxia/constants/app_colors.dart';
-import 'package:taxia/views/authentication/login_page.dart';
 import 'package:taxia/widgets/custom_button.dart';
 import 'package:taxia/widgets/custom_textFiled.dart';
 import 'package:taxia/widgets/phone_textFiled.dart';
@@ -75,11 +74,7 @@ class _SignUpPageState extends State<SignUpPage> {
                 ),
                 GestureDetector(
                   onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const LoginPage()),
-                    );
+                    Navigator.pushNamed(context, '/login');
                   },
                   child: Text(
                     "Log In",
