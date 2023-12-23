@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class PermissionProvider extends ChangeNotifier {
   bool isLocationPermissionGranted = false;
@@ -84,5 +85,11 @@ class PermissionProvider extends ChangeNotifier {
     } else {
       debugPrint("Permission Error");
     }
+  }
+
+  savePermissionStatus() async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setBool('showPermission', true);
+    notifyListeners();
   }
 }

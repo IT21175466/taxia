@@ -38,6 +38,7 @@ dependencies:
   provider: ^6.1.1
   fl_country_code_picker: ^0.1.9+1
   permission_handler: ^11.1.0
+  shared_preferences: ^2.2.2
 
 dev_dependencies:
   flutter_test:

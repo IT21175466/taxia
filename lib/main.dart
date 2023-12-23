@@ -1,17 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:taxia/constants/app_colors.dart';
 import 'package:taxia/providers/country_select_provider.dart';
 import 'package:taxia/providers/permission_provider.dart';
 import 'package:taxia/routes/app_routes.dart';
 import 'package:taxia/providers/user_type_provider.dart';
 
-void main() {
-  runApp(const MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  final prefs = await SharedPreferences.getInstance();
+  final showPermission = prefs.getBool('showPermission') ?? false;
+
+  runApp(MyApp(showPermission: showPermission));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final bool showPermission;
+  const MyApp({super.key, required this.showPermission});
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +34,7 @@ class MyApp extends StatelessWidget {
           primaryColor: AppColors.primaryColor,
           dividerColor: Colors.transparent,
         ),
-        initialRoute: '/permissions',
+        initialRoute: showPermission ? '/login' : '/permissions',
         routes: AppRoutes.getRoutes(),
       ),
     );
