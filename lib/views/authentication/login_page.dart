@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:taxia/constants/app_colors.dart';
 import 'package:taxia/widgets/custom_button.dart';
-import 'package:taxia/widgets/custom_textFiled.dart';
 import 'package:taxia/widgets/phone_textFiled.dart';
 
 class LoginPage extends StatefulWidget {
@@ -40,8 +39,8 @@ class _LoginPageState extends State<LoginPage> {
             ),
             PhoneTextField(
                 controller: phoneController, labelText: "Phone Number"),
-            CustomTextField(
-                controller: passwordController, labelText: "Password"),
+            // CustomTextField(
+            //     controller: passwordController, labelText: "Password"),
             SizedBox(
               height: 25,
             ),
