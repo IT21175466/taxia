@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class PermissionProvider extends ChangeNotifier {
   bool isLocationPermissionGranted = false;
   bool isStoragePermissionGranted = false;
   bool isAllPermissionGranted = false;
-  bool showPermissionScreen = false;
 
   requestLocationPermissions(BuildContext context) async {
     PermissionStatus status = await Permission.location.request();
@@ -85,5 +85,11 @@ class PermissionProvider extends ChangeNotifier {
     } else {
       debugPrint("Permission Error");
     }
+  }
+
+  savePermissionStatus() async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setBool('showPermission', true);
+    notifyListeners();
   }
 }

@@ -8,6 +8,7 @@ import 'package:taxia/routes/app_routes.dart';
 import 'package:taxia/providers/user_type_provider.dart';
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   final prefs = await SharedPreferences.getInstance();
   final showPermission = prefs.getBool('showPermission') ?? false;
 

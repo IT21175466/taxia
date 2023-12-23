@@ -262,11 +262,27 @@ class _PermissionsPageState extends State<PermissionsPage> {
                 SizedBox(
                   height: 30,
                 ),
-                CustomButton(
-                    text: "OK",
-                    height: 50,
-                    width: screenWidth,
-                    backgroundColor: AppColors.buttonColor),
+                GestureDetector(
+                  onTap: () async {
+                    await permissionProvider.checkAllPermissions();
+
+                    if (permissionProvider.isAllPermissionGranted) {
+                      permissionProvider.savePermissionStatus();
+                      Navigator.pushReplacementNamed(context, '/login');
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text("Please Give Required Permissions"),
+                        ),
+                      );
+                    }
+                  },
+                  child: CustomButton(
+                      text: "OK",
+                      height: 50,
+                      width: screenWidth,
+                      backgroundColor: AppColors.buttonColor),
+                ),
                 SizedBox(
                   height: 25,
                 ),
