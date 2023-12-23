@@ -49,10 +49,10 @@ class _SignUpPageState extends State<SignUpPage> {
                   controller: phoneController, labelText: "District"),
               PhoneTextField(
                   controller: phoneController, labelText: "Phone Number"),
-              CustomTextField(
-                  controller: phoneController, labelText: "Password"),
+              // CustomTextField(
+              //     controller: phoneController, labelText: "Password"),
               SizedBox(
-                height: 25,
+                height: 30,
               ),
               CustomButton(
                   text: "Sign Up",
@@ -60,7 +60,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   width: screenWidth,
                   backgroundColor: AppColors.buttonColor),
               SizedBox(
-                height: 10,
+                height: 15,
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
