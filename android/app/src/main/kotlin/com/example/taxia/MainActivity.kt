@@ -1,4 +1,4 @@
-package taxia,com.kr
+package taxia.com.kr
 
 import io.flutter.embedding.android.FlutterActivity
 
