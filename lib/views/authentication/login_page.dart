@@ -67,12 +67,17 @@ class _LoginPageState extends State<LoginPage> {
                 SizedBox(
                   width: 5,
                 ),
-                Text(
-                  "Sign Up",
-                  style: TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.w400,
-                    color: Colors.blueAccent,
+                GestureDetector(
+                  onTap: () {
+                    Navigator.pushNamed(context, '/signup');
+                  },
+                  child: Text(
+                    "Sign Up",
+                    style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w400,
+                      color: Colors.blueAccent,
+                    ),
                   ),
                 ),
               ],
