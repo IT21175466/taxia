@@ -92,11 +92,34 @@ class _PhoneValidationState extends State<PhoneValidation> {
               SizedBox(
                 height: 25,
               ),
-              CustomButton(
-                  text: "OK",
-                  height: 50,
-                  width: screenWidth,
-                  backgroundColor: AppColors.buttonColor),
+              GestureDetector(
+                onTap: () {
+                  if (phoneController.text.isEmpty) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text("Please enter your Phone Number"),
+                      ),
+                    );
+                  } else {
+                    phoneNumberProvider.loading = true;
+                    phoneNumberProvider.verifyPhoneNumber(
+                        phoneController.text, context);
+                  }
+                },
+                child: phoneNumberProvider.loading
+                    ? Container(
+                        height: 55,
+                        width: screenWidth,
+                        child: Center(
+                          child: CircularProgressIndicator(),
+                        ),
+                      )
+                    : CustomButton(
+                        text: "OK",
+                        height: 50,
+                        width: screenWidth,
+                        backgroundColor: AppColors.buttonColor),
+              ),
               SizedBox(
                 height: 10,
               ),

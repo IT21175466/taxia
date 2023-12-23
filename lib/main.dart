@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:taxia/constants/app_colors.dart';
 import 'package:taxia/firebase_options.dart';
+import 'package:taxia/providers/otp_provider.dart';
 import 'package:taxia/providers/phone_number_provider.dart';
 import 'package:taxia/providers/permission_provider.dart';
 import 'package:taxia/routes/app_routes.dart';
@@ -31,6 +32,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (context) => PhoneNumberProvider()),
         ChangeNotifierProvider(create: (context) => PermissionProvider()),
         ChangeNotifierProvider(create: (context) => UserTypeProvider()),
+        ChangeNotifierProvider(create: (context) => OTPProvider()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:taxia/constants/app_colors.dart';
 import 'package:taxia/providers/permission_provider.dart';
@@ -238,12 +239,17 @@ class _PermissionsPageState extends State<PermissionsPage> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            "Change the access level",
-                            style: TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.w400,
-                              color: Colors.blueAccent,
+                          GestureDetector(
+                            onTap: () {
+                              openAppSettings();
+                            },
+                            child: Text(
+                              "Change the access level",
+                              style: TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w400,
+                                color: Colors.blueAccent,
+                              ),
                             ),
                           ),
                           Text(
