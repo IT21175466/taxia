@@ -7,6 +7,7 @@ import 'package:taxia/firebase_options.dart';
 import 'package:taxia/providers/otp_provider.dart';
 import 'package:taxia/providers/phone_number_provider.dart';
 import 'package:taxia/providers/permission_provider.dart';
+import 'package:taxia/providers/user/user_provider.dart';
 import 'package:taxia/routes/app_routes.dart';
 import 'package:taxia/providers/user_type_provider.dart';
 
@@ -33,6 +34,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (context) => PermissionProvider()),
         ChangeNotifierProvider(create: (context) => UserTypeProvider()),
         ChangeNotifierProvider(create: (context) => OTPProvider()),
+        ChangeNotifierProvider(create: (context) => UserProvider()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
@@ -42,6 +44,7 @@ class MyApp extends StatelessWidget {
           dividerColor: Colors.transparent,
         ),
         initialRoute: showPermission ? '/login' : '/permissions',
+        //initialRoute: '/signup',
         routes: AppRoutes.getRoutes(),
       ),
     );
