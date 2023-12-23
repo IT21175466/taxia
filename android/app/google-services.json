@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "264721520851",
+    "project_id": "taxia-cca4b",
+    "storage_bucket": "taxia-cca4b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:264721520851:android:05be17cdf39e6dd97adc26",
+        "android_client_info": {
+          "package_name": "taxia.com.kr"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAQlzJFeVTKmcPDl-Ot2BWtwdIIsnw4k8M"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

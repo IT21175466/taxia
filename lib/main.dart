@@ -1,7 +1,9 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:taxia/constants/app_colors.dart';
+import 'package:taxia/firebase_options.dart';
 import 'package:taxia/providers/phone_number_provider.dart';
 import 'package:taxia/providers/permission_provider.dart';
 import 'package:taxia/routes/app_routes.dart';
@@ -9,6 +11,9 @@ import 'package:taxia/providers/user_type_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   final prefs = await SharedPreferences.getInstance();
   final showPermission = prefs.getBool('showPermission') ?? false;
 
