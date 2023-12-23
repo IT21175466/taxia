@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:taxia/constants/app_colors.dart';
 import 'package:taxia/widgets/custom_button.dart';
-import 'package:taxia/widgets/custom_textFiled.dart';
 import 'package:taxia/widgets/phone_textFiled.dart';
 
 class LoginPage extends StatefulWidget {
