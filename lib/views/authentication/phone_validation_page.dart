@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:taxia/constants/app_colors.dart';
-import 'package:taxia/providers/country_select_provider.dart';
+import 'package:taxia/providers/phone_number_provider.dart';
 import 'package:taxia/widgets/custom_button.dart';
 import 'package:taxia/widgets/phone_textFiled.dart';
 
@@ -23,8 +23,8 @@ class _PhoneValidationState extends State<PhoneValidation> {
         padding: EdgeInsets.symmetric(horizontal: 20),
         width: screenWidth,
         child: Consumer(
-          builder: (BuildContext context, CountrySelectProvider countryProvider,
-                  Widget? child) =>
+          builder: (BuildContext context,
+                  PhoneNumberProvider phoneNumberProvider, Widget? child) =>
               Column(
             children: [
               SizedBox(
@@ -43,7 +43,7 @@ class _PhoneValidationState extends State<PhoneValidation> {
               ),
               GestureDetector(
                 onTap: () {
-                  countryProvider.selectCountry(context);
+                  phoneNumberProvider.selectCountry(context);
                 },
                 child: Container(
                   width: screenWidth,
@@ -62,7 +62,7 @@ class _PhoneValidationState extends State<PhoneValidation> {
                         width: 15,
                       ),
                       Text(
-                        countryProvider.countryCode?.name ?? "Canada",
+                        phoneNumberProvider.countryCode?.name ?? "Canada",
                         style: TextStyle(
                           fontSize: 15,
                           fontWeight: FontWeight.w400,
@@ -73,7 +73,7 @@ class _PhoneValidationState extends State<PhoneValidation> {
                         width: 5,
                       ),
                       Text(
-                        countryProvider.countryCode?.dialCode ?? "+1",
+                        phoneNumberProvider.countryCode?.dialCode ?? "+1",
                         style: TextStyle(
                           fontSize: 15,
                           fontWeight: FontWeight.w400,
