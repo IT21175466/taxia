@@ -21,8 +21,8 @@ class PhoneTextField extends StatelessWidget {
       child: TextField(
         keyboardType: TextInputType.number,
         controller: controller,
-        obscureText: isPassword,
         decoration: InputDecoration(
+          hintText: "71XXXXXXX",
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(5.0),
           ),
