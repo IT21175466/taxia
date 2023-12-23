@@ -5,6 +5,7 @@ class PermissionProvider extends ChangeNotifier {
   bool isLocationPermissionGranted = false;
   bool isStoragePermissionGranted = false;
   bool isAllPermissionGranted = false;
+  bool showPermissionScreen = false;
 
   requestLocationPermissions(BuildContext context) async {
     PermissionStatus status = await Permission.location.request();
