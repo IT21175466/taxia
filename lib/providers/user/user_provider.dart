@@ -32,6 +32,7 @@ class UserProvider extends ChangeNotifier {
             ),
           );
           loading = false;
+          Navigator.pushReplacementNamed(context, '/splash');
           notifyListeners();
         });
         notifyListeners();
@@ -52,6 +53,7 @@ class UserProvider extends ChangeNotifier {
             ),
           );
           loading = false;
+          Navigator.pushReplacementNamed(context, '/splash');
           notifyListeners();
         });
 

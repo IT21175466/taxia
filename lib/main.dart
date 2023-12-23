@@ -43,8 +43,8 @@ class MyApp extends StatelessWidget {
           primaryColor: AppColors.primaryColor,
           dividerColor: Colors.transparent,
         ),
-        initialRoute: showPermission ? '/login' : '/permissions',
-        //initialRoute: '/signup',
+        initialRoute: showPermission ? '/splash' : '/permissions',
+        //initialRoute: '/splash',
         routes: AppRoutes.getRoutes(),
       ),
     );

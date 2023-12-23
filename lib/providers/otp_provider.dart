@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class OTPProvider extends ChangeNotifier {
   bool loading = false;
@@ -8,6 +9,10 @@ class OTPProvider extends ChangeNotifier {
     try {
       PhoneAuthCredential credential =
           await PhoneAuthProvider.credential(verificationId: vID, smsCode: otp);
+
+      final prefs = await SharedPreferences.getInstance();
+      prefs.setBool('logedIn', true);
+      notifyListeners();
 
       FirebaseAuth.instance.signInWithCredential(credential).then((value) {
         Navigator.pushNamed(context, '/signup');
