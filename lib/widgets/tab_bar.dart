@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:taxia/views/home_screen/home_tab.dart';
+import 'package:taxia/views/home_screen/my_car_tab.dart';
 
 class MyTabBar extends StatelessWidget {
   @override
@@ -32,16 +34,8 @@ class MyTabBar extends StatelessWidget {
         ),
         body: TabBarView(
           children: [
-            Container(
-              child: Center(
-                child: Text("My Car"),
-              ),
-            ),
-            Container(
-              child: Center(
-                child: Text("Home"),
-              ),
-            ),
+            MyCarTab(),
+            HomeTab(),
             Container(
               child: Center(
                 child: Text("Travel"),
