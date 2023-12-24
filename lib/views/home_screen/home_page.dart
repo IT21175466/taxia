@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:taxia/constants/app_colors.dart';
-import 'package:taxia/providers/user/user_provider.dart';
+import 'package:taxia/providers/home/bootom_nav_bar_provider.dart';
+import 'package:taxia/widgets/bottom_nav_bar.dart';
+import 'package:taxia/widgets/tab_bar.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -12,12 +13,9 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  int currentIndex = 0;
-
+  //Tab Bar
   final List<Widget> pages = [
-    Center(
-      child: Text("Home"),
-    ),
+    MyTabBar(),
     Center(
       child: Text("Business"),
     ),
@@ -45,100 +43,15 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final userProvider = Provider.of<UserProvider>(context, listen: false);
-    return DefaultTabController(
-      length: 3,
-      child: Scaffold(
-        appBar: AppBar(
-          bottom: TabBar(tabs: [
-            Tab(
-              text: "Home",
-            ),
-            Tab(
-              text: "My Car",
-            ),
-            Tab(
-              text: "Travel",
-            ),
-          ]),
-          title: Text("Home" + id!),
-          leading: GestureDetector(
-            onTap: () async {
-              await userProvider.logOutUser();
-              Navigator.pushReplacementNamed(context, '/login');
-            },
-            child: Icon(Icons.logout),
-          ),
-        ),
+    return Consumer(
+      builder: (BuildContext context,
+              BottomNavBarProvider bottomNavigationProvider, Widget? child) =>
+          Scaffold(
         body: IndexedStack(
-          index: currentIndex,
+          index: bottomNavigationProvider.currentIndex,
           children: pages,
         ),
-        // TabBarView(
-        //   children: [
-        //     Container(
-        //       child: Center(
-        //         child: Text("Home"),
-        //       ),
-        //     ),
-        //     Container(
-        //       child: Center(
-        //         child: Text("My Car"),
-        //       ),
-        //     ),
-        //     Container(
-        //       child: Center(
-        //         child: Text("Travel"),
-        //       ),
-        //     ),
-        //   ],
-        // ),
-        bottomNavigationBar: BottomNavigationBar(
-          currentIndex: currentIndex,
-          onTap: (index) {
-            setState(() {
-              currentIndex = index;
-            });
-          },
-          items: [
-            BottomNavigationBarItem(
-              icon: Icon(
-                Icons.home_outlined,
-                color: AppColors.iconColor,
-              ),
-              label: "Home",
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(
-                Icons.badge_outlined,
-                color: AppColors.iconColor,
-              ),
-              label: "Business",
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(
-                Icons.notifications_none_outlined,
-                color: AppColors.iconColor,
-              ),
-              label: "Notification",
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(
-                Icons.person_2_outlined,
-                color: AppColors.iconColor,
-              ),
-              label: "My Info",
-            ),
-          ],
-          showSelectedLabels: true,
-          showUnselectedLabels: true,
-          type: BottomNavigationBarType.fixed,
-          selectedLabelStyle: TextStyle(
-              color: AppColors.textColor, fontWeight: FontWeight.w500),
-          unselectedLabelStyle: TextStyle(
-            color: AppColors.textColor,
-          ),
-        ),
+        bottomNavigationBar: CustomBottomNavigationBar(),
       ),
     );
   }
