@@ -7,6 +7,9 @@ class AppColors {
   // Text colors
   static const Color textColor = Color.fromARGB(255, 0, 0, 0);
 
+  // Icon colors
+  static const Color iconColor = Color.fromARGB(255, 0, 0, 0);
+
   //Gray
   static const Color grayColor = Color.fromARGB(255, 98, 103, 106);
 
