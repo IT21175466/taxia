@@ -82,19 +82,6 @@ class _OTPVerifyPageState extends State<OTPVerifyPage> {
                         width: screenWidth,
                         backgroundColor: AppColors.accentColor),
               ),
-              SizedBox(
-                height: 15,
-              ),
-              Align(
-                alignment: Alignment.center,
-                child: Text(
-                  'Edit Phone Number',
-                  style: TextStyle(
-                    fontSize: 13,
-                    color: AppColors.textColor,
-                  ),
-                ),
-              ),
             ],
           ),
         ),

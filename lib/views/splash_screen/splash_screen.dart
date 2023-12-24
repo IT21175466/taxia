@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:taxia/constants/app_colors.dart';
+import 'package:taxia/providers/user/login_provider.dart';
 
 class SplashScreen extends StatefulWidget {
-  const SplashScreen({super.key});
+  final String id;
+  const SplashScreen({super.key, required this.id});
 
   @override
   State<SplashScreen> createState() => _SplashScreenState();
@@ -13,7 +16,9 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    ckeckLoginSaved();
+    final loginProvider = Provider.of<LoginProvider>(context, listen: false);
+    loginProvider.checkUserIsSignUp(widget.id, context);
+    //ckeckLoginSaved();
   }
 
   ckeckLoginSaved() async {

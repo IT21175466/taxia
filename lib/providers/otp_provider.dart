@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:taxia/views/splash_screen/splash_screen.dart';
 
 class OTPProvider extends ChangeNotifier {
   bool loading = false;
@@ -11,21 +11,30 @@ class OTPProvider extends ChangeNotifier {
       PhoneAuthCredential credential =
           await PhoneAuthProvider.credential(verificationId: vID, smsCode: otp);
 
-      final prefs = await SharedPreferences.getInstance();
-      prefs.setBool('logedIn', true);
-      notifyListeners();
+      FirebaseAuth.instance.signInWithCredential(credential).then(
+        (UserCredential userCredential) async {
+          userId = userCredential.user!.uid;
+          print("User ID: $userId");
 
-      FirebaseAuth.instance
-          .signInWithCredential(credential)
-          .then((UserCredential userCredential) {
-        userId = userCredential.user!.uid;
-        print("User ID: $userId");
-        Navigator.pushNamed(context, '/signup');
-        loading = false;
-        notifyListeners();
-      });
+          notifyListeners();
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => SplashScreen(
+                id: userId,
+              ),
+            ),
+          );
+          loading = false;
+          notifyListeners();
+        },
+      );
     } catch (e) {
-      print(e.toString());
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(e.toString()),
+        ),
+      );
       loading = false;
       notifyListeners();
     }
