@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:taxia/providers/user/user_provider.dart';
 
 class HomePage extends StatefulWidget {
@@ -11,11 +12,26 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   @override
+  void initState() {
+    super.initState();
+    getUserID();
+  }
+
+  String? id = '';
+
+  void getUserID() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      id = prefs.getString('userID');
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     final userProvider = Provider.of<UserProvider>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
-        title: Text("Home"),
+        title: Text("Home" + id!),
         leading: GestureDetector(
           onTap: () async {
             await userProvider.logOutUser();

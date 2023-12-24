@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:taxia/views/splash_screen/splash_screen.dart';
 
 class OTPProvider extends ChangeNotifier {
@@ -15,6 +16,7 @@ class OTPProvider extends ChangeNotifier {
         (UserCredential userCredential) async {
           userId = userCredential.user!.uid;
           print("User ID: $userId");
+          setUserID(userId);
 
           notifyListeners();
           Navigator.push(
@@ -39,5 +41,10 @@ class OTPProvider extends ChangeNotifier {
       notifyListeners();
     }
     notifyListeners();
+  }
+
+  Future<void> setUserID(String uID) async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setString('userID', uID);
   }
 }
