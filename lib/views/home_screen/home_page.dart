@@ -29,15 +29,48 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     final userProvider = Provider.of<UserProvider>(context, listen: false);
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Home" + id!),
-        leading: GestureDetector(
-          onTap: () async {
-            await userProvider.logOutUser();
-            Navigator.pushReplacementNamed(context, '/login');
-          },
-          child: Icon(Icons.logout),
+    return DefaultTabController(
+      length: 3,
+      child: Scaffold(
+        appBar: AppBar(
+          bottom: TabBar(tabs: [
+            Tab(
+              text: "Home",
+            ),
+            Tab(
+              text: "My Car",
+            ),
+            Tab(
+              text: "Travel",
+            ),
+          ]),
+          title: Text("Home" + id!),
+          leading: GestureDetector(
+            onTap: () async {
+              await userProvider.logOutUser();
+              Navigator.pushReplacementNamed(context, '/login');
+            },
+            child: Icon(Icons.logout),
+          ),
+        ),
+        body: TabBarView(
+          children: [
+            Container(
+              child: Center(
+                child: Text("Home"),
+              ),
+            ),
+            Container(
+              child: Center(
+                child: Text("My Car"),
+              ),
+            ),
+            Container(
+              child: Center(
+                child: Text("Travel"),
+              ),
+            ),
+          ],
         ),
       ),
     );
