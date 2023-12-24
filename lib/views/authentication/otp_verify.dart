@@ -70,7 +70,7 @@ class _OTPVerifyPageState extends State<OTPVerifyPage> {
                 },
                 child: otpProvider.loading
                     ? Container(
-                        height: 55,
+                        height: 50,
                         width: screenWidth,
                         child: Center(
                           child: CircularProgressIndicator(),
@@ -81,19 +81,6 @@ class _OTPVerifyPageState extends State<OTPVerifyPage> {
                         height: 50,
                         width: screenWidth,
                         backgroundColor: AppColors.accentColor),
-              ),
-              SizedBox(
-                height: 15,
-              ),
-              Align(
-                alignment: Alignment.center,
-                child: Text(
-                  'Edit Phone Number',
-                  style: TextStyle(
-                    fontSize: 13,
-                    color: AppColors.textColor,
-                  ),
-                ),
               ),
             ],
           ),

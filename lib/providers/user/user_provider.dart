@@ -1,12 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:taxia/models/user.dart';
-import 'package:uuid/uuid.dart';
 
 class UserProvider extends ChangeNotifier {
   final db = FirebaseFirestore.instance;
   bool loading = false;
-  String userID = '';
 
   String _selectedRole = "Select Your Role";
 
@@ -17,21 +16,20 @@ class UserProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  String generateRandomId() {
-    var uuid = Uuid();
-    return uuid.v4();
-  }
-
   addUserToFirebase(User user, BuildContext context, String uID) async {
     if (selectedRole == "User") {
       try {
-        db.collection("Users").doc(uID).set(user.toJson()).then((value) {
+        db.collection("Users").doc(uID).set(user.toJson()).then((value) async {
+          final prefs = await SharedPreferences.getInstance();
+          prefs.setBool('logedIn', true);
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text("User Registration Success!"),
             ),
           );
+
           loading = false;
+          Navigator.pushReplacementNamed(context, '/home');
           notifyListeners();
         });
         notifyListeners();
@@ -45,13 +43,21 @@ class UserProvider extends ChangeNotifier {
       }
     } else if (selectedRole == "Driver") {
       try {
-        db.collection("Drivers").doc(uID).set(user.toJson()).then((value) {
+        db
+            .collection("Drivers")
+            .doc(uID)
+            .set(user.toJson())
+            .then((value) async {
+          final prefs = await SharedPreferences.getInstance();
+          prefs.setBool('logedIn', true);
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text("Driver Registration Success!"),
             ),
           );
+
           loading = false;
+          Navigator.pushReplacementNamed(context, '/home');
           notifyListeners();
         });
 
@@ -65,5 +71,10 @@ class UserProvider extends ChangeNotifier {
         notifyListeners();
       }
     }
+  }
+
+  logOutUser() async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setBool('logedIn', false);
   }
 }
