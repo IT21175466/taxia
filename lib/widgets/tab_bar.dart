@@ -17,10 +17,10 @@ class MyTabBar extends StatelessWidget {
             ),
             tabs: [
               Tab(
-                text: "Home",
+                text: "My Car",
               ),
               Tab(
-                text: "My Car",
+                text: "Home",
               ),
               Tab(
                 text: "Travel",
@@ -33,12 +33,12 @@ class MyTabBar extends StatelessWidget {
           children: [
             Container(
               child: Center(
-                child: Text("Home"),
+                child: Text("My Car"),
               ),
             ),
             Container(
               child: Center(
-                child: Text("My Car"),
+                child: Text("Home"),
               ),
             ),
             Container(
