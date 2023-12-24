@@ -1,12 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:taxia/models/user.dart';
-import 'package:uuid/uuid.dart';
 
 class UserProvider extends ChangeNotifier {
   final db = FirebaseFirestore.instance;
   bool loading = false;
-  String userID = '';
 
   String _selectedRole = "Select Your Role";
 
@@ -15,11 +13,6 @@ class UserProvider extends ChangeNotifier {
   set selectedRole(String role) {
     _selectedRole = role;
     notifyListeners();
-  }
-
-  String generateRandomId() {
-    var uuid = Uuid();
-    return uuid.v4();
   }
 
   addUserToFirebase(User user, BuildContext context, String uID) async {

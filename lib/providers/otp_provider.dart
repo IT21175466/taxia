@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class OTPProvider extends ChangeNotifier {
   bool loading = false;
+  String userId = '';
 
   getOTPCode(String vID, String otp, BuildContext context) async {
     try {
@@ -14,11 +15,15 @@ class OTPProvider extends ChangeNotifier {
       prefs.setBool('logedIn', true);
       notifyListeners();
 
-      FirebaseAuth.instance.signInWithCredential(credential).then((value) {
+      FirebaseAuth.instance
+          .signInWithCredential(credential)
+          .then((UserCredential userCredential) {
+        userId = userCredential.user!.uid;
+        print("User ID: $userId");
         Navigator.pushNamed(context, '/signup');
+        loading = false;
+        notifyListeners();
       });
-      loading = false;
-      notifyListeners();
     } catch (e) {
       print(e.toString());
       loading = false;

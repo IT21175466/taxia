@@ -70,7 +70,7 @@ class _OTPVerifyPageState extends State<OTPVerifyPage> {
                 },
                 child: otpProvider.loading
                     ? Container(
-                        height: 55,
+                        height: 50,
                         width: screenWidth,
                         child: Center(
                           child: CircularProgressIndicator(),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:taxia/constants/app_colors.dart';
 import 'package:taxia/models/user.dart';
+import 'package:taxia/providers/otp_provider.dart';
 import 'package:taxia/providers/user/user_provider.dart';
 import 'package:taxia/widgets/custom_button.dart';
 import 'package:taxia/widgets/custom_textFiled.dart';
@@ -22,6 +23,7 @@ class _SignUpPageState extends State<SignUpPage> {
   final TextEditingController districtController = TextEditingController();
   @override
   Widget build(BuildContext context) {
+    final otpProvider = Provider.of<OTPProvider>(context, listen: false);
     double screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
@@ -91,12 +93,12 @@ class _SignUpPageState extends State<SignUpPage> {
                         ),
                       );
                     } else {
-                      userProvider.userID =
-                          userProvider.generateRandomId().toString();
+                      // userProvider.userID =
+                      //     userProvider.generateRandomId().toString();
                       userProvider.loading = true;
 
                       final addUser = User(
-                          userID: userProvider.userID,
+                          userID: otpProvider.userId,
                           firstName: firstNameController.text,
                           lastName: lastNameController.text,
                           email: emailController.text,
@@ -104,7 +106,7 @@ class _SignUpPageState extends State<SignUpPage> {
                           district: districtController.text);
 
                       userProvider.addUserToFirebase(
-                          addUser, context, userProvider.userID);
+                          addUser, context, otpProvider.userId);
                     }
                   },
                   child: userProvider.loading
