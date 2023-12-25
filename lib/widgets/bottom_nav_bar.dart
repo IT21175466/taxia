@@ -54,6 +54,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
           unselectedLabelStyle: TextStyle(
             color: AppColors.textColor,
           ),
+          elevation: 20.0,
         );
       },
     );
