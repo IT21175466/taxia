@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:taxia/constants/app_colors.dart';
 import 'package:taxia/views/home_screen/home_tab.dart';
 import 'package:taxia/views/home_screen/my_car_tab.dart';
 import 'package:taxia/views/home_screen/travel_tab.dart';
@@ -25,10 +26,17 @@ class MyTabBar extends StatelessWidget {
           ),
           bottom: TabBar(
             indicatorColor: Colors.white,
+            indicatorSize: TabBarIndicatorSize.tab,
+            indicator: BoxDecoration(
+              borderRadius: BorderRadius.vertical(
+                top: Radius.circular(10),
+              ),
+              color: Colors.white,
+            ),
             unselectedLabelColor: Colors.grey,
-            labelColor: Colors.white,
+            labelColor: AppColors.textColor,
             labelStyle: TextStyle(
-              fontSize: 18,
+              fontSize: 20,
               fontWeight: FontWeight.w500,
             ),
             tabs: [
