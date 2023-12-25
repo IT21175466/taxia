@@ -11,6 +11,18 @@ class MyTabBar extends StatelessWidget {
       length: 3,
       child: Scaffold(
         appBar: AppBar(
+          flexibleSpace: Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  Colors.blue,
+                  Colors.purple,
+                ],
+              ),
+            ),
+          ),
           bottom: TabBar(
             indicatorColor: Colors.white,
             unselectedLabelColor: Colors.grey,
