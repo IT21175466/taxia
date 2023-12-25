@@ -86,107 +86,148 @@ class _HomeTabState extends State<HomeTab> {
               ],
             ),
             SizedBox(
-              height: 20,
+              height: 25,
             ),
             Row(
               children: [
-                CustomElement(
-                  label: "Taxi",
-                  imagePath: 'assets/images/taxi.png',
-                  onTap: () {},
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    CustomElement(
+                      label: "Taxi",
+                      imagePath: 'assets/images/taxi.png',
+                      onTap: () {},
+                    ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    CustomElement(
+                      label: "Quick",
+                      imagePath: 'assets/images/delivery.png',
+                      onTap: () {},
+                    ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    CustomElement(
+                      label: "Pet",
+                      imagePath: 'assets/images/pet.png',
+                      onTap: () {},
+                    ),
+                  ],
                 ),
                 Spacer(),
-                CustomElement(
-                  label: "Book Taxi",
-                  imagePath: 'assets/images/bookTaxi.png',
-                  onTap: () {},
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    CustomElement(
+                      label: "Book Taxi",
+                      imagePath: 'assets/images/bookTaxi.png',
+                      onTap: () {},
+                    ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    CustomElement(
+                      label: "Rent Car",
+                      imagePath: 'assets/images/rentCar.png',
+                      onTap: () {},
+                    ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    CustomElement(
+                      label: "Train",
+                      imagePath: 'assets/images/train.png',
+                      onTap: () {},
+                    ),
+                  ],
                 ),
                 Spacer(),
-                CustomElement(
-                  label: "Bike",
-                  imagePath: 'assets/images/bike.png',
-                  onTap: () {},
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    CustomElement(
+                      label: "Bike",
+                      imagePath: 'assets/images/bike.png',
+                      onTap: () {},
+                    ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    CustomElement(
+                      label: "Flight",
+                      imagePath: 'assets/images/airplane.png',
+                      onTap: () {},
+                    ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    CustomElement(
+                      label: "Charter bus",
+                      imagePath: 'assets/images/charter.png',
+                      onTap: () {},
+                    ),
+                  ],
                 ),
                 Spacer(),
-                CustomElement(
-                  label: "Parking",
-                  imagePath: 'assets/images/parking.png',
-                  onTap: () {},
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    CustomElement(
+                      label: "Parking",
+                      imagePath: 'assets/images/parking.png',
+                      onTap: () {},
+                    ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    CustomElement(
+                      label: "EV Charge",
+                      imagePath: 'assets/images/charging.png',
+                      onTap: () {},
+                    ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    CustomElement(
+                      label: "Show All",
+                      imagePath: 'assets/images/dots.png',
+                      onTap: () {},
+                    ),
+                  ],
                 ),
                 Spacer(),
-                CustomElement(
-                  label: "Driver",
-                  imagePath: 'assets/images/driverElement.png',
-                  onTap: () {},
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    CustomElement(
+                      label: "Driver",
+                      imagePath: 'assets/images/driverElement.png',
+                      onTap: () {},
+                    ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    CustomElement(
+                      label: "Request",
+                      imagePath: 'assets/images/request.png',
+                      onTap: () {},
+                    ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    CustomElement(
+                      label: "Request",
+                      imagePath: 'assets/images/request.png',
+                      onTap: () {},
+                    ),
+                  ],
                 ),
               ],
             ),
             SizedBox(
               height: 20,
-            ),
-            Row(
-              children: [
-                CustomElement(
-                  label: "Quick",
-                  imagePath: 'assets/images/delivery.png',
-                  onTap: () {},
-                ),
-                Spacer(),
-                CustomElement(
-                  label: "Rent Car",
-                  imagePath: 'assets/images/rentCar.png',
-                  onTap: () {},
-                ),
-                Spacer(),
-                CustomElement(
-                  label: "Flight",
-                  imagePath: 'assets/images/airplane.png',
-                  onTap: () {},
-                ),
-                Spacer(),
-                CustomElement(
-                  label: "EV Charge",
-                  imagePath: 'assets/images/charging.png',
-                  onTap: () {},
-                ),
-                Spacer(),
-                CustomElement(
-                  label: "Request",
-                  imagePath: 'assets/images/request.png',
-                  onTap: () {},
-                ),
-              ],
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            Row(
-              children: [
-                CustomElement(
-                  label: "Pet",
-                  imagePath: 'assets/images/pet.png',
-                  onTap: () {},
-                ),
-                Spacer(),
-                CustomElement(
-                  label: "Train",
-                  imagePath: 'assets/images/train.png',
-                  onTap: () {},
-                ),
-                Spacer(),
-                CustomElement(
-                  label: "Charter bus",
-                  imagePath: 'assets/images/charter.png',
-                  onTap: () {},
-                ),
-                Spacer(),
-                CustomElement(
-                  label: "Show All",
-                  imagePath: 'assets/images/dots.png',
-                  onTap: () {},
-                ),
-                Spacer(),
-              ],
             ),
           ],
         ),
