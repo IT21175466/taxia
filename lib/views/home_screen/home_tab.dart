@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:taxia/constants/app_colors.dart';
+import 'package:taxia/widgets/custom_element.dart';
 
 class HomeTab extends StatefulWidget {
   const HomeTab({super.key});
@@ -57,7 +58,136 @@ class _HomeTabState extends State<HomeTab> {
                       const EdgeInsets.symmetric(vertical: 16, horizontal: 10),
                 ),
               ),
-            )
+            ),
+            SizedBox(
+              height: 15,
+            ),
+            Row(
+              children: [
+                Icon(Icons.home_outlined),
+                SizedBox(
+                  width: 5,
+                ),
+                Text(
+                  "Home",
+                  style: TextStyle(),
+                ),
+                SizedBox(
+                  width: 15,
+                ),
+                Icon(Icons.work_outline),
+                SizedBox(
+                  width: 5,
+                ),
+                Text(
+                  "Work",
+                  style: TextStyle(),
+                ),
+              ],
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            Row(
+              children: [
+                CustomElement(
+                  label: "Taxi",
+                  imagePath: 'assets/images/taxi.png',
+                  onTap: () {},
+                ),
+                Spacer(),
+                CustomElement(
+                  label: "Book Taxi",
+                  imagePath: 'assets/images/bookTaxi.png',
+                  onTap: () {},
+                ),
+                Spacer(),
+                CustomElement(
+                  label: "Bike",
+                  imagePath: 'assets/images/bike.png',
+                  onTap: () {},
+                ),
+                Spacer(),
+                CustomElement(
+                  label: "Parking",
+                  imagePath: 'assets/images/parking.png',
+                  onTap: () {},
+                ),
+                Spacer(),
+                CustomElement(
+                  label: "Driver",
+                  imagePath: 'assets/images/driverElement.png',
+                  onTap: () {},
+                ),
+              ],
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            Row(
+              children: [
+                CustomElement(
+                  label: "Quick",
+                  imagePath: 'assets/images/delivery.png',
+                  onTap: () {},
+                ),
+                Spacer(),
+                CustomElement(
+                  label: "Rent Car",
+                  imagePath: 'assets/images/rentCar.png',
+                  onTap: () {},
+                ),
+                Spacer(),
+                CustomElement(
+                  label: "Flight",
+                  imagePath: 'assets/images/airplane.png',
+                  onTap: () {},
+                ),
+                Spacer(),
+                CustomElement(
+                  label: "EV Charge",
+                  imagePath: 'assets/images/charging.png',
+                  onTap: () {},
+                ),
+                Spacer(),
+                CustomElement(
+                  label: "Request",
+                  imagePath: 'assets/images/request.png',
+                  onTap: () {},
+                ),
+              ],
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            Row(
+              children: [
+                CustomElement(
+                  label: "Pet",
+                  imagePath: 'assets/images/pet.png',
+                  onTap: () {},
+                ),
+                Spacer(),
+                CustomElement(
+                  label: "Train",
+                  imagePath: 'assets/images/train.png',
+                  onTap: () {},
+                ),
+                Spacer(),
+                CustomElement(
+                  label: "Charter bus",
+                  imagePath: 'assets/images/charter.png',
+                  onTap: () {},
+                ),
+                Spacer(),
+                CustomElement(
+                  label: "Show All",
+                  imagePath: 'assets/images/dots.png',
+                  onTap: () {},
+                ),
+                Spacer(),
+              ],
+            ),
           ],
         ),
       ),
