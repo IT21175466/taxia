@@ -96,7 +96,9 @@ class _HomeTabState extends State<HomeTab> {
                     CustomElement(
                       label: "Taxi",
                       imagePath: 'assets/images/taxi.png',
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.pushNamed(context, '/map');
+                      },
                     ),
                     SizedBox(
                       height: 20,
