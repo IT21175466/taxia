@@ -6,7 +6,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class MapProvider extends ChangeNotifier {
-  final Completer<GoogleMapController> googleMapCompleterController =
+  Completer<GoogleMapController> googleMapCompleterController =
       Completer<GoogleMapController>();
 
   LatLng? pickupLocation;
@@ -55,7 +55,7 @@ class MapProvider extends ChangeNotifier {
         currentPositionOfUser!.latitude, currentPositionOfUser!.longitude);
 
     CameraPosition cameraPosition =
-        CameraPosition(target: positionOfUserInLatLng, zoom: 15);
+        CameraPosition(target: positionOfUserInLatLng, zoom: 45);
 
     controllerGoogleMap!
         .animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
@@ -87,5 +87,9 @@ class MapProvider extends ChangeNotifier {
         CameraUpdate.newLatLngBounds(bounds, 50.0),
       );
     }
+  }
+
+  void resetCompleter() {
+    googleMapCompleterController = Completer<GoogleMapController>();
   }
 }

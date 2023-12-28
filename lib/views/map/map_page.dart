@@ -1,4 +1,7 @@
+import 'dart:ui' as ui;
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_places_flutter/google_places_flutter.dart';
 import 'package:google_places_flutter/model/prediction.dart';
@@ -14,6 +17,28 @@ class MapPage extends StatefulWidget {
 }
 
 class _MapPageState extends State<MapPage> {
+  late Uint8List customMarkerIcon;
+
+  @override
+  void initState() {
+    loadCustomMaker();
+    super.initState();
+  }
+
+  loadCustomMaker() async {
+    customMarkerIcon = await loadAsset('assets/images/destination.png', 150);
+  }
+
+  Future<Uint8List> loadAsset(String path, int width) async {
+    ByteData data = await rootBundle.load(path);
+    ui.Codec codec = await ui.instantiateImageCodec(data.buffer.asUint8List(),
+        targetWidth: width);
+    ui.FrameInfo fi = await codec.getNextFrame();
+    return (await fi.image.toByteData(format: ui.ImageByteFormat.png))!
+        .buffer
+        .asUint8List();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Consumer(
@@ -23,7 +48,6 @@ class _MapPageState extends State<MapPage> {
           children: [
             GoogleMap(
               markers: mapProvider.markers,
-              myLocationEnabled: true,
               zoomControlsEnabled: false,
               polylines: {
                 Polyline(
@@ -35,10 +59,20 @@ class _MapPageState extends State<MapPage> {
                 ),
               },
               onMapCreated: (GoogleMapController mapController) {
-                mapProvider.controllerGoogleMap = mapController;
+                if (!mapProvider.googleMapCompleterController.isCompleted) {
+                  mapProvider.googleMapCompleterController
+                      .complete(mapController);
+                  mapProvider.controllerGoogleMap = mapController;
+                } else {
+                  mapProvider.controllerGoogleMap = mapController;
+                  mapProvider.pickupLocationController.text = '';
+                  mapProvider.endLocationController.text = '';
+                }
 
-                mapProvider.googleMapCompleterController
-                    .complete(mapProvider.controllerGoogleMap);
+                // mapProvider.controllerGoogleMap = mapController;
+
+                // mapProvider.googleMapCompleterController
+                //     .complete(mapProvider.controllerGoogleMap);
               },
               initialCameraPosition: googlePlexInitialPosition,
             ),
@@ -151,7 +185,7 @@ class _MapPageState extends State<MapPage> {
 
                         mapProvider.markers.add(
                           Marker(
-                            icon: BitmapDescriptor.defaultMarker,
+                            icon: BitmapDescriptor.fromBytes(customMarkerIcon),
                             markerId: MarkerId('end'),
                             position: mapProvider.endLocation!,
                             infoWindow: InfoWindow(title: 'End Location'),
