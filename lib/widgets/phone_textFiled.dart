@@ -5,12 +5,14 @@ class PhoneTextField extends StatelessWidget {
   final TextEditingController controller;
   final String labelText;
   final bool isPassword;
+  final String hintText;
 
   const PhoneTextField({
     super.key,
     required this.controller,
     required this.labelText,
     this.isPassword = false,
+    required this.hintText,
   });
 
   @override
@@ -22,7 +24,7 @@ class PhoneTextField extends StatelessWidget {
         keyboardType: TextInputType.number,
         controller: controller,
         decoration: InputDecoration(
-          hintText: "71XXXXXXX",
+          hintText: hintText, //"71XXXXXXX"
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(5.0),
           ),
