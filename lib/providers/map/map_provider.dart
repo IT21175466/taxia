@@ -89,7 +89,9 @@ class MapProvider extends ChangeNotifier {
     }
   }
 
-  void resetCompleter() {
-    googleMapCompleterController = Completer<GoogleMapController>();
+  updateUI() {
+    endLocationController.text = '';
+    endLocation = null;
+    notifyListeners();
   }
 }

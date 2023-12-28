@@ -67,6 +67,8 @@ class _MapPageState extends State<MapPage> {
                   mapProvider.controllerGoogleMap = mapController;
                   mapProvider.pickupLocationController.text = '';
                   mapProvider.endLocationController.text = '';
+                  mapProvider.pickupLocation = null;
+                  mapProvider.endLocation = null;
                 }
 
                 // mapProvider.controllerGoogleMap = mapController;
@@ -95,7 +97,7 @@ class _MapPageState extends State<MapPage> {
                           mapProvider.pickupLocationController,
                       googleAPIKey: "AIzaSyDWlxEQU9GMmFEmZwiT3OGVVxTyc984iNY",
                       inputDecoration: InputDecoration(
-                        hintText: "Pickup",
+                        hintText: "Pickup Location",
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10.0),
                           borderSide: BorderSide.none,
@@ -106,6 +108,7 @@ class _MapPageState extends State<MapPage> {
                       debounceTime: 800,
                       isLatLngRequired: true,
                       getPlaceDetailWithLatLng: (Prediction prediction) {
+                        mapProvider.updateUI();
                         mapProvider.pickupLocation = LatLng(
                           double.parse(prediction.lat.toString()),
                           double.parse(prediction.lng.toString()),
