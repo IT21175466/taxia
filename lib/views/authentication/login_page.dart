@@ -88,7 +88,10 @@ class _LoginPageState extends State<LoginPage> {
               ),
 
               PhoneTextField(
-                  controller: phoneController, labelText: "Phone Number"),
+                controller: phoneController,
+                labelText: "Phone Number",
+                hintText: '71XXXXXXX',
+              ),
               // CustomTextField(
               //     controller: passwordController, labelText: "Password"),
               SizedBox(

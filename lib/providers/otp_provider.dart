@@ -18,6 +18,9 @@ class OTPProvider extends ChangeNotifier {
           print("User ID: $userId");
           setUserID(userId);
 
+          final prefs = await SharedPreferences.getInstance();
+          prefs.setBool('logedIn', true);
+
           notifyListeners();
           Navigator.push(
             context,

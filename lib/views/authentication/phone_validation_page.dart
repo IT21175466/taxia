@@ -88,7 +88,10 @@ class _PhoneValidationState extends State<PhoneValidation> {
                 height: 5,
               ),
               PhoneTextField(
-                  controller: phoneController, labelText: "Phone Number"),
+                controller: phoneController,
+                labelText: "Phone Number",
+                hintText: '71XXXXXXX',
+              ),
               SizedBox(
                 height: 25,
               ),

@@ -50,7 +50,11 @@ class _OTPVerifyPageState extends State<OTPVerifyPage> {
               SizedBox(
                 height: 20,
               ),
-              PhoneTextField(controller: otpController, labelText: "OTP"),
+              PhoneTextField(
+                controller: otpController,
+                labelText: "OTP",
+                hintText: '123456',
+              ),
               SizedBox(
                 height: 25,
               ),

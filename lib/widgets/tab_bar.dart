@@ -12,6 +12,7 @@ class MyTabBar extends StatelessWidget {
       length: 3,
       child: Scaffold(
         appBar: AppBar(
+          leading: SizedBox(),
           flexibleSpace: Container(
             decoration: BoxDecoration(
               gradient: LinearGradient(
