@@ -5,7 +5,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:taxia/constants/app_colors.dart';
 import 'package:taxia/firebase_options.dart';
 import 'package:taxia/providers/home/bootom_nav_bar_provider.dart';
-import 'package:taxia/providers/map/map_provider.dart';
 import 'package:taxia/providers/otp_provider.dart';
 import 'package:taxia/providers/phone_number_provider.dart';
 import 'package:taxia/providers/permission_provider.dart';
@@ -43,7 +42,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (context) => UserProvider()),
         ChangeNotifierProvider(create: (context) => LoginProvider()),
         ChangeNotifierProvider(create: (context) => BottomNavBarProvider()),
-        ChangeNotifierProvider(create: (context) => MapProvider()),
+        //ChangeNotifierProvider(create: (context) => MapProvider()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
