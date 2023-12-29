@@ -30,7 +30,7 @@ class _MapPageState extends State<MapPage> {
   bool isTuk = false;
   bool isBike = false;
 
-  String distance = 'Calculating...';
+  double distance = 0.0;
 
   double carCharge = 0.0;
   double bikeCharge = 0.0;
@@ -61,7 +61,8 @@ class _MapPageState extends State<MapPage> {
             data['rows'][0]['elements'][0]['distance']['text'];
 
         setState(() {
-          distance = distanceText;
+          distance = double.parse(distanceText.split(' ')[0].toString());
+          calculateCharges();
         });
 
         return jsonDecode(response.body);
@@ -115,21 +116,10 @@ class _MapPageState extends State<MapPage> {
 
   calculateCharges() {
     setState(() {
-      carCharge = carCharge * double.parse(distance.split(' ')[0].toString());
-      bikeCharge = bikeCharge * double.parse(distance.split(' ')[0].toString());
-      tukCharge = tukCharge * double.parse(distance.split(' ')[0].toString());
+      carCharge = carCharge * distance;
+      bikeCharge = bikeCharge * distance;
+      tukCharge = tukCharge * distance;
     });
-  }
-
-  showValues() async {
-    await getDistance(
-      startLatitude: pickupLocation!.latitude,
-      startLongitude: pickupLocation!.longitude,
-      endLatitude: endLocation!.latitude,
-      endLongitude: endLocation!.longitude,
-    );
-
-    calculateCharges();
   }
 
   Future<Uint8List> loadAsset(String path, int width) async {
@@ -272,12 +262,11 @@ class _MapPageState extends State<MapPage> {
                               Spacer(),
                               GestureDetector(
                                 onTap: () {
-                                  setState(() {
-                                    isSelectedLocation = false;
-                                  });
+                                  Navigator.pushReplacementNamed(
+                                      context, '/map');
                                 },
                                 child: Icon(
-                                  Icons.edit,
+                                  Icons.change_circle,
                                   size: 16,
                                 ),
                               ),
@@ -310,12 +299,11 @@ class _MapPageState extends State<MapPage> {
                               Spacer(),
                               GestureDetector(
                                 onTap: () {
-                                  setState(() {
-                                    isSelectedLocation = false;
-                                  });
+                                  Navigator.pushReplacementNamed(
+                                      context, '/map');
                                 },
                                 child: Icon(
-                                  Icons.edit,
+                                  Icons.change_circle,
                                   size: 16,
                                 ),
                               ),
@@ -451,7 +439,14 @@ class _MapPageState extends State<MapPage> {
                               isSelectedLocation = true;
                             });
 
-                            showValues();
+                            getDistance(
+                              startLatitude: pickupLocation!.latitude,
+                              startLongitude: pickupLocation!.longitude,
+                              endLatitude: endLocation!.latitude,
+                              endLongitude: endLocation!.longitude,
+                            );
+
+                            //calculateCharges();
                           },
                           itemClick: (Prediction prediction) {
                             endLocationController.text =
@@ -525,7 +520,7 @@ class _MapPageState extends State<MapPage> {
                                     height: 50,
                                     child: Image.asset('assets/images/car.png'),
                                   ),
-                                  Text(distance),
+                                  Text(distance.toStringAsFixed(1) + ' Km'),
                                   carCharge == 0.0
                                       ? Text(
                                           'Calculating...',
@@ -572,7 +567,7 @@ class _MapPageState extends State<MapPage> {
                                     height: 50,
                                     child: Image.asset('assets/images/tuk.png'),
                                   ),
-                                  Text(distance),
+                                  Text(distance.toStringAsFixed(1) + ' Km'),
                                   tukCharge == 0.0
                                       ? Text(
                                           'Calculating...',
@@ -620,7 +615,7 @@ class _MapPageState extends State<MapPage> {
                                     child: Image.asset(
                                         'assets/images/bikeSelect.png'),
                                   ),
-                                  Text(distance),
+                                  Text(distance.toStringAsFixed(1) + ' Km'),
                                   bikeCharge == 0.0
                                       ? Text(
                                           'Calculating...',
