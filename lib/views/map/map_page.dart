@@ -1,5 +1,8 @@
 import 'dart:async';
+import 'dart:convert';
+import 'dart:math';
 import 'dart:ui' as ui;
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
@@ -9,6 +12,7 @@ import 'package:google_places_flutter/model/prediction.dart';
 import 'package:taxia/constants/app_colors.dart';
 import 'package:taxia/global/global.dart';
 import 'package:taxia/widgets/custom_button.dart';
+import 'package:http/http.dart' as http;
 
 class MapPage extends StatefulWidget {
   const MapPage({super.key});
@@ -22,11 +26,52 @@ class _MapPageState extends State<MapPage> {
 
   bool isSelectedLocation = false;
 
+  bool isCar = true;
+  bool isTuk = false;
+  bool isBike = false;
+
+  String distance = 'Calculating...';
+
+  double carCharge = 0.0;
+  double bikeCharge = 0.0;
+  double tukCharge = 0.0;
+
   Completer<GoogleMapController> googleMapCompleterController =
       Completer<GoogleMapController>();
 
   LatLng? pickupLocation;
   LatLng? endLocation;
+
+  Future<void> getDistance(
+      {double? startLatitude,
+      double? startLongitude,
+      double? endLatitude,
+      double? endLongitude}) async {
+    String Url =
+        'https://maps.googleapis.com/maps/api/distancematrix/json?destinations=${startLatitude},${startLongitude}&origins=${endLatitude},${endLongitude}&key=AIzaSyDWlxEQU9GMmFEmZwiT3OGVVxTyc984iNY';
+
+    try {
+      var response = await http.get(
+        Uri.parse(Url),
+      );
+      if (response.statusCode == 200) {
+        Map<String, dynamic> data = jsonDecode(response.body);
+
+        String distanceText =
+            data['rows'][0]['elements'][0]['distance']['text'];
+
+        setState(() {
+          distance = distanceText;
+        });
+
+        return jsonDecode(response.body);
+      } else
+        return null;
+    } catch (e) {
+      print(e);
+      return null;
+    }
+  }
 
   List<LatLng> polylineCordinates = [];
 
@@ -43,11 +88,48 @@ class _MapPageState extends State<MapPage> {
   @override
   void initState() {
     loadCustomMaker();
+    getData();
     super.initState();
   }
 
   loadCustomMaker() async {
     customMarkerIcon = await loadAsset('assets/images/man.png', 100);
+  }
+
+  double radians(double degrees) {
+    return degrees * (pi / 180.0);
+  }
+
+  void getData() async {
+    final DocumentSnapshot ratesDoc = await FirebaseFirestore.instance
+        .collection("Admin")
+        .doc('prices')
+        .get();
+
+    setState(() {
+      carCharge = double.parse(ratesDoc.get('perBike').toString());
+      bikeCharge = double.parse(ratesDoc.get('perCar').toString());
+      tukCharge = double.parse(ratesDoc.get('perTuk').toString());
+    });
+  }
+
+  calculateCharges() {
+    setState(() {
+      carCharge = carCharge * double.parse(distance.split(' ')[0].toString());
+      bikeCharge = bikeCharge * double.parse(distance.split(' ')[0].toString());
+      tukCharge = tukCharge * double.parse(distance.split(' ')[0].toString());
+    });
+  }
+
+  showValues() async {
+    await getDistance(
+      startLatitude: pickupLocation!.latitude,
+      startLongitude: pickupLocation!.longitude,
+      endLatitude: endLocation!.latitude,
+      endLongitude: endLocation!.longitude,
+    );
+
+    calculateCharges();
   }
 
   Future<Uint8List> loadAsset(String path, int width) async {
@@ -369,7 +451,7 @@ class _MapPageState extends State<MapPage> {
                               isSelectedLocation = true;
                             });
 
-                            //print(endLocation);
+                            showValues();
                           },
                           itemClick: (Prediction prediction) {
                             endLocationController.text =
@@ -416,76 +498,144 @@ class _MapPageState extends State<MapPage> {
                     Row(
                       children: [
                         Expanded(
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: ui.Color.fromARGB(255, 246, 244, 244),
-                              border: Border.all(
-                                color: Colors.blue,
+                          child: GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                isCar = true;
+                                isBike = false;
+                                isTuk = false;
+                              });
+                            },
+                            child: Container(
+                              decoration: isCar
+                                  ? BoxDecoration(
+                                      color: Color.fromARGB(255, 246, 244, 244),
+                                      border: Border.all(
+                                        color: Colors.blue,
+                                      ),
+                                      borderRadius: BorderRadius.circular(10),
+                                    )
+                                  : BoxDecoration(),
+                              padding: EdgeInsets.all(10),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Text("Car"),
+                                  SizedBox(
+                                    height: 50,
+                                    child: Image.asset('assets/images/car.png'),
+                                  ),
+                                  Text(distance),
+                                  carCharge == 0.0
+                                      ? Text(
+                                          'Calculating...',
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        )
+                                      : Text(
+                                          'LKR ${carCharge.toStringAsFixed(2)}',
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        ),
+                                ],
                               ),
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            padding: EdgeInsets.all(10),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Text('Car'),
-                                SizedBox(
-                                  height: 50,
-                                  child: Image.asset('assets/images/car.png'),
-                                ),
-                                Text('3.2 KM'),
-                                Text(
-                                  'LKR 550.98',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
-                              ],
                             ),
                           ),
                         ),
                         Expanded(
-                          child: Container(
-                            padding: EdgeInsets.all(10),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Text('Tuk'),
-                                SizedBox(
-                                  height: 50,
-                                  child: Image.asset('assets/images/tuk.png'),
-                                ),
-                                Text('3.2 KM'),
-                                Text(
-                                  'LKR 350.98',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.w500,
+                          child: GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                isCar = false;
+                                isBike = false;
+                                isTuk = true;
+                              });
+                            },
+                            child: Container(
+                              padding: EdgeInsets.all(10),
+                              decoration: isTuk
+                                  ? BoxDecoration(
+                                      color: Color.fromARGB(255, 246, 244, 244),
+                                      border: Border.all(
+                                        color: Colors.blue,
+                                      ),
+                                      borderRadius: BorderRadius.circular(10),
+                                    )
+                                  : BoxDecoration(),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Text("Tuk"),
+                                  SizedBox(
+                                    height: 50,
+                                    child: Image.asset('assets/images/tuk.png'),
                                   ),
-                                ),
-                              ],
+                                  Text(distance),
+                                  tukCharge == 0.0
+                                      ? Text(
+                                          'Calculating...',
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        )
+                                      : Text(
+                                          'LKR ${tukCharge.toStringAsFixed(2)}',
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        ),
+                                ],
+                              ),
                             ),
                           ),
                         ),
                         Expanded(
-                          child: Container(
-                            padding: EdgeInsets.all(10),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Text('Bike'),
-                                SizedBox(
-                                  height: 50,
-                                  child: Image.asset(
-                                      'assets/images/bikeSelect.png'),
-                                ),
-                                Text('3.2 KM'),
-                                Text(
-                                  'LKR 150.98',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.w500,
+                          child: GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                isCar = false;
+                                isBike = true;
+                                isTuk = false;
+                              });
+                            },
+                            child: Container(
+                              padding: EdgeInsets.all(10),
+                              decoration: isBike
+                                  ? BoxDecoration(
+                                      color: Color.fromARGB(255, 246, 244, 244),
+                                      border: Border.all(
+                                        color: Colors.blue,
+                                      ),
+                                      borderRadius: BorderRadius.circular(10),
+                                    )
+                                  : BoxDecoration(),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Text("Bike"),
+                                  SizedBox(
+                                    height: 50,
+                                    child: Image.asset(
+                                        'assets/images/bikeSelect.png'),
                                   ),
-                                ),
-                              ],
+                                  Text(distance),
+                                  bikeCharge == 0.0
+                                      ? Text(
+                                          'Calculating...',
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        )
+                                      : Text(
+                                          'LKR ${bikeCharge.toStringAsFixed(2)}',
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        ),
+                                ],
+                              ),
                             ),
                           ),
                         ),
