@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:taxia/constants/app_colors.dart';
-import 'package:taxia/providers/otp_provider.dart';
+import 'package:taxia/providers/auth/otp_provider.dart';
 import 'package:taxia/widgets/custom_button.dart';
 import 'package:taxia/widgets/phone_textFiled.dart';
 
