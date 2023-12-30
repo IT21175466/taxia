@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:taxia/views/home_screen/home_tab.dart';
 import 'package:taxia/views/home_screen/my_car_tab.dart';
-import 'package:taxia/views/home_screen/travel_tab.dart';
 import 'package:taxia/widgets/custom_tab_indicator.dart';
 
 class MyTabBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      initialIndex: 1,
-      length: 3,
+      initialIndex: 0,
+      length: 2,
       child: Scaffold(
         appBar: AppBar(
           leading: SizedBox(),
@@ -44,23 +43,24 @@ class MyTabBar extends StatelessWidget {
             ),
             tabs: [
               Tab(
-                text: "My Car",
-              ),
-              Tab(
                 text: "Home",
               ),
               Tab(
-                text: "Travel",
+                text: "My Car",
               ),
+
+              // Tab(
+              //   text: "Travel",
+              // ),
             ],
           ),
           backgroundColor: Colors.blueAccent,
         ),
         body: TabBarView(
           children: [
-            MyCarTab(),
             HomeTab(),
-            TravelTab(),
+            MyCarTab(),
+            //TravelTab(),
           ],
         ),
       ),
