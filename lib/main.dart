@@ -6,13 +6,13 @@ import 'package:taxia/constants/app_colors.dart';
 import 'package:taxia/firebase_options.dart';
 import 'package:taxia/providers/home/bootom_nav_bar_provider.dart';
 import 'package:taxia/providers/map/map_provider.dart';
-import 'package:taxia/providers/otp_provider.dart';
-import 'package:taxia/providers/phone_number_provider.dart';
-import 'package:taxia/providers/permission_provider.dart';
+import 'package:taxia/providers/auth/otp_provider.dart';
+import 'package:taxia/providers/auth/phone_number_provider.dart';
+import 'package:taxia/providers/auth/permission_provider.dart';
 import 'package:taxia/providers/user/login_provider.dart';
 import 'package:taxia/providers/user/user_provider.dart';
 import 'package:taxia/routes/app_routes.dart';
-import 'package:taxia/providers/user_type_provider.dart';
+import 'package:taxia/providers/auth/user_type_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

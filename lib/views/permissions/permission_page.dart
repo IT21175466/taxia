@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:taxia/constants/app_colors.dart';
-import 'package:taxia/providers/permission_provider.dart';
+import 'package:taxia/providers/auth/permission_provider.dart';
 import 'package:taxia/widgets/custom_button.dart';
 
 class PermissionsPage extends StatefulWidget {

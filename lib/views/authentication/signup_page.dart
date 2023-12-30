@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:taxia/constants/app_colors.dart';
 import 'package:taxia/models/user.dart';
-import 'package:taxia/providers/otp_provider.dart';
+import 'package:taxia/providers/auth/otp_provider.dart';
 import 'package:taxia/providers/user/user_provider.dart';
 import 'package:taxia/widgets/custom_button.dart';
 import 'package:taxia/widgets/custom_textFiled.dart';

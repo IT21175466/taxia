@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:taxia/providers/home/bootom_nav_bar_provider.dart';
 import 'package:taxia/widgets/bottom_nav_bar.dart';
-import 'package:taxia/widgets/tab_bar.dart';
+import 'package:taxia/views/home_screen/tab_bar.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});

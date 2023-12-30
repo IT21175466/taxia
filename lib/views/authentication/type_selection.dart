@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:taxia/constants/app_colors.dart';
-import 'package:taxia/providers/user_type_provider.dart';
+import 'package:taxia/providers/auth/user_type_provider.dart';
 
 class UserTypeSelection extends StatefulWidget {
   const UserTypeSelection({super.key});
