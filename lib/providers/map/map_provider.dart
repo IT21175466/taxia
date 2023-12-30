@@ -1,94 +1,156 @@
-// import 'dart:async';
-// import 'package:flutter/material.dart';
-// import 'package:flutter_polyline_points/flutter_polyline_points.dart';
-// import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
+import 'package:taxia/models/rates.dart';
 
-// class MapProvider extends ChangeNotifier {
-//   Completer<GoogleMapController> googleMapCompleterController =
-//       Completer<GoogleMapController>();
+class MapProvider extends ChangeNotifier {
+  bool isLoading = false;
 
-//   LatLng? pickupLocation;
-//   LatLng? endLocation;
+  double distance = 0.0;
 
-//   List<LatLng> polylineCordinates = [];
+  double bikeCharge = 0.0;
+  double carCharge = 0.0;
+  double tukCharge = 0.0;
 
-//   //Position? currentPositionOfUser;
+  void getVehicleRates(BuildContext context) async {
+    VehicleRates? vehicleRates;
 
-//   Set<Marker> markers = Set<Marker>();
+    try {
+      final DocumentSnapshot ratesDoc = await FirebaseFirestore.instance
+          .collection("Admin")
+          .doc('prices')
+          .get();
 
-//   GoogleMapController? controllerGoogleMap;
+      vehicleRates = VehicleRates(
+        perBike: double.parse(ratesDoc.get('perBike').toString()),
+        perCar: double.parse(ratesDoc.get('perCar').toString()),
+        perTuk: double.parse(ratesDoc.get('perTuk').toString()),
+      );
 
-//   final TextEditingController pickupLocationController =
-//       TextEditingController();
-//   final TextEditingController endLocationController = TextEditingController();
+      bikeCharge = vehicleRates.perBike;
+      carCharge = vehicleRates.perCar;
+      tukCharge = vehicleRates.perTuk;
 
-//   void drowPolyline(String placeID) async {
-//     PolylinePoints polylinePoints = PolylinePoints();
+      notifyListeners();
+    } catch (error) {
+      print(error);
+    } finally {
+      isLoading = false;
+      Navigator.pushReplacementNamed(context, '/home');
+      notifyListeners();
+    }
+  }
 
-//     PolylineResult polylineResult =
-//         await polylinePoints.getRouteBetweenCoordinates(
-//       "AIzaSyDWlxEQU9GMmFEmZwiT3OGVVxTyc984iNY",
-//       PointLatLng(pickupLocation!.latitude, pickupLocation!.longitude),
-//       PointLatLng(endLocation!.latitude, endLocation!.longitude),
-//     );
+  Future<void> getDistance(
+      {double? startLatitude,
+      double? startLongitude,
+      double? endLatitude,
+      double? endLongitude}) async {
+    String Url =
+        'https://maps.googleapis.com/maps/api/distancematrix/json?destinations=${startLatitude},${startLongitude}&origins=${endLatitude},${endLongitude}&key=AIzaSyDWlxEQU9GMmFEmZwiT3OGVVxTyc984iNY';
 
-//     polylineCordinates.clear();
+    try {
+      var response = await http.get(
+        Uri.parse(Url),
+      );
+      if (response.statusCode == 200) {
+        Map<String, dynamic> data = jsonDecode(response.body);
 
-//     polylineResult.points.forEach(
-//       (PointLatLng points) => polylineCordinates.add(
-//         LatLng(points.latitude, points.longitude),
-//       ),
-//     );
-//     notifyListeners();
-//   }
+        String distanceText =
+            data['rows'][0]['elements'][0]['distance']['text'];
 
-//   // gerCurrentLiveLocationOfUser() async {
-//   //   Position positionOfUser = await Geolocator.getCurrentPosition(
-//   //       desiredAccuracy: LocationAccuracy.bestForNavigation);
+        distance = double.parse(distanceText.split(' ')[0].toString());
+        //calculateCharges();
+        notifyListeners();
 
-//   //   currentPositionOfUser = positionOfUser;
+        return jsonDecode(response.body);
+      } else
+        return null;
+    } catch (e) {
+      print(e);
+      return null;
+    }
+  }
+  // Completer<GoogleMapController> googleMapCompleterController =
+  //     Completer<GoogleMapController>();
 
-//   //   LatLng positionOfUserInLatLng = LatLng(
-//   //       currentPositionOfUser!.latitude, currentPositionOfUser!.longitude);
+  // LatLng? pickupLocation;
+  // LatLng? endLocation;
 
-//   //   CameraPosition cameraPosition =
-//   //       CameraPosition(target: positionOfUserInLatLng, zoom: 45);
+  // List<LatLng> polylineCordinates = [];
 
-//   //   controllerGoogleMap!
-//   //       .animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
-//   //   notifyListeners();
-//   // }
+  // //Position? currentPositionOfUser;
 
-//   void focusCameraOnPickupAndEndLocations() {
-//     if (pickupLocation != null && endLocation != null) {
-//       LatLngBounds bounds = LatLngBounds(
-//         southwest: LatLng(
-//           pickupLocation!.latitude < endLocation!.latitude
-//               ? pickupLocation!.latitude
-//               : endLocation!.latitude,
-//           pickupLocation!.longitude < endLocation!.longitude
-//               ? pickupLocation!.longitude
-//               : endLocation!.longitude,
-//         ),
-//         northeast: LatLng(
-//           pickupLocation!.latitude > endLocation!.latitude
-//               ? pickupLocation!.latitude
-//               : endLocation!.latitude,
-//           pickupLocation!.longitude > endLocation!.longitude
-//               ? pickupLocation!.longitude
-//               : endLocation!.longitude,
-//         ),
-//       );
+  // Set<Marker> markers = Set<Marker>();
 
-//       controllerGoogleMap!.animateCamera(
-//         CameraUpdate.newLatLngBounds(bounds, 50.0),
-//       );
-//     }
-//   }
+  // GoogleMapController? controllerGoogleMap;
 
-//   updateUI() {
-//     endLocationController.text = '';
-//     endLocation = null;
-//     notifyListeners();
-//   }
-// }
+  // final TextEditingController pickupLocationController =
+  //     TextEditingController();
+  // final TextEditingController endLocationController = TextEditingController();
+
+  // void drowPolyline(String placeID) async {
+  //   PolylinePoints polylinePoints = PolylinePoints();
+
+  //   PolylineResult polylineResult =
+  //       await polylinePoints.getRouteBetweenCoordinates(
+  //     "AIzaSyDWlxEQU9GMmFEmZwiT3OGVVxTyc984iNY",
+  //     PointLatLng(pickupLocation!.latitude, pickupLocation!.longitude),
+  //     PointLatLng(endLocation!.latitude, endLocation!.longitude),
+  //   );
+
+  //   polylineCordinates.clear();
+
+  //   polylineResult.points.forEach(
+  //     (PointLatLng points) => polylineCordinates.add(
+  //       LatLng(points.latitude, points.longitude),
+  //     ),
+  //   );
+  //   notifyListeners();
+  // }
+
+  // gerCurrentLiveLocationOfUser() async {
+  //   Position positionOfUser = await Geolocator.getCurrentPosition(
+  //       desiredAccuracy: LocationAccuracy.bestForNavigation);
+
+  //   currentPositionOfUser = positionOfUser;
+
+  //   LatLng positionOfUserInLatLng = LatLng(
+  //       currentPositionOfUser!.latitude, currentPositionOfUser!.longitude);
+
+  //   CameraPosition cameraPosition =
+  //       CameraPosition(target: positionOfUserInLatLng, zoom: 45);
+
+  //   controllerGoogleMap!
+  //       .animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
+  //   notifyListeners();
+  // }
+
+  // void focusCameraOnPickupAndEndLocations() {
+  //   if (pickupLocation != null && endLocation != null) {
+  //     LatLngBounds bounds = LatLngBounds(
+  //       southwest: LatLng(
+  //         pickupLocation!.latitude < endLocation!.latitude
+  //             ? pickupLocation!.latitude
+  //             : endLocation!.latitude,
+  //         pickupLocation!.longitude < endLocation!.longitude
+  //             ? pickupLocation!.longitude
+  //             : endLocation!.longitude,
+  //       ),
+  //       northeast: LatLng(
+  //         pickupLocation!.latitude > endLocation!.latitude
+  //             ? pickupLocation!.latitude
+  //             : endLocation!.latitude,
+  //         pickupLocation!.longitude > endLocation!.longitude
+  //             ? pickupLocation!.longitude
+  //             : endLocation!.longitude,
+  //       ),
+  //     );
+
+  //     controllerGoogleMap!.animateCamera(
+  //       CameraUpdate.newLatLngBounds(bounds, 50.0),
+  //     );
+  //   }
+  // }
+}

@@ -45,7 +45,7 @@ dependencies:
   uuid: ^3.0.4
   google_maps_flutter: ^2.5.0
   google_places_flutter: ^2.0.6
-  google_maps_webservice:
+  google_maps_webservice: ^0.0.19
   geocoding: ^2.1.1
   flutter_polyline_points: ^1.0.0
   http: ^0.13.0

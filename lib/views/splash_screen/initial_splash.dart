@@ -1,37 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:taxia/constants/app_colors.dart';
 import 'package:taxia/providers/map/map_provider.dart';
-import 'package:taxia/providers/user/login_provider.dart';
 
-class SplashScreen extends StatefulWidget {
-  final String id;
-  const SplashScreen({super.key, required this.id});
+class InitialSplash extends StatefulWidget {
+  const InitialSplash({super.key});
 
   @override
-  State<SplashScreen> createState() => _SplashScreenState();
+  State<InitialSplash> createState() => _InitialSplashState();
 }
 
-class _SplashScreenState extends State<SplashScreen> {
+class _InitialSplashState extends State<InitialSplash> {
   @override
   void initState() {
-    super.initState();
-    final loginProvider = Provider.of<LoginProvider>(context, listen: false);
-    loginProvider.checkUserIsSignUp(widget.id, context);
     final mapProvider = Provider.of<MapProvider>(context, listen: false);
     mapProvider.isLoading = true;
     mapProvider.getVehicleRates(context);
-    //ckeckLoginSaved();
-  }
-
-  ckeckLoginSaved() async {
-    final prefs = await SharedPreferences.getInstance();
-    final checkLogin = prefs.getBool('logedIn') ?? false;
-
-    checkLogin
-        ? Navigator.pushReplacementNamed(context, '/home')
-        : Navigator.pushReplacementNamed(context, '/login');
+    super.initState();
   }
 
   @override
@@ -40,6 +25,7 @@ class _SplashScreenState extends State<SplashScreen> {
     double screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
       body: Container(
+        color: AppColors.buttonColor,
         height: screenHeight,
         width: screenWidth,
         child: Column(
@@ -47,17 +33,19 @@ class _SplashScreenState extends State<SplashScreen> {
           children: [
             Spacer(),
             Text(
-              'Welcome to Taxia',
+              'Flego Taxi',
               style: TextStyle(
                 fontSize: 25,
                 fontWeight: FontWeight.w700,
-                color: AppColors.textColor,
+                color: Colors.black,
               ),
             ),
             SizedBox(
-              height: 20,
+              height: 30,
             ),
-            CircularProgressIndicator(),
+            CircularProgressIndicator(
+              color: Colors.white,
+            ),
             SizedBox(
               height: 10,
             ),
@@ -66,7 +54,7 @@ class _SplashScreenState extends State<SplashScreen> {
               style: TextStyle(
                 fontSize: 12,
                 fontWeight: FontWeight.w400,
-                color: AppColors.textColor,
+                color: Colors.white,
               ),
             ),
             Spacer(),
