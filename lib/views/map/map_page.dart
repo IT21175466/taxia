@@ -54,7 +54,7 @@ class _MapPageState extends State<MapPage> {
   }
 
   loadCustomMaker() async {
-    customMarkerIcon = await loadAsset('assets/images/man.png', 100);
+    customMarkerIcon = await loadAsset('assets/images/man.png', 250);
   }
 
   double radians(double degrees) {
