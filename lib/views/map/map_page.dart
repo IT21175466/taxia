@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'dart:math';
 import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
@@ -181,6 +182,11 @@ class _MapPageState extends State<MapPage> {
                 child: isSelectedLocation
                     ? Column(
                         children: [
+                          SizedBox(
+                            height: Platform.isIOS
+                                ? AppBar().preferredSize.height - 15
+                                : null,
+                          ),
                           Container(
                             width: screenWidth,
                             decoration: BoxDecoration(
@@ -256,6 +262,11 @@ class _MapPageState extends State<MapPage> {
                       )
                     : Column(
                         children: [
+                          SizedBox(
+                            height: Platform.isIOS
+                                ? AppBar().preferredSize.height - 15
+                                : null,
+                          ),
                           GooglePlaceAutoCompleteTextField(
                             boxDecoration: BoxDecoration(
                               color: Colors.white,
@@ -431,7 +442,7 @@ class _MapPageState extends State<MapPage> {
                 right: 0,
                 bottom: 0,
                 child: Container(
-                  padding: EdgeInsets.all(10),
+                  padding: EdgeInsets.all(15),
                   color: Colors.white,
                   child: Column(
                     children: [
@@ -603,6 +614,9 @@ class _MapPageState extends State<MapPage> {
                       ),
                       SizedBox(
                         height: 5,
+                      ),
+                      SizedBox(
+                        height: Platform.isIOS ? 15 : null,
                       ),
                     ],
                   ),

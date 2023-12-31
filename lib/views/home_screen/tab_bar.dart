@@ -4,6 +4,8 @@ import 'package:taxia/views/home_screen/my_car_tab.dart';
 import 'package:taxia/widgets/custom_tab_indicator.dart';
 
 class MyTabBar extends StatelessWidget {
+  const MyTabBar({super.key});
+
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -11,9 +13,9 @@ class MyTabBar extends StatelessWidget {
       length: 2,
       child: Scaffold(
         appBar: AppBar(
-          leading: SizedBox(),
+          leading: const SizedBox(),
           flexibleSpace: Container(
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               gradient: LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
@@ -37,11 +39,11 @@ class MyTabBar extends StatelessWidget {
             // ),
             unselectedLabelColor: Colors.grey,
             labelColor: Colors.white,
-            labelStyle: TextStyle(
+            labelStyle: const TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.w500,
             ),
-            tabs: [
+            tabs: const [
               Tab(
                 text: "Home",
               ),
@@ -56,7 +58,7 @@ class MyTabBar extends StatelessWidget {
           ),
           backgroundColor: Colors.blueAccent,
         ),
-        body: TabBarView(
+        body: const TabBarView(
           children: [
             HomeTab(),
             MyCarTab(),
