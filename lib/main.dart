@@ -51,10 +51,10 @@ class MyApp extends StatelessWidget {
           primaryColor: AppColors.primaryColor,
           dividerColor: Colors.transparent,
         ),
-        initialRoute: (showPermission && loginStatus)
-            ? '/home'
-            : (showPermission ? '/login' : '/permissions'),
-        //initialRoute: '/login',
+        // initialRoute: (showPermission && loginStatus)
+        //     ? '/home'
+        //     : (showPermission ? '/login' : '/permissions'),
+        initialRoute: '/driverRegistation',
         routes: AppRoutes.getRoutes(),
       ),
     );
