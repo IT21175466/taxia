@@ -11,6 +11,14 @@ class DriveRegistation extends StatefulWidget {
 class _DriveRegistationState extends State<DriveRegistation> {
   String? selectedGender;
   bool checkboxValue2 = false;
+  TextEditingController firstNameController = TextEditingController();
+  TextEditingController lastNameController = TextEditingController();
+  TextEditingController brithdayController = TextEditingController();
+  TextEditingController gendereController = TextEditingController();
+  TextEditingController teleController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
+  TextEditingController addressController = TextEditingController();
+  TextEditingController vehicalownerController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -82,15 +90,14 @@ class _DriveRegistationState extends State<DriveRegistation> {
                           child: Padding(
                             padding: const EdgeInsets.all(4.0),
                             child: TextFormField(
+                              controller: firstNameController,
                               decoration: InputDecoration(
                                 border: OutlineInputBorder(
-                                  
-                                  borderRadius: BorderRadius.circular(10.0), 
-                                  
+                                  borderRadius: BorderRadius.circular(10.0),
                                 ),
-                                contentPadding:const EdgeInsets.fromLTRB(15, 1, 1,1),
+                                contentPadding:
+                                    const EdgeInsets.fromLTRB(15, 1, 1, 1),
                                 labelText: 'First Name',
-                                
                               ),
                             ),
                           ),
@@ -99,13 +106,15 @@ class _DriveRegistationState extends State<DriveRegistation> {
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: TextFormField(
+                              controller: lastNameController,
                               decoration: InputDecoration(
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(
                                       10.0), // Adjust the radius as needed
                                 ), // Use OutlineInputBorder for a full border
                                 labelText: 'Last Name',
-                                contentPadding:const EdgeInsets.fromLTRB(15, 1, 1,1),
+                                contentPadding:
+                                    const EdgeInsets.fromLTRB(15, 1, 1, 1),
                               ),
                             ),
                           ),
@@ -115,15 +124,16 @@ class _DriveRegistationState extends State<DriveRegistation> {
                     Padding(
                       padding: const EdgeInsets.all(4.0),
                       child: TextFormField(
+                        controller: brithdayController,
                         keyboardType: TextInputType.number,
                         decoration: InputDecoration(
-                          contentPadding:const EdgeInsets.fromLTRB(15, 1, 1,1),
+                          contentPadding:
+                              const EdgeInsets.fromLTRB(15, 1, 1, 1),
                           border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10.0), // Adjust the radius as needed
+                            borderRadius: BorderRadius.circular(
+                                10.0), // Adjust the radius as needed
                           ), // Use OutlineInputBorder for a full border
                           labelText: 'Brithday',
-                          
-                          
                         ),
                       ),
                     ),
@@ -135,9 +145,10 @@ class _DriveRegistationState extends State<DriveRegistation> {
                             borderRadius: BorderRadius.circular(
                                 10.0), // Adjust the radius as needed
                           ),
-                          contentPadding:const EdgeInsets.fromLTRB(15, 1, 1,1),
+                          contentPadding:
+                              const EdgeInsets.fromLTRB(15, 1, 1, 1),
                         ),
-                        
+
                         value: selectedGender,
                         onChanged: (String? newValue) {
                           // Handle dropdown value change here
@@ -145,7 +156,7 @@ class _DriveRegistationState extends State<DriveRegistation> {
                             selectedGender = newValue;
                           });
                         },
-                        items: ['Male', 'Female', 'Other']
+                        items: ['Male', 'Female']
                             .map<DropdownMenuItem<String>>(
                               (String value) => DropdownMenuItem<String>(
                                 value: value,
@@ -172,13 +183,14 @@ class _DriveRegistationState extends State<DriveRegistation> {
                 padding:
                     const EdgeInsets.symmetric(vertical: 4.0, horizontal: 12),
                 child: TextFormField(
+                  controller: teleController,
                   decoration: InputDecoration(
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(
                           10.0), // Adjust the radius as needed
                     ), // Use OutlineInputBorder for a full border
                     labelText: 'Telephone Number',
-                    contentPadding:const EdgeInsets.fromLTRB(15, 1, 1,1),
+                    contentPadding: const EdgeInsets.fromLTRB(15, 1, 1, 1),
                   ),
                 ),
               ),
@@ -186,13 +198,14 @@ class _DriveRegistationState extends State<DriveRegistation> {
                 padding:
                     const EdgeInsets.symmetric(vertical: 4.0, horizontal: 12),
                 child: TextFormField(
+                  controller: emailController,
                   decoration: InputDecoration(
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(
                           10.0), // Adjust the radius as needed
                     ), // Use OutlineInputBorder for a full border
                     labelText: 'Email',
-                    contentPadding:const EdgeInsets.fromLTRB(15, 1, 1,1),
+                    contentPadding: const EdgeInsets.fromLTRB(15, 1, 1, 1),
                   ),
                 ),
               ),
@@ -200,14 +213,15 @@ class _DriveRegistationState extends State<DriveRegistation> {
                 padding:
                     const EdgeInsets.symmetric(vertical: 4.0, horizontal: 12),
                 child: TextFormField(
-                  keyboardType: TextInputType.number,
+                  controller: addressController,
+                  keyboardType: TextInputType.text,
                   decoration: InputDecoration(
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(
                           10.0), // Adjust the radius as needed
                     ), // Use OutlineInputBorder for a full border
                     labelText: 'Address',
-                    contentPadding:const EdgeInsets.fromLTRB(15, 1, 1,1),
+                    contentPadding: const EdgeInsets.fromLTRB(15, 1, 1, 1),
                   ),
                 ),
               ),
@@ -232,13 +246,16 @@ class _DriveRegistationState extends State<DriveRegistation> {
                     const EdgeInsets.symmetric(vertical: 40.0, horizontal: 12),
                 child: Center(
                   child: ElevatedButton(
+                    // onPressed: () {
+                    //   Navigator.push(
+                    //     context,
+                    //     MaterialPageRoute(
+                    //         builder: (context) =>
+                    //             UploadDument()), // Replace UploadScreen() with your desired destination screen
+                    //   );
+                    // },
                     onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) =>
-                                UploadDument()), // Replace UploadScreen() with your desired destination screen
-                      );
+                      fristcontinous();
                     },
                     style: ElevatedButton.styleFrom(
                       shape: RoundedRectangleBorder(
@@ -260,6 +277,33 @@ class _DriveRegistationState extends State<DriveRegistation> {
           ),
         ),
       ),
+    );
+  }
+
+  void fristcontinous() {
+    String firstName = firstNameController.text;
+    String lastname = lastNameController.text;
+    String brithday = brithdayController.text;
+    String telephone = teleController.text;
+    String email = emailController.text;
+    String Address = addressController.text;
+    bool vhicalowner = checkboxValue2;
+
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => UploadDument(
+          firstName: firstName,
+          lastName: lastname,
+          birthday: brithday,
+          gender: selectedGender!,
+          telephone: telephone,
+          email: email,
+          address: Address,
+          isVehicleOwner: vhicalowner,
+        ),
+      ), 
     );
   }
 }
