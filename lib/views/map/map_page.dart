@@ -12,6 +12,7 @@ import 'package:provider/provider.dart';
 import 'package:taxia/constants/app_colors.dart';
 import 'package:taxia/global/global.dart';
 import 'package:taxia/providers/map/map_provider.dart';
+import 'package:taxia/views/search_driver/search_driver.dart';
 import 'package:taxia/widgets/custom_button.dart';
 
 class MapPage extends StatefulWidget {
@@ -29,6 +30,8 @@ class _MapPageState extends State<MapPage> {
   bool isCar = true;
   bool isTuk = false;
   bool isBike = false;
+
+  String selectedVehicle = 'car';
 
   Completer<GoogleMapController> googleMapCompleterController =
       Completer<GoogleMapController>();
@@ -133,7 +136,7 @@ class _MapPageState extends State<MapPage> {
 
       setState(() {
         controllerGoogleMap!.animateCamera(
-          CameraUpdate.newLatLngBounds(bounds, 50.0),
+          CameraUpdate.newLatLngBounds(bounds, 80.0),
         );
       });
     }
@@ -157,8 +160,8 @@ class _MapPageState extends State<MapPage> {
                   polylineId: PolylineId("route"),
                   points: polylineCordinates,
                   visible: true,
-                  width: 5,
-                  color: Colors.blue,
+                  width: 3,
+                  color: ui.Color.fromARGB(255, 18, 7, 212),
                 ),
               },
               onMapCreated: (GoogleMapController mapController) {
@@ -455,6 +458,7 @@ class _MapPageState extends State<MapPage> {
                                   isCar = true;
                                   isBike = false;
                                   isTuk = false;
+                                  selectedVehicle = 'car';
                                 });
                               },
                               child: Container(
@@ -506,6 +510,7 @@ class _MapPageState extends State<MapPage> {
                                   isCar = false;
                                   isBike = false;
                                   isTuk = true;
+                                  selectedVehicle = 'tuk';
                                 });
                               },
                               child: Container(
@@ -557,6 +562,7 @@ class _MapPageState extends State<MapPage> {
                                   isCar = false;
                                   isBike = true;
                                   isTuk = false;
+                                  selectedVehicle = 'bike';
                                 });
                               },
                               child: Container(
@@ -606,11 +612,24 @@ class _MapPageState extends State<MapPage> {
                       SizedBox(
                         height: 10,
                       ),
-                      CustomButton(
-                        text: 'CONFIRM',
-                        height: 50,
-                        width: screenWidth,
-                        backgroundColor: AppColors.buttonColor,
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => SearchDriver(
+                                pickupLocation: pickupLocation!,
+                                selectedVehicle: selectedVehicle,
+                              ),
+                            ),
+                          );
+                        },
+                        child: CustomButton(
+                          text: 'CONFIRM',
+                          height: 50,
+                          width: screenWidth,
+                          backgroundColor: AppColors.buttonColor,
+                        ),
                       ),
                       SizedBox(
                         height: 5,
