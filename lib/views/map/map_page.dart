@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:math';
 import 'dart:ui' as ui;
+import 'package:firebase_auth/firebase_auth.dart' as auth;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
@@ -11,7 +12,10 @@ import 'package:google_places_flutter/model/prediction.dart';
 import 'package:provider/provider.dart';
 import 'package:taxia/constants/app_colors.dart';
 import 'package:taxia/global/global.dart';
+import 'package:taxia/models/ride.dart';
 import 'package:taxia/providers/map/map_provider.dart';
+import 'package:taxia/providers/ride/ride_provider.dart';
+import 'package:taxia/providers/user/user_provider.dart';
 import 'package:taxia/views/search_driver/search_driver.dart';
 import 'package:taxia/widgets/custom_button.dart';
 
@@ -23,6 +27,8 @@ class MapPage extends StatefulWidget {
 }
 
 class _MapPageState extends State<MapPage> {
+  auth.User? firebaseUser;
+
   late Uint8List customMarkerIcon;
 
   bool isSelectedLocation = false;
@@ -54,6 +60,7 @@ class _MapPageState extends State<MapPage> {
   @override
   void initState() {
     loadCustomMaker();
+    firebaseUser = auth.FirebaseAuth.instance.currentUser;
     super.initState();
   }
 
@@ -146,6 +153,7 @@ class _MapPageState extends State<MapPage> {
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
 
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
     return Scaffold(
       body: Consumer(
         builder:
@@ -157,11 +165,11 @@ class _MapPageState extends State<MapPage> {
               zoomControlsEnabled: false,
               polylines: {
                 Polyline(
-                  polylineId: PolylineId("route"),
+                  polylineId: const PolylineId("route"),
                   points: polylineCordinates,
                   visible: true,
                   width: 3,
-                  color: ui.Color.fromARGB(255, 18, 7, 212),
+                  color: const ui.Color.fromARGB(255, 18, 7, 212),
                 ),
               },
               onMapCreated: (GoogleMapController mapController) {
@@ -199,24 +207,24 @@ class _MapPageState extends State<MapPage> {
                                 color: Colors.blueAccent,
                               ),
                             ),
-                            padding: EdgeInsets.symmetric(
+                            padding: const EdgeInsets.symmetric(
                                 vertical: 10, horizontal: 10),
                             child: Row(
                               children: [
-                                Text(
+                                const Text(
                                   "Pickup - ",
                                   style: TextStyle(
                                     fontWeight: FontWeight.w600,
                                   ),
                                 ),
                                 Text(pickupLocationController.text),
-                                Spacer(),
+                                const Spacer(),
                                 GestureDetector(
                                   onTap: () {
                                     Navigator.pushReplacementNamed(
                                         context, '/map');
                                   },
-                                  child: Icon(
+                                  child: const Icon(
                                     Icons.change_circle,
                                     size: 16,
                                   ),
@@ -224,12 +232,12 @@ class _MapPageState extends State<MapPage> {
                               ],
                             ),
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 5,
                           ),
                           Container(
                             width: screenWidth,
-                            padding: EdgeInsets.symmetric(
+                            padding: const EdgeInsets.symmetric(
                                 vertical: 10, horizontal: 10),
                             decoration: BoxDecoration(
                               color: Colors.white,
@@ -240,20 +248,20 @@ class _MapPageState extends State<MapPage> {
                             ),
                             child: Row(
                               children: [
-                                Text(
+                                const Text(
                                   "Drop - ",
                                   style: TextStyle(
                                     fontWeight: FontWeight.w600,
                                   ),
                                 ),
                                 Text(endLocationController.text),
-                                Spacer(),
+                                const Spacer(),
                                 GestureDetector(
                                   onTap: () {
                                     Navigator.pushReplacementNamed(
                                         context, '/map');
                                   },
-                                  child: Icon(
+                                  child: const Icon(
                                     Icons.change_circle,
                                     size: 16,
                                   ),
@@ -302,10 +310,10 @@ class _MapPageState extends State<MapPage> {
                                 Marker(
                                   icon: BitmapDescriptor.fromBytes(
                                       customMarkerIcon),
-                                  markerId: MarkerId('start'),
+                                  markerId: const MarkerId('start'),
                                   position: pickupLocation!,
                                   infoWindow:
-                                      InfoWindow(title: 'Start Location'),
+                                      const InfoWindow(title: 'Start Location'),
                                 ),
                               );
 
@@ -328,11 +336,11 @@ class _MapPageState extends State<MapPage> {
                             itemBuilder:
                                 (context, index, Prediction prediction) {
                               return Container(
-                                padding: EdgeInsets.all(10),
+                                padding: const EdgeInsets.all(10),
                                 child: Row(
                                   children: [
-                                    Icon(Icons.location_on),
-                                    SizedBox(
+                                    const Icon(Icons.location_on),
+                                    const SizedBox(
                                       width: 7,
                                     ),
                                     Expanded(
@@ -345,7 +353,7 @@ class _MapPageState extends State<MapPage> {
                             },
                             isCrossBtnShown: true,
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 10,
                           ),
                           GooglePlaceAutoCompleteTextField(
@@ -383,9 +391,10 @@ class _MapPageState extends State<MapPage> {
                               markers.add(
                                 Marker(
                                   icon: BitmapDescriptor.defaultMarker,
-                                  markerId: MarkerId('end'),
+                                  markerId: const MarkerId('end'),
                                   position: endLocation!,
-                                  infoWindow: InfoWindow(title: 'End Location'),
+                                  infoWindow:
+                                      const InfoWindow(title: 'End Location'),
                                 ),
                               );
 
@@ -418,11 +427,11 @@ class _MapPageState extends State<MapPage> {
                             itemBuilder:
                                 (context, index, Prediction prediction) {
                               return Container(
-                                padding: EdgeInsets.all(10),
+                                padding: const EdgeInsets.all(10),
                                 child: Row(
                                   children: [
-                                    Icon(Icons.location_on),
-                                    SizedBox(
+                                    const Icon(Icons.location_on),
+                                    const SizedBox(
                                       width: 7,
                                     ),
                                     Expanded(
@@ -445,7 +454,7 @@ class _MapPageState extends State<MapPage> {
                 right: 0,
                 bottom: 0,
                 child: Container(
-                  padding: EdgeInsets.all(15),
+                  padding: const EdgeInsets.all(15),
                   color: Colors.white,
                   child: Column(
                     children: [
@@ -464,29 +473,28 @@ class _MapPageState extends State<MapPage> {
                               child: Container(
                                 decoration: isCar
                                     ? BoxDecoration(
-                                        color:
-                                            Color.fromARGB(255, 246, 244, 244),
+                                        color: const Color.fromARGB(
+                                            255, 246, 244, 244),
                                         border: Border.all(
                                           color: Colors.blue,
                                         ),
                                         borderRadius: BorderRadius.circular(10),
                                       )
-                                    : BoxDecoration(),
-                                padding: EdgeInsets.all(10),
+                                    : const BoxDecoration(),
+                                padding: const EdgeInsets.all(10),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
-                                    Text("Car"),
+                                    const Text("Car"),
                                     SizedBox(
                                       height: 50,
                                       child:
                                           Image.asset('assets/images/car.png'),
                                     ),
-                                    Text(mapProvider.distance
-                                            .toStringAsFixed(1) +
-                                        ' Km'),
+                                    Text(
+                                        '${mapProvider.distance.toStringAsFixed(1)} Km'),
                                     mapProvider.carCharge == 0.0
-                                        ? Text(
+                                        ? const Text(
                                             'Calculating...',
                                             style: TextStyle(
                                               fontWeight: FontWeight.w500,
@@ -494,7 +502,7 @@ class _MapPageState extends State<MapPage> {
                                           )
                                         : Text(
                                             'LKR ${(mapProvider.carCharge * mapProvider.distance).toStringAsFixed(2)}',
-                                            style: TextStyle(
+                                            style: const TextStyle(
                                               fontWeight: FontWeight.w500,
                                             ),
                                           ),
@@ -514,31 +522,30 @@ class _MapPageState extends State<MapPage> {
                                 });
                               },
                               child: Container(
-                                padding: EdgeInsets.all(10),
+                                padding: const EdgeInsets.all(10),
                                 decoration: isTuk
                                     ? BoxDecoration(
-                                        color:
-                                            Color.fromARGB(255, 246, 244, 244),
+                                        color: const Color.fromARGB(
+                                            255, 246, 244, 244),
                                         border: Border.all(
                                           color: Colors.blue,
                                         ),
                                         borderRadius: BorderRadius.circular(10),
                                       )
-                                    : BoxDecoration(),
+                                    : const BoxDecoration(),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
-                                    Text("Tuk"),
+                                    const Text("Tuk"),
                                     SizedBox(
                                       height: 50,
                                       child:
                                           Image.asset('assets/images/tuk.png'),
                                     ),
-                                    Text(mapProvider.distance
-                                            .toStringAsFixed(1) +
-                                        ' Km'),
+                                    Text(
+                                        '${mapProvider.distance.toStringAsFixed(1)} Km'),
                                     mapProvider.tukCharge == 0.0
-                                        ? Text(
+                                        ? const Text(
                                             'Calculating...',
                                             style: TextStyle(
                                               fontWeight: FontWeight.w500,
@@ -546,7 +553,7 @@ class _MapPageState extends State<MapPage> {
                                           )
                                         : Text(
                                             'LKR ${(mapProvider.tukCharge * mapProvider.distance).toStringAsFixed(2)}',
-                                            style: TextStyle(
+                                            style: const TextStyle(
                                               fontWeight: FontWeight.w500,
                                             ),
                                           ),
@@ -566,31 +573,30 @@ class _MapPageState extends State<MapPage> {
                                 });
                               },
                               child: Container(
-                                padding: EdgeInsets.all(10),
+                                padding: const EdgeInsets.all(10),
                                 decoration: isBike
                                     ? BoxDecoration(
-                                        color:
-                                            Color.fromARGB(255, 246, 244, 244),
+                                        color: const Color.fromARGB(
+                                            255, 246, 244, 244),
                                         border: Border.all(
                                           color: Colors.blue,
                                         ),
                                         borderRadius: BorderRadius.circular(10),
                                       )
-                                    : BoxDecoration(),
+                                    : const BoxDecoration(),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
-                                    Text("Bike"),
+                                    const Text("Bike"),
                                     SizedBox(
                                       height: 50,
                                       child: Image.asset(
                                           'assets/images/bikeSelect.png'),
                                     ),
-                                    Text(mapProvider.distance
-                                            .toStringAsFixed(1) +
-                                        ' Km'),
+                                    Text(
+                                        '${mapProvider.distance.toStringAsFixed(1)} Km'),
                                     mapProvider.bikeCharge == 0.0
-                                        ? Text(
+                                        ? const Text(
                                             'Calculating...',
                                             style: TextStyle(
                                               fontWeight: FontWeight.w500,
@@ -598,7 +604,7 @@ class _MapPageState extends State<MapPage> {
                                           )
                                         : Text(
                                             'LKR ${(mapProvider.bikeCharge * mapProvider.distance).toStringAsFixed(2)}',
-                                            style: TextStyle(
+                                            style: const TextStyle(
                                               fontWeight: FontWeight.w500,
                                             ),
                                           ),
@@ -609,29 +615,64 @@ class _MapPageState extends State<MapPage> {
                           ),
                         ],
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 10,
                       ),
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => SearchDriver(
-                                pickupLocation: pickupLocation!,
-                                selectedVehicle: selectedVehicle,
+                      Consumer(
+                        builder: (BuildContext context,
+                                RideProvider rideProvider, Widget? child) =>
+                            GestureDetector(
+                          onTap: () async {
+                            await userProvider.getUserData();
+
+                            double totalCharge = 0.0;
+
+                            if (selectedVehicle == 'car') {
+                              totalCharge =
+                                  mapProvider.carCharge * mapProvider.distance;
+                            } else if (selectedVehicle == 'tuk') {
+                              totalCharge =
+                                  mapProvider.tukCharge * mapProvider.distance;
+                            } else if (selectedVehicle == 'bike') {
+                              totalCharge =
+                                  mapProvider.bikeCharge * mapProvider.distance;
+                            } else {
+                              0.0;
+                            }
+
+                            rideProvider.confirmRide(
+                                Ride(
+                                  rideID: 'gf',
+                                  passengerID: firebaseUser!.uid,
+                                  picupLocation: pickupLocation!,
+                                  dropLocation: endLocation!,
+                                  vehicleType: selectedVehicle,
+                                  passengerMobileNumber:
+                                      firebaseUser!.phoneNumber!,
+                                  totalKMs: mapProvider.distance,
+                                  totalPrice: totalCharge,
+                                ),
+                                context);
+
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => SearchDriver(
+                                  pickupLocation: pickupLocation!,
+                                  selectedVehicle: selectedVehicle,
+                                ),
                               ),
-                            ),
-                          );
-                        },
-                        child: CustomButton(
-                          text: 'CONFIRM',
-                          height: 50,
-                          width: screenWidth,
-                          backgroundColor: AppColors.buttonColor,
+                            );
+                          },
+                          child: CustomButton(
+                            text: 'CONFIRM',
+                            height: 50,
+                            width: screenWidth,
+                            backgroundColor: AppColors.buttonColor,
+                          ),
                         ),
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 5,
                       ),
                       SizedBox(
