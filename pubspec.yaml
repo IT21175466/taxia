@@ -50,7 +50,7 @@ dependencies:
   flutter_polyline_points: ^1.0.0
   http: ^0.13.0
   lottie: ^2.7.0
-  google_map_marker_animation: ^0.0.1
+  firebase_database: ^10.3.8  
 
 dev_dependencies:
   flutter_test:

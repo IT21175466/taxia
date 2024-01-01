@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:math';
 import 'dart:ui' as ui;
 import 'package:firebase_auth/firebase_auth.dart' as auth;
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
@@ -27,6 +28,8 @@ class MapPage extends StatefulWidget {
 }
 
 class _MapPageState extends State<MapPage> {
+  DatabaseReference databaseReference = FirebaseDatabase.instance.ref('rides');
+
   auth.User? firebaseUser;
 
   late Uint8List customMarkerIcon;
@@ -640,19 +643,28 @@ class _MapPageState extends State<MapPage> {
                               0.0;
                             }
 
+                            databaseReference.child("a").set({
+                              "pID": firebaseUser!.uid,
+                              "picupLocationLong": pickupLocation!.longitude,
+                              "picupLocationLat": pickupLocation!.latitude,
+                              "vehicleType": selectedVehicle,
+                            });
+
                             rideProvider.confirmRide(
-                                Ride(
-                                  rideID: 'gf',
-                                  passengerID: firebaseUser!.uid,
-                                  picupLocation: pickupLocation!,
-                                  dropLocation: endLocation!,
-                                  vehicleType: selectedVehicle,
-                                  passengerMobileNumber:
-                                      firebaseUser!.phoneNumber!,
-                                  totalKMs: mapProvider.distance,
-                                  totalPrice: totalCharge,
-                                ),
-                                context);
+                              Ride(
+                                rideID: 'id',
+                                passengerID: firebaseUser!.uid,
+                                picupLocation: pickupLocation!,
+                                dropLocation: endLocation!,
+                                vehicleType: selectedVehicle,
+                                passengerMobileNumber:
+                                    firebaseUser!.phoneNumber!,
+                                totalKMs: mapProvider.distance,
+                                totalPrice: totalCharge,
+                              ),
+                              firebaseUser!.uid,
+                              context,
+                            );
 
                             Navigator.push(
                               context,
