@@ -5,13 +5,14 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:taxia/constants/app_colors.dart';
 import 'package:taxia/firebase_options.dart';
 import 'package:taxia/providers/home/bootom_nav_bar_provider.dart';
-import 'package:taxia/providers/otp_provider.dart';
-import 'package:taxia/providers/phone_number_provider.dart';
-import 'package:taxia/providers/permission_provider.dart';
+import 'package:taxia/providers/map/map_provider.dart';
+import 'package:taxia/providers/auth/otp_provider.dart';
+import 'package:taxia/providers/auth/phone_number_provider.dart';
+import 'package:taxia/providers/auth/permission_provider.dart';
 import 'package:taxia/providers/user/login_provider.dart';
 import 'package:taxia/providers/user/user_provider.dart';
 import 'package:taxia/routes/app_routes.dart';
-import 'package:taxia/providers/user_type_provider.dart';
+import 'package:taxia/providers/auth/user_type_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -42,7 +43,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (context) => UserProvider()),
         ChangeNotifierProvider(create: (context) => LoginProvider()),
         ChangeNotifierProvider(create: (context) => BottomNavBarProvider()),
-        //ChangeNotifierProvider(create: (context) => MapProvider()),
+        ChangeNotifierProvider(create: (context) => MapProvider()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
@@ -51,10 +52,11 @@ class MyApp extends StatelessWidget {
           primaryColor: AppColors.primaryColor,
           dividerColor: Colors.transparent,
         ),
-        // initialRoute: (showPermission && loginStatus)
-        //     ? '/home'
-        //     : (showPermission ? '/login' : '/permissions'),
-        initialRoute: '/driverRegistation',
+
+        initialRoute: (showPermission && loginStatus)
+            ? '/initsplash'
+            : (showPermission ? '/login' : '/permissions'),
+        //initialRoute: '/login',
         routes: AppRoutes.getRoutes(),
       ),
     );
