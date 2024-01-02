@@ -54,6 +54,7 @@ class MyApp extends StatelessWidget {
           primaryColor: AppColors.primaryColor,
           dividerColor: Colors.transparent,
         ),
+
         initialRoute: (showPermission && loginStatus)
             ? '/initsplash'
             : (showPermission ? '/login' : '/permissions'),
