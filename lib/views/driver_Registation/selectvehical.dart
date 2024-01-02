@@ -4,8 +4,7 @@ import 'package:dotted_border/dotted_border.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:taxia/views/driver_Registation/drive_condition.dart';
-import 'package:taxia/views/driver_Registation/uploadDocument.dart';
+import 'package:taxia/views/driver_registation/drive_condition.dart';
 
 class SelectVehical extends StatefulWidget {
   final String firstName;
@@ -44,7 +43,7 @@ class SelectVehical extends StatefulWidget {
 }
 
 class _SelectVehicalState extends State<SelectVehical> {
-  final ImagePicker _picker = ImagePicker();
+  //final ImagePicker _picker = ImagePicker();
 
   File? _vehicalimage;
 

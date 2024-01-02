@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:taxia/views/driver_Registation/uploadDocument.dart';
+import 'package:taxia/views/driver_registation/uploadDocument.dart';
 
 class DriveRegistation extends StatefulWidget {
   const DriveRegistation({super.key});
@@ -289,7 +289,6 @@ class _DriveRegistationState extends State<DriveRegistation> {
     String Address = addressController.text;
     bool vhicalowner = checkboxValue2;
 
-
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -303,7 +302,7 @@ class _DriveRegistationState extends State<DriveRegistation> {
           address: Address,
           isVehicleOwner: vhicalowner,
         ),
-      ), 
+      ),
     );
   }
 }

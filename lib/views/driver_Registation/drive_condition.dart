@@ -195,7 +195,7 @@ class _TeamandconditionState extends State<Teamandcondition> {
       await driversCollection.doc(newDriver.userID).set(newDriver.toMap());
       print('Data has been successfully written to Firestore.');
 
-      // after finished registation where should go enter here 
+      // after finished registation where should go enter here
     } catch (e) {
       print('Error writing to Firestore: $e');
     }

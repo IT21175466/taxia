@@ -2,7 +2,7 @@ import 'dart:io';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:taxia/views/driver_Registation/selectvehical.dart';
+import 'package:taxia/views/driver_registation/selectvehical.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
 class UploadDument extends StatefulWidget {
@@ -31,7 +31,7 @@ class UploadDument extends StatefulWidget {
 }
 
 class _UploadDumentState extends State<UploadDument> {
-  final ImagePicker _picker = ImagePicker();
+  //final ImagePicker _picker = ImagePicker();
 
   File? _faceimage;
   File? _nicfrontimage;
@@ -428,5 +428,4 @@ class _UploadDumentState extends State<UploadDument> {
       ),
     );
   }
-  
 }
