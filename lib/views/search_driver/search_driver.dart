@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -20,10 +21,31 @@ class SearchDriver extends StatefulWidget {
 }
 
 class _SearchDriverState extends State<SearchDriver> {
+  double _progressValue = 1.0;
+
+  @override
+  void initState() {
+    super.initState();
+    startTimer();
+  }
+
+  void startTimer() {
+    const duration = Duration(minutes: 2);
+    int totalSeconds = duration.inSeconds;
+
+    Timer.periodic(Duration(seconds: 1), (Timer timer) {
+      setState(() {
+        _progressValue = timer.tick / totalSeconds;
+      });
+
+      if (timer.tick >= totalSeconds) {
+        timer.cancel();
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    //double screenWidth = MediaQuery.of(context).size.width;
-
     CameraPosition camaraPlexInitialPosition = CameraPosition(
       target: LatLng(
           widget.pickupLocation.latitude, widget.pickupLocation.longitude),
@@ -43,19 +65,8 @@ class _SearchDriverState extends State<SearchDriver> {
               ),
             },
             zoomControlsEnabled: false,
-            // onMapCreated: (GoogleMapController mapController) {
-            //   if (!googleMapCompleterController.isCompleted) {
-            //     googleMapCompleterController.complete(mapController);
-            //     controllerGoogleMap = mapController;
-            //   }
-            // },
             initialCameraPosition: camaraPlexInitialPosition,
           ),
-          // Container(
-          //                   height: Platform.isIOS
-          //                       ? AppBar().preferredSize.height - 15
-          //                       : null,
-          //                 ),
           Positioned(
             left: 20,
             top: AppBar().preferredSize.height - 15,
@@ -78,7 +89,6 @@ class _SearchDriverState extends State<SearchDriver> {
               ),
             ),
           ),
-
           Positioned(
             right: 20,
             top: AppBar().preferredSize.height - 15,
@@ -104,7 +114,6 @@ class _SearchDriverState extends State<SearchDriver> {
               ),
             ),
           ),
-
           Positioned(
             left: 0,
             right: 0,
@@ -163,23 +172,50 @@ class _SearchDriverState extends State<SearchDriver> {
                         ),
                       ),
                       SizedBox(
-                        width: 10,
+                        width: 20,
                       ),
-                      Text(
-                        "Searching drivers....",
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w600,
+                      Expanded(
+                        child: Container(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: [
+                                  Text(
+                                    "Searching drivers....",
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                  Spacer(),
+                                  SizedBox(
+                                    height: 60,
+                                    width: 60,
+                                    child: lottie.Lottie.asset(
+                                      'assets/animations/search_anim.json',
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              LinearProgressIndicator(
+                                minHeight: 8,
+                                borderRadius: BorderRadius.circular(5),
+                                value: _progressValue,
+                                backgroundColor:
+                                    const Color.fromARGB(255, 222, 222, 222),
+                                valueColor:
+                                    AlwaysStoppedAnimation<Color>(Colors.blue),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
-                      Spacer(),
-                      SizedBox(
-                        height: 50,
-                        width: 50,
-                        child: lottie.Lottie.asset(
-                          'assets/animations/search_anim.json',
-                        ),
-                      ),
+
+                      // Spacer(),
                     ],
                   ),
                   SizedBox(

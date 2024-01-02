@@ -9,6 +9,7 @@ import 'package:taxia/providers/map/map_provider.dart';
 import 'package:taxia/providers/auth/otp_provider.dart';
 import 'package:taxia/providers/auth/phone_number_provider.dart';
 import 'package:taxia/providers/auth/permission_provider.dart';
+import 'package:taxia/providers/ride/ride_provider.dart';
 import 'package:taxia/providers/user/login_provider.dart';
 import 'package:taxia/providers/user/user_provider.dart';
 import 'package:taxia/routes/app_routes.dart';
@@ -44,6 +45,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (context) => LoginProvider()),
         ChangeNotifierProvider(create: (context) => BottomNavBarProvider()),
         ChangeNotifierProvider(create: (context) => MapProvider()),
+        ChangeNotifierProvider(create: (context) => RideProvider()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

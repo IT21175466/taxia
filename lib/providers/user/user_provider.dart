@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart' as auth;
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:taxia/models/user.dart';
@@ -70,6 +71,27 @@ class UserProvider extends ChangeNotifier {
         );
         notifyListeners();
       }
+    }
+  }
+
+  getUserData() async {
+    try {
+      auth.User? user = auth.FirebaseAuth.instance.currentUser;
+
+      final DocumentSnapshot usersDoc = await FirebaseFirestore.instance
+          .collection("Users")
+          .doc(user!.uid)
+          .get();
+
+      if (usersDoc.exists) {
+        print(usersDoc);
+        return User.fromJson(usersDoc.data() as Map<String, dynamic>);
+      }
+    } catch (e) {
+      print(e);
+    } finally {
+      loading = false;
+      notifyListeners();
     }
   }
 
