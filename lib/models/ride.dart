@@ -6,7 +6,6 @@ class Ride {
   final LatLng picupLocation;
   final LatLng dropLocation;
   final String vehicleType;
-  final String passengerMobileNumber;
   final double totalKMs;
   final double totalPrice;
 
@@ -16,7 +15,6 @@ class Ride {
     required this.picupLocation,
     required this.dropLocation,
     required this.vehicleType,
-    required this.passengerMobileNumber,
     required this.totalKMs,
     required this.totalPrice,
   });
@@ -34,7 +32,6 @@ class Ride {
         'longitude': dropLocation.longitude,
       },
       'vehicleType': vehicleType,
-      'passengerMobileNumber': passengerMobileNumber,
       'totalKMs': totalKMs,
       'totalPrice': totalPrice,
     };
@@ -53,7 +50,6 @@ class Ride {
         json['dropLocation']['longitude'],
       ),
       vehicleType: json['vehicleType'],
-      passengerMobileNumber: json['passengerMobileNumber'],
       totalKMs: json['totalKMs'],
       totalPrice: json['totalPrice'],
     );

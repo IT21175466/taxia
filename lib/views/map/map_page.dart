@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:math';
 import 'dart:ui' as ui;
-import 'package:firebase_auth/firebase_auth.dart' as auth;
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -11,6 +10,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_places_flutter/google_places_flutter.dart';
 import 'package:google_places_flutter/model/prediction.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:taxia/constants/app_colors.dart';
 import 'package:taxia/global/global.dart';
 import 'package:taxia/models/ride.dart';
@@ -19,6 +19,7 @@ import 'package:taxia/providers/ride/ride_provider.dart';
 import 'package:taxia/providers/user/user_provider.dart';
 import 'package:taxia/views/search_driver/search_driver.dart';
 import 'package:taxia/widgets/custom_button.dart';
+import 'package:uuid/uuid.dart';
 
 class MapPage extends StatefulWidget {
   const MapPage({super.key});
@@ -29,8 +30,6 @@ class MapPage extends StatefulWidget {
 
 class _MapPageState extends State<MapPage> {
   DatabaseReference databaseReference = FirebaseDatabase.instance.ref('rides');
-
-  auth.User? firebaseUser;
 
   late Uint8List customMarkerIcon;
 
@@ -63,9 +62,17 @@ class _MapPageState extends State<MapPage> {
   @override
   void initState() {
     loadCustomMaker();
-    firebaseUser = auth.FirebaseAuth.instance.currentUser;
-    getVehicleRates();
+    getUserID();
     super.initState();
+  }
+
+  String? userID = '';
+
+  getUserID() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      userID = prefs.getString('userID');
+    });
   }
 
   getVehicleRates() {
@@ -650,8 +657,10 @@ class _MapPageState extends State<MapPage> {
                               0.0;
                             }
 
-                            databaseReference.child("a").set({
-                              "pID": firebaseUser!.uid,
+                            String customID = Uuid().v4();
+
+                            databaseReference.child(customID).set({
+                              "pID": userID,
                               "picupLocationLong": pickupLocation!.longitude,
                               "picupLocationLat": pickupLocation!.latitude,
                               "vehicleType": selectedVehicle,
@@ -660,16 +669,14 @@ class _MapPageState extends State<MapPage> {
                             rideProvider.confirmRide(
                               Ride(
                                 rideID: 'id',
-                                passengerID: firebaseUser!.uid,
+                                passengerID: userID!,
                                 picupLocation: pickupLocation!,
                                 dropLocation: endLocation!,
                                 vehicleType: selectedVehicle,
-                                passengerMobileNumber:
-                                    firebaseUser!.phoneNumber!,
                                 totalKMs: mapProvider.distance,
                                 totalPrice: totalCharge,
                               ),
-                              firebaseUser!.uid,
+                              userID!,
                               context,
                             );
 

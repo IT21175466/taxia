@@ -30,7 +30,7 @@ class _SearchDriverState extends State<SearchDriver> {
   }
 
   void startTimer() {
-    const duration = Duration(minutes: 2);
+    const duration = Duration(minutes: 1);
     int totalSeconds = duration.inSeconds;
 
     Timer.periodic(Duration(seconds: 1), (Timer timer) {
