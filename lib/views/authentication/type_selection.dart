@@ -21,11 +21,11 @@ class _UserTypeSelectionState extends State<UserTypeSelection> {
           style: TextStyle(
             fontSize: 23,
             fontWeight: FontWeight.w500,
-            color: Colors.white,
+            color: AppColors.textColor,
           ),
         ),
         centerTitle: true,
-        backgroundColor: AppColors.appBarColor,
+        backgroundColor: AppColors.accentColor,
       ),
       body: Container(
         padding: EdgeInsets.symmetric(horizontal: 20),
@@ -40,7 +40,7 @@ class _UserTypeSelectionState extends State<UserTypeSelection> {
                 onTap: () {
                   userTypeProvider.isDriver = true;
                   userTypeProvider.isPassenger = false;
-                  userTypeProvider.changeUserType();
+                  userTypeProvider.changeUserType(context);
                 },
                 child: Container(
                   height: 250,
@@ -102,7 +102,7 @@ class _UserTypeSelectionState extends State<UserTypeSelection> {
                 onTap: () async {
                   userTypeProvider.isPassenger = true;
                   userTypeProvider.isDriver = false;
-                  userTypeProvider.changeUserType();
+                  userTypeProvider.changeUserType(context);
                 },
                 child: Container(
                   height: 250,

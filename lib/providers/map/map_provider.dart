@@ -2,7 +2,9 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:taxia/models/rates.dart';
+import 'package:taxia/views/splash_screen/splash_screen.dart';
 
 class MapProvider extends ChangeNotifier {
   bool isLoading = false;
@@ -12,6 +14,15 @@ class MapProvider extends ChangeNotifier {
   double bikeCharge = 0.0;
   double carCharge = 0.0;
   double tukCharge = 0.0;
+
+  String? id = '';
+
+  getUserID() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    id = prefs.getString('userID');
+    notifyListeners();
+  }
 
   void getVehicleRates(BuildContext context) async {
     VehicleRates? vehicleRates;
@@ -32,12 +43,15 @@ class MapProvider extends ChangeNotifier {
       carCharge = vehicleRates.perCar;
       tukCharge = vehicleRates.perTuk;
 
+      await getUserID();
+
       notifyListeners();
     } catch (error) {
       print(error);
     } finally {
       isLoading = false;
-      Navigator.pushReplacementNamed(context, '/home');
+      Navigator.pushReplacement(context,
+          MaterialPageRoute(builder: (context) => SplashScreen(id: id!)));
       notifyListeners();
     }
   }

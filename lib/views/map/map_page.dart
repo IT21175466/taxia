@@ -64,7 +64,14 @@ class _MapPageState extends State<MapPage> {
   void initState() {
     loadCustomMaker();
     firebaseUser = auth.FirebaseAuth.instance.currentUser;
+    getVehicleRates();
     super.initState();
+  }
+
+  getVehicleRates() {
+    final mapProvider = Provider.of<MapProvider>(context, listen: false);
+    mapProvider.isLoading = true;
+    mapProvider.getVehicleRates(context);
   }
 
   loadCustomMaker() async {

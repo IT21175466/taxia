@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:taxia/constants/app_colors.dart';
 import 'package:taxia/models/user.dart';
-import 'package:taxia/providers/auth/otp_provider.dart';
 import 'package:taxia/providers/user/user_provider.dart';
 import 'package:taxia/widgets/custom_button.dart';
 import 'package:taxia/widgets/custom_textFiled.dart';
-import 'package:taxia/widgets/user_role_dropdown.dart';
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
@@ -21,9 +20,24 @@ class _SignUpPageState extends State<SignUpPage> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController provinceController = TextEditingController();
   final TextEditingController districtController = TextEditingController();
+
+  String? userID = '';
+
+  getUserID() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      userID = prefs.getString('userID');
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getUserID();
+  }
+
   @override
   Widget build(BuildContext context) {
-    final otpProvider = Provider.of<OTPProvider>(context, listen: false);
     double screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
@@ -54,12 +68,7 @@ class _SignUpPageState extends State<SignUpPage> {
                     controller: firstNameController, labelText: "First Name"),
                 CustomTextField(
                     controller: lastNameController, labelText: "Last Name"),
-                UserRoleDropdown(
-                  selectedRole: userProvider.selectedRole,
-                  onChanged: (value) {
-                    userProvider.selectedRole = value!;
-                  },
-                ),
+
                 CustomTextField(
                     controller: emailController, labelText: "Email"),
                 CustomTextField(
@@ -85,28 +94,20 @@ class _SignUpPageState extends State<SignUpPage> {
                           content: Text("Please enter all required details!"),
                         ),
                       );
-                    } else if (userProvider.selectedRole ==
-                        "Select Your Role") {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text("Please select your Role!"),
-                        ),
-                      );
                     } else {
                       // userProvider.userID =
                       //     userProvider.generateRandomId().toString();
                       userProvider.loading = true;
 
                       final addUser = User(
-                          userID: otpProvider.userId,
+                          userID: userID!,
                           firstName: firstNameController.text,
                           lastName: lastNameController.text,
                           email: emailController.text,
                           province: provinceController.text,
                           district: districtController.text);
 
-                      userProvider.addUserToFirebase(
-                          addUser, context, otpProvider.userId);
+                      userProvider.addUserToFirebase(addUser, context, userID!);
                     }
                   },
                   child: userProvider.loading

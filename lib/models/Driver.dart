@@ -1,5 +1,5 @@
 class Driver {
-  late String userID;
+  late String driverID;
   late String firstName;
   late String lastName;
   late String birthday;
@@ -21,7 +21,7 @@ class Driver {
 
   // Constructor
   Driver({
-    required this.userID,
+    required this.driverID,
     required this.firstName,
     required this.lastName,
     required this.birthday,
@@ -45,7 +45,7 @@ class Driver {
   // Convert the object to a Map for Firestore
   Map<String, dynamic> toMap() {
     return {
-      'userID': userID,
+      'driverID': driverID,
       'firstName': firstName,
       'lastName': lastName,
       'birthday': birthday,
@@ -68,9 +68,9 @@ class Driver {
   }
 
   // Create an instance of the model from Firestore data
-  factory Driver.fromMap(Map<String, dynamic> map, String documentId) {
+  factory Driver.fromMap(Map<String, dynamic> map, String driverID) {
     return Driver(
-      userID: documentId,
+      driverID: driverID,
       firstName: map['firstName'],
       lastName: map['lastName'],
       birthday: map['birthday'],

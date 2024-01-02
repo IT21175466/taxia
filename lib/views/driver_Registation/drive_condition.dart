@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../models/Driver.dart';
 
@@ -46,10 +48,10 @@ class Teamandcondition extends StatefulWidget {
     required this.vehicalimg,
   });
 
-  Future<void> saveDriver(Driver driver) async {
+  Future<void> saveDriver(Driver driver, String dID) async {
     CollectionReference driversCollection =
         FirebaseFirestore.instance.collection('Drivers');
-    await driversCollection.doc(driver.userID).set(driver.toMap());
+    await driversCollection.doc(dID).set(driver.toMap());
   }
 
   @override
@@ -57,6 +59,22 @@ class Teamandcondition extends StatefulWidget {
 }
 
 class _TeamandconditionState extends State<Teamandcondition> {
+  User? firebaseUser;
+  String? driverID = '';
+
+  getUserID() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      driverID = prefs.getString('userID');
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getUserID();
+  }
+
   ListTileTitleAlignment? titleAlignment;
   bool checkboxValue2 = false;
   @override
@@ -168,7 +186,7 @@ class _TeamandconditionState extends State<Teamandcondition> {
 
   Future<void> submitalldata() async {
     Driver newDriver = Driver(
-      userID: 'uniqueUserId',
+      driverID: driverID!,
       firstName: widget.firstName,
       lastName: widget.lastName,
       birthday: widget.birthday,
@@ -192,7 +210,7 @@ class _TeamandconditionState extends State<Teamandcondition> {
     CollectionReference driversCollection =
         FirebaseFirestore.instance.collection('Drivers');
     try {
-      await driversCollection.doc(newDriver.userID).set(newDriver.toMap());
+      await driversCollection.doc(driverID).set(newDriver.toMap());
       print('Data has been successfully written to Firestore.');
 
       // after finished registation where should go enter here
