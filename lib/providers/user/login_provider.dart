@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:taxia/views/home_screen/home_page.dart';
 
 class LoginProvider extends ChangeNotifier {
   checkUserIsSignUp(String userID, BuildContext context) async {
@@ -19,21 +18,20 @@ class LoginProvider extends ChangeNotifier {
       DocumentSnapshot docSnapshotUsers = await documentRefUsers.get();
 
       if (docSnapshot.exists) {
-        print("Document exists: ${docSnapshot.data()}");
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => HomePage(),
-          ),
-        );
+        print("Driver document exists: ${docSnapshot.data()}");
+        notifyListeners();
+
+        Navigator.pushReplacementNamed(
+            context, '/home'); // Navigate to driver home page , shoud modify
+
         notifyListeners();
       } else if (docSnapshotUsers.exists) {
-        print("Document exists: ${docSnapshot.data()}");
+        print("User document exists: ${docSnapshot.data()}");
         Navigator.pushReplacementNamed(context, '/home');
         notifyListeners();
       } else {
-        print("Document does not exist");
-        Navigator.pushReplacementNamed(context, '/signup');
+        print("Any document does not exist");
+        Navigator.pushReplacementNamed(context, '/typeselection');
         notifyListeners();
       }
     } catch (error) {

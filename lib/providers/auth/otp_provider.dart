@@ -14,7 +14,7 @@ class OTPProvider extends ChangeNotifier {
 
       FirebaseAuth.instance.signInWithCredential(credential).then(
         (UserCredential userCredential) async {
-          userId = userCredential.user!.uid;
+          userId = await userCredential.user!.uid;
           print("User ID: $userId");
           setUserID(userId);
 
