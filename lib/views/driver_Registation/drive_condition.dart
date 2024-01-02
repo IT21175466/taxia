@@ -210,7 +210,12 @@ class _TeamandconditionState extends State<Teamandcondition> {
     CollectionReference driversCollection =
         FirebaseFirestore.instance.collection('Drivers');
     try {
-      await driversCollection.doc(driverID).set(newDriver.toMap());
+      await driversCollection
+          .doc(driverID)
+          .set(newDriver.toMap())
+          .then((value) {
+        Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
+      });
       print('Data has been successfully written to Firestore.');
 
       // after finished registation where should go enter here
