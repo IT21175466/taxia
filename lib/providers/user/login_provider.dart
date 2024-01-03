@@ -21,8 +21,8 @@ class LoginProvider extends ChangeNotifier {
         print("Driver document exists: ${docSnapshot.data()}");
         notifyListeners();
 
-        Navigator.pushReplacementNamed(
-            context, '/home'); // Navigate to driver home page , shoud modify
+        Navigator.pushReplacementNamed(context,
+            '/drivermap'); // Navigate to driver home page , shoud modify
 
         notifyListeners();
       } else if (docSnapshotUsers.exists) {

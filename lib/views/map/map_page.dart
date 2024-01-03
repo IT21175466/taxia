@@ -33,6 +33,8 @@ class _MapPageState extends State<MapPage> {
 
   late Uint8List customMarkerIcon;
 
+  String rideID = '';
+
   bool isSelectedLocation = false;
 
   bool isCar = true;
@@ -63,7 +65,14 @@ class _MapPageState extends State<MapPage> {
   void initState() {
     loadCustomMaker();
     getUserID();
+    generateRideID();
     super.initState();
+  }
+
+  generateRideID() {
+    setState(() {
+      rideID = Uuid().v4();
+    });
   }
 
   String? userID = '';
@@ -657,9 +666,8 @@ class _MapPageState extends State<MapPage> {
                               0.0;
                             }
 
-                            String customID = Uuid().v4();
-
-                            databaseReference.child(customID).set({
+                            databaseReference.child(rideID).set({
+                              "rideID": rideID,
                               "pID": userID,
                               "picupLocationLong": pickupLocation!.longitude,
                               "picupLocationLat": pickupLocation!.latitude,
@@ -668,7 +676,7 @@ class _MapPageState extends State<MapPage> {
 
                             rideProvider.confirmRide(
                               Ride(
-                                rideID: 'id',
+                                rideID: rideID,
                                 passengerID: userID!,
                                 picupLocation: pickupLocation!,
                                 dropLocation: endLocation!,
@@ -678,6 +686,7 @@ class _MapPageState extends State<MapPage> {
                               ),
                               userID!,
                               context,
+                              rideID,
                             );
 
                             Navigator.push(
@@ -686,6 +695,8 @@ class _MapPageState extends State<MapPage> {
                                 builder: (context) => SearchDriver(
                                   pickupLocation: pickupLocation!,
                                   selectedVehicle: selectedVehicle,
+                                  userID: userID!,
+                                  rideID: rideID,
                                 ),
                               ),
                             );

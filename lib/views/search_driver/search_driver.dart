@@ -1,12 +1,17 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:lottie/lottie.dart' as lottie;
 import 'package:taxia/constants/app_colors.dart';
 
 class SearchDriver extends StatefulWidget {
+  final String rideID;
+  final String userID;
   final LatLng pickupLocation;
   final String selectedVehicle;
 
@@ -14,6 +19,8 @@ class SearchDriver extends StatefulWidget {
     super.key,
     required this.pickupLocation,
     required this.selectedVehicle,
+    required this.userID,
+    required this.rideID,
   });
 
   @override
@@ -21,7 +28,10 @@ class SearchDriver extends StatefulWidget {
 }
 
 class _SearchDriverState extends State<SearchDriver> {
+  bool isLoading = false;
   double _progressValue = 1.0;
+  final db = FirebaseFirestore.instance;
+  Timer? timer;
 
   @override
   void initState() {
@@ -33,15 +43,41 @@ class _SearchDriverState extends State<SearchDriver> {
     const duration = Duration(minutes: 1);
     int totalSeconds = duration.inSeconds;
 
-    Timer.periodic(Duration(seconds: 1), (Timer timer) {
+    timer = Timer.periodic(Duration(seconds: 1), (Timer t) {
       setState(() {
-        _progressValue = timer.tick / totalSeconds;
+        _progressValue = t.tick / totalSeconds;
       });
 
-      if (timer.tick >= totalSeconds) {
-        timer.cancel();
+      if (t.tick >= totalSeconds) {
+        t.cancel();
+        timer =
+            null; // Set timer to null after canceling to indicate that it's not active.
       }
     });
+  }
+
+  void cancelRide() async {
+    try {
+      DatabaseReference databaseReference =
+          await FirebaseDatabase.instance.ref('rides');
+      db
+          .collection("Rides")
+          .doc(widget.userID)
+          .collection("Users")
+          .doc(widget.rideID)
+          .delete();
+
+      databaseReference.child(widget.rideID).remove();
+      print("Sucessfully Deleted!");
+    } catch (e) {
+      print(e);
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
+      timer!.cancel();
+      Navigator.pushReplacementNamed(context, '/map');
+    }
   }
 
   @override
@@ -94,7 +130,8 @@ class _SearchDriverState extends State<SearchDriver> {
             top: AppBar().preferredSize.height - 15,
             child: GestureDetector(
               onTap: () {
-                //Navigator.pop(context);
+                isLoading = true;
+                cancelRide();
               },
               child: Container(
                 padding: EdgeInsets.symmetric(horizontal: 20, vertical: 8),
@@ -103,13 +140,15 @@ class _SearchDriverState extends State<SearchDriver> {
                   borderRadius: BorderRadius.circular(15),
                 ),
                 child: Center(
-                  child: Text(
-                    "Cancel",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
+                  child: isLoading
+                      ? CircularProgressIndicator()
+                      : Text(
+                          "Cancel",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
                 ),
               ),
             ),

@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:taxia/global/global.dart';
-import 'package:taxia/widgets/custom_button.dart';
+import 'package:taxia/widgets/custom_info_window.dart';
 
 class GetRequestsMap extends StatefulWidget {
   const GetRequestsMap({super.key});
@@ -29,6 +29,13 @@ class _GetRequestsMapState extends State<GetRequestsMap> {
 
   GoogleMapController? controllerGoogleMap;
 
+  @override
+  void initState() {
+    super.initState();
+    isLoading = true;
+    gerCurrentLiveLocationOfUser();
+  }
+
   gerCurrentLiveLocationOfUser() async {
     Position positionOfUser = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.bestForNavigation);
@@ -49,11 +56,10 @@ class _GetRequestsMapState extends State<GetRequestsMap> {
     });
   }
 
+  DatabaseReference databaseReference = FirebaseDatabase.instance.ref('rides');
+
   //Get user pickup request distance
   void getPickupData() {
-    DatabaseReference databaseReference =
-        FirebaseDatabase.instance.ref('rides');
-
     databaseReference.onValue.listen((event) {
       DataSnapshot dataSnapshot = event.snapshot;
       Map<dynamic, dynamic>? values = dataSnapshot.value as Map?;
@@ -100,18 +106,18 @@ class _GetRequestsMapState extends State<GetRequestsMap> {
         });
         print(distance);
 
-        //if(distance < 5.0){
-
-        await markers.add(
-          Marker(
-            icon: BitmapDescriptor.defaultMarker,
-            markerId: MarkerId('$endLatitude'),
-            position: LatLng(endLatitude!, endLongitude!),
-            infoWindow: InfoWindow(title: ' Location'),
-          ),
-        );
-
-        //}
+        if (distance < 10.0) {
+          await markers.add(
+            Marker(
+              icon: BitmapDescriptor.defaultMarker,
+              markerId: MarkerId('$endLatitude'),
+              position: LatLng(endLatitude!, endLongitude!),
+              infoWindow: customInfoWindow(context, distance),
+            ),
+          );
+        } else {
+          print("no");
+        }
 
         return jsonDecode(response.body);
       } else
@@ -123,16 +129,8 @@ class _GetRequestsMapState extends State<GetRequestsMap> {
   }
 
   @override
-  void initState() {
-    super.initState();
-    isLoading = true;
-    gerCurrentLiveLocationOfUser();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    // double screenWidth = MediaQuery.of(context).size.width;
-    // double screenHeight = MediaQuery.of(context).size.height;
+    double screenHeight = MediaQuery.of(context).size.height;
 
     return Scaffold(
       body: Stack(
@@ -140,44 +138,40 @@ class _GetRequestsMapState extends State<GetRequestsMap> {
           GoogleMap(
             myLocationEnabled: true,
             myLocationButtonEnabled: true,
+            mapToolbarEnabled: false,
             markers: markers,
             zoomControlsEnabled: false,
-            polylines: {
-              Polyline(
-                polylineId: const PolylineId("route"),
-                visible: true,
-                width: 3,
-                color: const Color.fromARGB(255, 18, 7, 212),
-              ),
-            },
             onMapCreated: (GoogleMapController mapController) {
               if (!googleMapCompleterController.isCompleted) {
                 googleMapCompleterController.complete(mapController);
                 controllerGoogleMap = mapController;
               }
-
-              // mapProvider.controllerGoogleMap = mapController;
-
-              // mapProvider.googleMapCompleterController
-              //     .complete(mapProvider.controllerGoogleMap);
             },
             initialCameraPosition: googlePlexInitialPosition,
           ),
-          Positioned(
-            top: 30,
-            left: 10,
-            child: GestureDetector(
-              onTap: () {
-                getPickupData();
-              },
-              child: CustomButton(
-                text: 'online',
-                height: 55,
-                width: 100,
-                backgroundColor: Colors.white,
-              ),
-            ),
-          ),
+          isLoading
+              ? Positioned(
+                  top: screenHeight / 3,
+                  left: 30,
+                  right: 30,
+                  child: Container(
+                    padding: EdgeInsets.all(20),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(5),
+                    ),
+                    child: Row(
+                      children: [
+                        CircularProgressIndicator(),
+                        SizedBox(
+                          width: 20,
+                        ),
+                        Text("Loading your location...."),
+                      ],
+                    ),
+                  ),
+                )
+              : SizedBox(),
         ],
       ),
     );

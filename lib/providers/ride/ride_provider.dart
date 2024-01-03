@@ -6,21 +6,16 @@ class RideProvider extends ChangeNotifier {
   final db = FirebaseFirestore.instance;
   bool loading = false;
 
-  confirmRide(Ride ride, String userID, BuildContext context) async {
+  confirmRide(
+      Ride ride, String userID, BuildContext context, String rideID) async {
     try {
       db
           .collection("Rides")
           .doc(userID)
           .collection('Users')
-          .doc()
+          .doc(rideID)
           .set(ride.toJson())
           .then((value) async {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text("Searching Drivers...."),
-          ),
-        );
-
         loading = false;
         notifyListeners();
       });
