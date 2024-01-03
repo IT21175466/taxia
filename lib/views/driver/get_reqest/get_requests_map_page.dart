@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:taxia/global/global.dart';
+import 'package:taxia/widgets/custom_button.dart';
 import 'package:taxia/widgets/custom_info_window.dart';
 
 class GetRequestsMap extends StatefulWidget {
@@ -21,7 +22,7 @@ class _GetRequestsMapState extends State<GetRequestsMap> {
 
   Position? driverLocation;
 
-  bool isLoading = false;
+  bool isLoading = true;
 
   double distance = 0.00;
 
@@ -32,8 +33,18 @@ class _GetRequestsMapState extends State<GetRequestsMap> {
   @override
   void initState() {
     super.initState();
-    isLoading = true;
     gerCurrentLiveLocationOfUser();
+  }
+
+  void _startListening() {
+    databaseReference.onValue.listen((event) {
+      // Handle the added data here
+      getPickupData();
+
+      print('New data added with key');
+
+      // You can perform additional actions here
+    });
   }
 
   gerCurrentLiveLocationOfUser() async {
@@ -60,6 +71,7 @@ class _GetRequestsMapState extends State<GetRequestsMap> {
 
   //Get user pickup request distance
   void getPickupData() {
+    markers.clear();
     databaseReference.onValue.listen((event) {
       DataSnapshot dataSnapshot = event.snapshot;
       Map<dynamic, dynamic>? values = dataSnapshot.value as Map?;
@@ -172,6 +184,21 @@ class _GetRequestsMapState extends State<GetRequestsMap> {
                   ),
                 )
               : SizedBox(),
+          Positioned(
+            left: 30,
+            right: 30,
+            child: GestureDetector(
+              onTap: () {
+                _startListening();
+              },
+              child: CustomButton(
+                text: "Online",
+                height: 50,
+                width: 150,
+                backgroundColor: Colors.white,
+              ),
+            ),
+          ),
         ],
       ),
     );

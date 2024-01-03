@@ -76,7 +76,7 @@ class _SearchDriverState extends State<SearchDriver> {
         isLoading = false;
       });
       timer!.cancel();
-      Navigator.pushReplacementNamed(context, '/map');
+      Navigator.pop(context);
     }
   }
 
