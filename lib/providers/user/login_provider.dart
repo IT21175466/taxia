@@ -2,6 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class LoginProvider extends ChangeNotifier {
+  String vehicleType = '';
+
   checkUserIsSignUp(String userID, BuildContext context) async {
     try {
       FirebaseFirestore firestore = FirebaseFirestore.instance;
@@ -18,11 +20,20 @@ class LoginProvider extends ChangeNotifier {
       DocumentSnapshot docSnapshotUsers = await documentRefUsers.get();
 
       if (docSnapshot.exists) {
-        print("Driver document exists: ${docSnapshot.data()}");
+        print("Driver document exists");
         notifyListeners();
 
-        Navigator.pushReplacementNamed(
-            context, '/home'); // Navigate to driver home page , shoud modify
+        final DocumentSnapshot documentRef = await FirebaseFirestore.instance
+            .collection("Drivers")
+            .doc(userID)
+            .get();
+
+        vehicleType = documentRef.get('whichVehicle').toString();
+        print('vehicleType $vehicleType');
+        notifyListeners();
+
+        Navigator.pushReplacementNamed(context,
+            '/drivermap'); // Navigate to driver home page , shoud modify
 
         notifyListeners();
       } else if (docSnapshotUsers.exists) {

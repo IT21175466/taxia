@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -59,7 +58,6 @@ class Teamandcondition extends StatefulWidget {
 }
 
 class _TeamandconditionState extends State<Teamandcondition> {
-  User? firebaseUser;
   String? driverID = '';
 
   getUserID() async {
@@ -210,7 +208,12 @@ class _TeamandconditionState extends State<Teamandcondition> {
     CollectionReference driversCollection =
         FirebaseFirestore.instance.collection('Drivers');
     try {
-      await driversCollection.doc(driverID).set(newDriver.toMap());
+      await driversCollection
+          .doc(driverID)
+          .set(newDriver.toMap())
+          .then((value) {
+        Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
+      });
       print('Data has been successfully written to Firestore.');
 
       // after finished registation where should go enter here
