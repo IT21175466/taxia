@@ -1,13 +1,17 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:math';
+import 'dart:ui' as ui;
+import 'package:custom_info_window/custom_info_window.dart';
+import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:taxia/constants/app_colors.dart';
 import 'package:taxia/global/global.dart';
 import 'package:taxia/widgets/custom_button.dart';
-import 'package:taxia/widgets/custom_info_window.dart';
 
 class GetRequestsMap extends StatefulWidget {
   const GetRequestsMap({super.key});
@@ -20,9 +24,13 @@ class _GetRequestsMapState extends State<GetRequestsMap> {
   Completer<GoogleMapController> googleMapCompleterController =
       Completer<GoogleMapController>();
 
+  CustomInfoWindowController customInfoWindowController =
+      CustomInfoWindowController();
+
   Position? driverLocation;
 
   bool isLoading = true;
+  bool isOnline = false;
 
   double distance = 0.00;
 
@@ -30,20 +38,18 @@ class _GetRequestsMapState extends State<GetRequestsMap> {
 
   GoogleMapController? controllerGoogleMap;
 
+  late Uint8List customMarkerIcon;
+
   @override
   void initState() {
     super.initState();
     gerCurrentLiveLocationOfUser();
+    loadCustomMaker();
   }
 
   void _startListening() {
     databaseReference.onValue.listen((event) {
-      // Handle the added data here
       getPickupData();
-
-      print('New data added with key');
-
-      // You can perform additional actions here
     });
   }
 
@@ -113,18 +119,71 @@ class _GetRequestsMapState extends State<GetRequestsMap> {
         String distanceText =
             data['rows'][0]['elements'][0]['distance']['text'];
 
+        String durationText =
+            data['rows'][0]['elements'][0]['duration']['text'];
+
         setState(() {
           distance = double.parse(distanceText.split(' ')[0].toString());
         });
-        print(distance);
+        //print(response.body);
 
         if (distance < 10.0) {
           await markers.add(
             Marker(
-              icon: BitmapDescriptor.defaultMarker,
+              icon: BitmapDescriptor.fromBytes(
+                customMarkerIcon,
+              ),
               markerId: MarkerId('$endLatitude'),
               position: LatLng(endLatitude!, endLongitude!),
-              infoWindow: customInfoWindow(context, distance),
+              //infoWindow: customInfoWindow(context, distance),
+              onTap: () {
+                customInfoWindowController.addInfoWindow!(
+                  Container(
+                    padding: EdgeInsets.symmetric(
+                      vertical: 5,
+                      horizontal: 10,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      border: Border.all(
+                        color: AppColors.accentColor,
+                      ),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Column(
+                      children: [
+                        Row(
+                          children: [
+                            Text(
+                              "In $distance KM",
+                              style: TextStyle(
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                            Spacer(),
+                            Text(
+                              durationText,
+                              style: TextStyle(
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        CustomButton(
+                          text: 'Tap to get',
+                          height: 40,
+                          width: 200,
+                          backgroundColor: AppColors.buttonColor,
+                        ),
+                      ],
+                    ),
+                  ),
+                  LatLng(endLatitude, endLongitude),
+                );
+              },
             ),
           );
         } else {
@@ -140,9 +199,39 @@ class _GetRequestsMapState extends State<GetRequestsMap> {
     }
   }
 
+  void toggleOnlineOffline() {
+    setState(() {
+      isOnline = !isOnline;
+      if (isOnline) {
+        _startListening();
+      } else {
+        Navigator.pushReplacementNamed(context, ("/drivermap"));
+      }
+    });
+  }
+
+  loadCustomMaker() async {
+    customMarkerIcon = await loadAsset('assets/images/man.png', 250);
+  }
+
+  double radians(double degrees) {
+    return degrees * (pi / 180.0);
+  }
+
+  Future<Uint8List> loadAsset(String path, int width) async {
+    ByteData data = await rootBundle.load(path);
+    ui.Codec codec = await ui.instantiateImageCodec(data.buffer.asUint8List(),
+        targetWidth: width);
+    ui.FrameInfo fi = await codec.getNextFrame();
+    return (await fi.image.toByteData(format: ui.ImageByteFormat.png))!
+        .buffer
+        .asUint8List();
+  }
+
   @override
   Widget build(BuildContext context) {
     double screenHeight = MediaQuery.of(context).size.height;
+    String buttonText = isOnline ? 'Go Offline' : 'Go Online';
 
     return Scaffold(
       body: Stack(
@@ -157,9 +246,19 @@ class _GetRequestsMapState extends State<GetRequestsMap> {
               if (!googleMapCompleterController.isCompleted) {
                 googleMapCompleterController.complete(mapController);
                 controllerGoogleMap = mapController;
+                customInfoWindowController.googleMapController = mapController;
               }
             },
             initialCameraPosition: googlePlexInitialPosition,
+            onTap: (argument) {
+              customInfoWindowController.hideInfoWindow!();
+            },
+          ),
+          CustomInfoWindow(
+            height: 100,
+            width: 200,
+            offset: 35,
+            controller: customInfoWindowController,
           ),
           isLoading
               ? Positioned(
@@ -187,15 +286,16 @@ class _GetRequestsMapState extends State<GetRequestsMap> {
           Positioned(
             left: 30,
             right: 30,
+            top: AppBar().preferredSize.height - 15,
             child: GestureDetector(
               onTap: () {
-                _startListening();
+                toggleOnlineOffline();
               },
               child: CustomButton(
-                text: "Online",
+                text: buttonText,
                 height: 50,
                 width: 150,
-                backgroundColor: Colors.white,
+                backgroundColor: AppColors.primaryColor,
               ),
             ),
           ),
