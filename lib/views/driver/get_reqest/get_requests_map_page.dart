@@ -9,8 +9,10 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:provider/provider.dart';
 import 'package:taxia/constants/app_colors.dart';
 import 'package:taxia/global/global.dart';
+import 'package:taxia/providers/user/login_provider.dart';
 import 'package:taxia/widgets/custom_button.dart';
 
 class GetRequestsMap extends StatefulWidget {
@@ -40,11 +42,14 @@ class _GetRequestsMapState extends State<GetRequestsMap> {
 
   late Uint8List customMarkerIcon;
 
+  LoginProvider? loginProvider;
+
   @override
   void initState() {
     super.initState();
     gerCurrentLiveLocationOfUser();
     loadCustomMaker();
+    loginProvider = Provider.of<LoginProvider>(context, listen: false);
   }
 
   void _startListening() {
@@ -88,12 +93,17 @@ class _GetRequestsMapState extends State<GetRequestsMap> {
 
           if (rideData is Map &&
               rideData.containsKey('picupLocationLat') &&
-              rideData.containsKey('picupLocationLong')) {
-            print('picupLocationLat: ${rideData['picupLocationLat']}');
-            print('picupLocationLong: ${rideData['picupLocationLong']}');
+              rideData.containsKey('picupLocationLong') &&
+              rideData.containsKey('vehicleType')) {
+            // print('picupLocationLat: ${rideData['picupLocationLat']}');
+            // print('picupLocationLong: ${rideData['picupLocationLong']}');
 
-            getDistance(driverLocation!.latitude, driverLocation!.longitude,
-                rideData['picupLocationLat'], rideData['picupLocationLong']);
+            getDistance(
+                driverLocation!.latitude,
+                driverLocation!.longitude,
+                rideData['picupLocationLat'],
+                rideData['picupLocationLong'],
+                rideData['vehicleType']);
           } else {
             print('Invalid data structure or missing values for key $key');
           }
@@ -104,8 +114,12 @@ class _GetRequestsMapState extends State<GetRequestsMap> {
     });
   }
 
-  Future<void> getDistance(double? startLatitude, double? startLongitude,
-      double? endLatitude, double? endLongitude) async {
+  Future<void> getDistance(
+      double? startLatitude,
+      double? startLongitude,
+      double? endLatitude,
+      double? endLongitude,
+      String requiredVehicleType) async {
     String Url =
         'https://maps.googleapis.com/maps/api/distancematrix/json?destinations=${startLatitude},${startLongitude}&origins=${endLatitude},${endLongitude}&key=AIzaSyDWlxEQU9GMmFEmZwiT3OGVVxTyc984iNY';
 
@@ -125,67 +139,73 @@ class _GetRequestsMapState extends State<GetRequestsMap> {
         setState(() {
           distance = double.parse(distanceText.split(' ')[0].toString());
         });
-        //print(response.body);
+        print(requiredVehicleType);
+        print(loginProvider!.vehicleType);
 
         if (distance < 10.0) {
-          await markers.add(
-            Marker(
-              icon: BitmapDescriptor.fromBytes(
-                customMarkerIcon,
-              ),
-              markerId: MarkerId('$endLatitude'),
-              position: LatLng(endLatitude!, endLongitude!),
-              //infoWindow: customInfoWindow(context, distance),
-              onTap: () {
-                customInfoWindowController.addInfoWindow!(
-                  Container(
-                    padding: EdgeInsets.symmetric(
-                      vertical: 5,
-                      horizontal: 10,
-                    ),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      border: Border.all(
-                        color: AppColors.accentColor,
+          if (requiredVehicleType == loginProvider!.vehicleType) {
+            //Match Vehicle Type
+            await markers.add(
+              Marker(
+                icon: BitmapDescriptor.fromBytes(
+                  customMarkerIcon,
+                ),
+                markerId: MarkerId('$endLatitude'),
+                position: LatLng(endLatitude!, endLongitude!),
+                //infoWindow: customInfoWindow(context, distance),
+                onTap: () {
+                  customInfoWindowController.addInfoWindow!(
+                    Container(
+                      padding: EdgeInsets.symmetric(
+                        vertical: 5,
+                        horizontal: 10,
                       ),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Column(
-                      children: [
-                        Row(
-                          children: [
-                            Text(
-                              "In $distance KM",
-                              style: TextStyle(
-                                fontWeight: FontWeight.w500,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        border: Border.all(
+                          color: AppColors.accentColor,
+                        ),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Column(
+                        children: [
+                          Row(
+                            children: [
+                              Text(
+                                "In $distance KM",
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w500,
+                                ),
                               ),
-                            ),
-                            Spacer(),
-                            Text(
-                              durationText,
-                              style: TextStyle(
-                                fontWeight: FontWeight.w500,
+                              Spacer(),
+                              Text(
+                                durationText,
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w500,
+                                ),
                               ),
-                            ),
-                          ],
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        CustomButton(
-                          text: 'Tap to get',
-                          height: 40,
-                          width: 200,
-                          backgroundColor: AppColors.buttonColor,
-                        ),
-                      ],
+                            ],
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          CustomButton(
+                            text: 'Tap to get',
+                            height: 40,
+                            width: 200,
+                            backgroundColor: AppColors.buttonColor,
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                  LatLng(endLatitude, endLongitude),
-                );
-              },
-            ),
-          );
+                    LatLng(endLatitude, endLongitude),
+                  );
+                },
+              ),
+            );
+          } else {
+            print("Vehicle type not matched!");
+          }
         } else {
           print("no");
         }
