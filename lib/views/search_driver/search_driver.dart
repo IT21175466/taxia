@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:lottie/lottie.dart' as lottie;
 import 'package:taxia/constants/app_colors.dart';
+import 'package:taxia/views/accepted_ride/ride_accepted.dart';
 
 class SearchDriver extends StatefulWidget {
   final String rideID;
@@ -28,6 +29,8 @@ class SearchDriver extends StatefulWidget {
 }
 
 class _SearchDriverState extends State<SearchDriver> {
+  DatabaseReference databaseReference = FirebaseDatabase.instance.ref('rides');
+
   bool isLoading = false;
   double _progressValue = 1.0;
   final db = FirebaseFirestore.instance;
@@ -37,6 +40,29 @@ class _SearchDriverState extends State<SearchDriver> {
   void initState() {
     super.initState();
     startTimer();
+
+    databaseReference.onChildRemoved.listen((event) {
+      DataSnapshot dataSnapshot = event.snapshot;
+
+      Map<dynamic, dynamic>? values = dataSnapshot.value as Map?;
+
+      if (values != null && values.containsKey('rideID')) {
+        String removedRideID = values['rideID'];
+
+        if (removedRideID == widget.rideID) {
+          _navigateToAnotherScreen();
+        }
+      }
+    });
+  }
+
+  void _navigateToAnotherScreen() {
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => RideAccepted(),
+      ),
+    );
   }
 
   void startTimer() {
@@ -54,6 +80,12 @@ class _SearchDriverState extends State<SearchDriver> {
             null; // Set timer to null after canceling to indicate that it's not active.
       }
     });
+  }
+
+  @override
+  void dispose() {
+    timer!.cancel();
+    super.dispose();
   }
 
   void cancelRide() async {

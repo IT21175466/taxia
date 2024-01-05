@@ -13,6 +13,7 @@ import 'package:provider/provider.dart';
 import 'package:taxia/constants/app_colors.dart';
 import 'package:taxia/global/global.dart';
 import 'package:taxia/providers/user/login_provider.dart';
+import 'package:taxia/views/driver/accept_ride/accept_ride.dart';
 import 'package:taxia/widgets/custom_button.dart';
 
 class GetRequestsMap extends StatefulWidget {
@@ -103,7 +104,14 @@ class _GetRequestsMapState extends State<GetRequestsMap> {
                 driverLocation!.longitude,
                 rideData['picupLocationLat'],
                 rideData['picupLocationLong'],
-                rideData['vehicleType']);
+                rideData['vehicleType'],
+                rideData['dropLocationLat'],
+                rideData['dropLocationLong'],
+                rideData['vehicleType'],
+                rideData['totalPrice'],
+                rideData['totalKm'],
+                rideData['rideID'],
+                rideData['pID']);
           } else {
             print('Invalid data structure or missing values for key $key');
           }
@@ -115,11 +123,19 @@ class _GetRequestsMapState extends State<GetRequestsMap> {
   }
 
   Future<void> getDistance(
-      double? startLatitude,
-      double? startLongitude,
-      double? endLatitude,
-      double? endLongitude,
-      String requiredVehicleType) async {
+    double? startLatitude,
+    double? startLongitude,
+    double? endLatitude,
+    double? endLongitude,
+    String requiredVehicleType,
+    double? dropLoationLat,
+    double? dropLoationLon,
+    String? selectedVehicle,
+    double? totalPrice,
+    double? totalKM,
+    String? rideID,
+    String? passengerID,
+  ) async {
     String Url =
         'https://maps.googleapis.com/maps/api/distancematrix/json?destinations=${startLatitude},${startLongitude}&origins=${endLatitude},${endLongitude}&key=AIzaSyDWlxEQU9GMmFEmZwiT3OGVVxTyc984iNY';
 
@@ -139,8 +155,8 @@ class _GetRequestsMapState extends State<GetRequestsMap> {
         setState(() {
           distance = double.parse(distanceText.split(' ')[0].toString());
         });
-        print(requiredVehicleType);
-        print(loginProvider!.vehicleType);
+        print(response.body);
+        //print(loginProvider!.vehicleType);
 
         if (distance < 10.0) {
           if (requiredVehicleType == loginProvider!.vehicleType) {
@@ -189,11 +205,38 @@ class _GetRequestsMapState extends State<GetRequestsMap> {
                           SizedBox(
                             height: 10,
                           ),
-                          CustomButton(
-                            text: 'Tap to get',
-                            height: 40,
-                            width: 200,
-                            backgroundColor: AppColors.buttonColor,
+                          GestureDetector(
+                            onTap: () async {
+                              //remove marker
+
+                              //accept the ride request
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => AcceptRide(
+                                    rideID: rideID!,
+                                    passengerID: passengerID!,
+                                    pickupLatLon:
+                                        LatLng(startLatitude!, startLongitude!),
+                                    driverLatLon:
+                                        LatLng(endLatitude, endLongitude),
+                                    distance: distance,
+                                    timeDuration: durationText,
+                                    dropLoationLat: dropLoationLat!,
+                                    dropLoationLon: dropLoationLon!,
+                                    selectedVehicle: selectedVehicle!,
+                                    totalPrice: totalPrice!,
+                                    totalKM: totalKM!,
+                                  ),
+                                ),
+                              );
+                            },
+                            child: CustomButton(
+                              text: 'More',
+                              height: 40,
+                              width: 200,
+                              backgroundColor: AppColors.buttonColor,
+                            ),
                           ),
                         ],
                       ),
