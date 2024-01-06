@@ -60,13 +60,17 @@ class _SearchDriverState extends State<SearchDriver> {
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
-        builder: (context) => RideAccepted(),
+        builder: (context) => RideAccepted(
+          rideID: widget.rideID,
+          userID: widget.userID,
+          pickupLocation: widget.pickupLocation,
+        ),
       ),
     );
   }
 
   void startTimer() {
-    const duration = Duration(minutes: 1);
+    const duration = Duration(minutes: 2);
     int totalSeconds = duration.inSeconds;
 
     timer = Timer.periodic(Duration(seconds: 1), (Timer t) {

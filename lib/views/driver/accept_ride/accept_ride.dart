@@ -7,6 +7,7 @@ import 'package:taxia/constants/app_colors.dart';
 import 'package:geocoding/geocoding.dart';
 
 class AcceptRide extends StatefulWidget {
+  final String driverID;
   final String rideID;
   final String passengerID;
   final LatLng pickupLatLon;
@@ -32,6 +33,7 @@ class AcceptRide extends StatefulWidget {
     required this.selectedVehicle,
     required this.totalPrice,
     required this.totalKM,
+    required this.driverID,
   });
 
   @override
@@ -215,6 +217,7 @@ class _AcceptRideState extends State<AcceptRide> {
                   GestureDetector(
                     onTap: () async {
                       await databaseReference.child(widget.rideID).set({
+                        "driverID": widget.driverID,
                         "rideID": widget.rideID,
                         "pID": widget.passengerID,
                         "picupLocationLong": widget.pickupLatLon.longitude,

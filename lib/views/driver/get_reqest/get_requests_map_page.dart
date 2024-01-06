@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:taxia/constants/app_colors.dart';
 import 'package:taxia/global/global.dart';
 import 'package:taxia/providers/user/login_provider.dart';
@@ -24,6 +25,16 @@ class GetRequestsMap extends StatefulWidget {
 }
 
 class _GetRequestsMapState extends State<GetRequestsMap> {
+  String? driverId = '';
+
+  getUserID() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    setState(() {
+      driverId = prefs.getString('userID');
+    });
+  }
+
   Completer<GoogleMapController> googleMapCompleterController =
       Completer<GoogleMapController>();
 
@@ -49,6 +60,7 @@ class _GetRequestsMapState extends State<GetRequestsMap> {
   void initState() {
     super.initState();
     gerCurrentLiveLocationOfUser();
+    getUserID();
     loadCustomMaker();
     loginProvider = Provider.of<LoginProvider>(context, listen: false);
   }
@@ -227,6 +239,7 @@ class _GetRequestsMapState extends State<GetRequestsMap> {
                                     selectedVehicle: selectedVehicle!,
                                     totalPrice: totalPrice!,
                                     totalKM: totalKM!,
+                                    driverID: driverId!,
                                   ),
                                 ),
                               );
