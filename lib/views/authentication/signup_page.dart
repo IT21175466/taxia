@@ -20,6 +20,7 @@ class _SignUpPageState extends State<SignUpPage> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController provinceController = TextEditingController();
   final TextEditingController districtController = TextEditingController();
+  final TextEditingController phoneController = TextEditingController();
 
   String? userID = '';
 
@@ -70,6 +71,9 @@ class _SignUpPageState extends State<SignUpPage> {
                     controller: lastNameController, labelText: "Last Name"),
 
                 CustomTextField(
+                    controller: phoneController, labelText: "Phone Number"),
+
+                CustomTextField(
                     controller: emailController, labelText: "Email"),
                 CustomTextField(
                     controller: provinceController, labelText: "Province"),
@@ -88,6 +92,7 @@ class _SignUpPageState extends State<SignUpPage> {
                         lastNameController.text.isEmpty ||
                         emailController.text.isEmpty ||
                         provinceController.text.isEmpty ||
+                        phoneController.text.isEmpty ||
                         districtController.text.isEmpty) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
@@ -100,12 +105,14 @@ class _SignUpPageState extends State<SignUpPage> {
                       userProvider.loading = true;
 
                       final addUser = User(
-                          userID: userID!,
-                          firstName: firstNameController.text,
-                          lastName: lastNameController.text,
-                          email: emailController.text,
-                          province: provinceController.text,
-                          district: districtController.text);
+                        userID: userID!,
+                        firstName: firstNameController.text,
+                        lastName: lastNameController.text,
+                        email: emailController.text,
+                        province: provinceController.text,
+                        district: districtController.text,
+                        phoneNum: phoneController.text,
+                      );
 
                       userProvider.addUserToFirebase(addUser, context, userID!);
                     }

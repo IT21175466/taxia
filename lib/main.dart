@@ -58,7 +58,7 @@ class MyApp extends StatelessWidget {
         initialRoute: (showPermission && loginStatus)
             ? '/initsplash'
             : (showPermission ? '/login' : '/permissions'),
-        //initialRoute: '/driverregistation',
+        //initialRoute: '/top',
         routes: AppRoutes.getRoutes(),
       ),
     );

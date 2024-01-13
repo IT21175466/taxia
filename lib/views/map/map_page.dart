@@ -427,7 +427,15 @@ class _MapPageState extends State<MapPage> {
                               // Call the drawPolyline method
                               drowPolyline('start-end');
 
-                              focusCameraOnPickupAndEndLocations();
+                              CameraPosition cameraPosition = CameraPosition(
+                                  target: pickupLocation!, zoom: 13);
+
+                              controllerGoogleMap!.animateCamera(
+                                  CameraUpdate.newCameraPosition(
+                                      cameraPosition));
+                              print(pickupLocation);
+
+                              //focusCameraOnPickupAndEndLocations();
                               setState(() {
                                 isSelectedLocation = true;
                               });
@@ -671,7 +679,13 @@ class _MapPageState extends State<MapPage> {
                               "pID": userID,
                               "picupLocationLong": pickupLocation!.longitude,
                               "picupLocationLat": pickupLocation!.latitude,
+                              "dropLocationLong": endLocation!.longitude,
+                              "dropLocationLat": endLocation!.latitude,
                               "vehicleType": selectedVehicle,
+                              "totalKm": mapProvider.distance.toDouble(),
+                              "totalPrice": totalCharge,
+                              "pickupAddress": pickupLocationController.text,
+                              "dropAddress": endLocationController.text,
                             });
 
                             rideProvider.confirmRide(
@@ -683,6 +697,8 @@ class _MapPageState extends State<MapPage> {
                                 vehicleType: selectedVehicle,
                                 totalKMs: mapProvider.distance,
                                 totalPrice: totalCharge,
+                                dropAddresss: endLocationController.text,
+                                pickupAddress: pickupLocationController.text,
                               ),
                               userID!,
                               context,

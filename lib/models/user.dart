@@ -5,6 +5,7 @@ class User {
   final String email;
   final String province;
   final String district;
+  final String phoneNum;
 
   User({
     required this.userID,
@@ -13,6 +14,7 @@ class User {
     required this.email,
     required this.province,
     required this.district,
+    required this.phoneNum,
   });
 
   factory User.fromJson(Map<String, dynamic> json) {
@@ -23,6 +25,7 @@ class User {
       email: json['Email'].toString(),
       province: json['Province'].toString(),
       district: json['District'].toString(),
+      phoneNum: json['PhoneNumber'].toString(),
     );
   }
 
@@ -34,6 +37,7 @@ class User {
       'Email': email,
       'Province': province,
       'District': district,
+      'PhoneNumber': phoneNum,
     };
   }
 }
