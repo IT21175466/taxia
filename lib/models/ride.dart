@@ -8,6 +8,8 @@ class Ride {
   final String vehicleType;
   final double totalKMs;
   final double totalPrice;
+  final String pickupAddress;
+  final String dropAddresss;
 
   Ride({
     required this.rideID,
@@ -17,6 +19,8 @@ class Ride {
     required this.vehicleType,
     required this.totalKMs,
     required this.totalPrice,
+    required this.dropAddresss,
+    required this.pickupAddress,
   });
 
   Map<String, dynamic> toJson() {
@@ -34,6 +38,8 @@ class Ride {
       'vehicleType': vehicleType,
       'totalKMs': totalKMs,
       'totalPrice': totalPrice,
+      'pickAddress': pickupAddress,
+      'dropAddress': dropAddresss,
     };
   }
 
@@ -52,6 +58,8 @@ class Ride {
       vehicleType: json['vehicleType'],
       totalKMs: json['totalKMs'],
       totalPrice: json['totalPrice'],
+      pickupAddress: json['pickAddress'],
+      dropAddresss: json['dropAddress'],
     );
   }
 }

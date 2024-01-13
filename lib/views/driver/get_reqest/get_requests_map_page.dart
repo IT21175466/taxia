@@ -112,6 +112,8 @@ class _GetRequestsMapState extends State<GetRequestsMap> {
             // print('picupLocationLong: ${rideData['picupLocationLong']}');
 
             getDistance(
+                rideData['pickupAddress'],
+                rideData['dropAddress'],
                 driverLocation!.latitude,
                 driverLocation!.longitude,
                 rideData['picupLocationLat'],
@@ -121,7 +123,7 @@ class _GetRequestsMapState extends State<GetRequestsMap> {
                 rideData['dropLocationLong'],
                 rideData['vehicleType'],
                 rideData['totalPrice'],
-                rideData['totalKm'],
+                double.parse(rideData['totalKm'].toString()),
                 rideData['rideID'],
                 rideData['pID']);
           } else {
@@ -135,6 +137,8 @@ class _GetRequestsMapState extends State<GetRequestsMap> {
   }
 
   Future<void> getDistance(
+    String? pickAddress,
+    String? dropAddress,
     double? startLatitude,
     double? startLongitude,
     double? endLatitude,
@@ -240,6 +244,8 @@ class _GetRequestsMapState extends State<GetRequestsMap> {
                                     totalPrice: totalPrice!,
                                     totalKM: totalKM!,
                                     driverID: driverId!,
+                                    pickAddress: pickAddress!,
+                                    dropAddress: dropAddress!,
                                   ),
                                 ),
                               );

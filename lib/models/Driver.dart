@@ -68,27 +68,27 @@ class Driver {
   }
 
   // Create an instance of the model from Firestore data
-  factory Driver.fromMap(Map<String, dynamic> map, String driverID) {
+  factory Driver.fromJson(Map<String, dynamic> json) {
     return Driver(
-      driverID: driverID,
-      firstName: map['firstName'],
-      lastName: map['lastName'],
-      birthday: map['birthday'],
-      gender: map['gender'],
-      telephone: map['telephone'],
-      email: map['email'],
-      address: map['address'],
-      isVehicleOwner: map['isVehicleOwner'],
-      profileImg: map['profileImg'],
-      nicFront: map['nicFront'],
-      nicBack: map['nicBack'],
-      licenseFront: map['licenseFront'],
-      licenseBack: map['licenseBack'],
-      whichVehicle: map['whichVehicle'],
-      vehicleNumber: map['vehicleNumber'],
-      brand: map['brand'],
-      model: map['model'],
-      vehicleImg: map['vehicleImg'],
+      driverID: json['driverID'],
+      firstName: json['firstName'],
+      lastName: json['lastName'],
+      birthday: json['birthday'],
+      gender: json['gender'],
+      telephone: json['telephone'],
+      email: json['email'],
+      address: json['address'],
+      isVehicleOwner: json['isVehicleOwner'],
+      profileImg: json['profileImg'],
+      nicFront: json['nicFront'],
+      nicBack: json['nicBack'],
+      licenseFront: json['licenseFront'],
+      licenseBack: json['licenseBack'],
+      whichVehicle: json['whichVehicle'],
+      vehicleNumber: json['vehicleNumber'],
+      brand: json['brand'],
+      model: json['model'],
+      vehicleImg: json['vehicleImg'],
     );
   }
 }

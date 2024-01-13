@@ -5,6 +5,7 @@ import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:taxia/constants/app_colors.dart';
 import 'package:geocoding/geocoding.dart';
+import 'package:taxia/views/driver/goto_passenger_location/goto_passenger.dart';
 
 class AcceptRide extends StatefulWidget {
   final String driverID;
@@ -19,6 +20,8 @@ class AcceptRide extends StatefulWidget {
   final String selectedVehicle;
   final double totalPrice;
   final double totalKM;
+  final String pickAddress;
+  final String dropAddress;
 
   const AcceptRide({
     super.key,
@@ -34,6 +37,8 @@ class AcceptRide extends StatefulWidget {
     required this.totalPrice,
     required this.totalKM,
     required this.driverID,
+    required this.pickAddress,
+    required this.dropAddress,
   });
 
   @override
@@ -58,8 +63,6 @@ class _AcceptRideState extends State<AcceptRide> {
   @override
   void initState() {
     super.initState();
-    print(widget.driverLatLon);
-    print(widget.pickupLatLon);
     getAddresses();
     drowMap();
   }
@@ -73,18 +76,6 @@ class _AcceptRideState extends State<AcceptRide> {
           ", " +
           placemarks.reversed.first.country.toString();
     });
-  }
-
-  void deleteRequest() async {
-    try {
-      DatabaseReference databaseReference =
-          await FirebaseDatabase.instance.ref('rides');
-
-      databaseReference.child(widget.rideID).remove();
-      print("Sucessfully Deleted! : ${widget.rideID}");
-    } catch (e) {
-      print(e);
-    }
   }
 
   void drowMap() async {
@@ -129,6 +120,22 @@ class _AcceptRideState extends State<AcceptRide> {
       );
     });
   }
+
+  // checkRideAvailability(String rID) async {
+  //   DatabaseReference databaseReferenceRides =
+  //       await FirebaseDatabase.instance.ref('rides');
+
+  //   databaseReferenceRides.child(rID).onValue.listen((event) {
+  //     DataSnapshot dataSnapshot = event.snapshot;
+  //     Map<dynamic, dynamic>? values = dataSnapshot.value as Map?;
+
+  //     if (values != null) {
+  //       print('Data available under "rides" node.');
+  //     } else {
+  //       print('No data found under "rides" node.');
+  //     }
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -216,21 +223,57 @@ class _AcceptRideState extends State<AcceptRide> {
 
                   GestureDetector(
                     onTap: () async {
-                      await databaseReference.child(widget.rideID).set({
-                        "driverID": widget.driverID,
-                        "rideID": widget.rideID,
-                        "pID": widget.passengerID,
-                        "picupLocationLong": widget.pickupLatLon.longitude,
-                        "picupLocationLat": widget.pickupLatLon.latitude,
-                        "dropLocationLong": widget.dropLoationLon,
-                        "dropLocationLat": widget.dropLoationLat,
-                        "vehicleType": widget.selectedVehicle,
-                        "totalKm": widget.distance,
-                        "totalPrice": widget.totalPrice,
-                        "driverLocationLat": widget.driverLatLon.latitude,
-                        "driverLocationLon": widget.driverLatLon.longitude,
-                      });
-                      deleteRequest();
+                      DatabaseReference databaseReferenceRides =
+                          await FirebaseDatabase.instance.ref('rides');
+
+                      DatabaseEvent event = await databaseReferenceRides
+                          .child(widget.rideID)
+                          .once();
+
+                      if (event.snapshot.value != null) {
+                        print('Data available under "rides" node.');
+                        await databaseReference
+                            .child(widget.driverID)
+                            .child(widget.rideID)
+                            .set({
+                          "driverID": widget.driverID,
+                          "rideID": widget.rideID,
+                          "pID": widget.passengerID,
+                          "picupLocationLong": widget.pickupLatLon.longitude,
+                          "picupLocationLat": widget.pickupLatLon.latitude,
+                          "dropLocationLong": widget.dropLoationLon,
+                          "dropLocationLat": widget.dropLoationLat,
+                          "vehicleType": widget.selectedVehicle,
+                          "totalKm": widget.distance,
+                          "totalPrice": widget.totalPrice,
+                          "driverLocationLat": widget.driverLatLon.latitude,
+                          "driverLocationLon": widget.driverLatLon.longitude,
+                          "pickAddress": widget.pickAddress,
+                          "dropAddress": widget.dropAddress,
+                        });
+
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => GoToPassenger(
+                              driverID: widget.driverID,
+                              rideID: widget.rideID,
+                              passengerID: widget.passengerID,
+                              pickupLatLon: widget.pickupLatLon,
+                              driverLatLon: widget.driverLatLon,
+                              pickAddress: widget.pickAddress,
+                              dropAddress: widget.dropAddress,
+                            ),
+                          ),
+                        );
+                      } else {
+                        print('No data found under "rides" node.');
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text("Ride not Available!"),
+                          ),
+                        );
+                        Navigator.pop(context);
+                      }
                     },
                     child: Container(
                       height: 55,

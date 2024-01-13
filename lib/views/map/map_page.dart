@@ -682,8 +682,10 @@ class _MapPageState extends State<MapPage> {
                               "dropLocationLong": endLocation!.longitude,
                               "dropLocationLat": endLocation!.latitude,
                               "vehicleType": selectedVehicle,
-                              "totalKm": mapProvider.distance,
+                              "totalKm": mapProvider.distance.toDouble(),
                               "totalPrice": totalCharge,
+                              "pickupAddress": pickupLocationController.text,
+                              "dropAddress": endLocationController.text,
                             });
 
                             rideProvider.confirmRide(
@@ -695,6 +697,8 @@ class _MapPageState extends State<MapPage> {
                                 vehicleType: selectedVehicle,
                                 totalKMs: mapProvider.distance,
                                 totalPrice: totalCharge,
+                                dropAddresss: endLocationController.text,
+                                pickupAddress: pickupLocationController.text,
                               ),
                               userID!,
                               context,
