@@ -1,23 +1,24 @@
 class Driver {
-  late String driverID;
-  late String firstName;
-  late String lastName;
-  late String birthday;
-  late String gender;
-  late String telephone;
-  late String email;
-  late String address;
-  late bool isVehicleOwner;
-  late String profileImg;
-  late String nicFront;
-  late String nicBack;
-  late String licenseFront;
-  late String licenseBack;
-  late String whichVehicle;
-  late String vehicleNumber;
-  late String brand;
-  late String model;
-  late String vehicleImg;
+  final String driverID;
+  final String firstName;
+  final String lastName;
+  final String birthday;
+  final String gender;
+  final String telephone;
+  final String email;
+  final String address;
+  final bool isVehicleOwner;
+  final String profileImg;
+  final String nicFront;
+  final String nicBack;
+  final String licenseFront;
+  final String licenseBack;
+  final String whichVehicle;
+  final String vehicleNumber;
+  final String brand;
+  final String model;
+  final String vehicleImg;
+  final DateTime date;
 
   // Constructor
   Driver({
@@ -40,6 +41,7 @@ class Driver {
     required this.brand,
     required this.model,
     required this.vehicleImg,
+    required this.date,
   });
 
   // Convert the object to a Map for Firestore
@@ -64,6 +66,7 @@ class Driver {
       'brand': brand,
       'model': model,
       'vehicleImg': vehicleImg,
+      'registed_date': date,
     };
   }
 
@@ -89,6 +92,7 @@ class Driver {
       brand: json['brand'],
       model: json['model'],
       vehicleImg: json['vehicleImg'],
+      date: json['registed_date'],
     );
   }
 }
