@@ -317,7 +317,7 @@ class _GetRequestsMapState extends State<GetRequestsMap> {
   }
 
   loadCustomMaker() async {
-    customMarkerIcon = await loadAsset('assets/images/man.png', 250);
+    customMarkerIcon = await loadAsset('assets/images/man.png', 125);
   }
 
   double radians(double degrees) {

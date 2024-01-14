@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:taxia/views/driver_registation/uploadDocument.dart';
 
 class DriveRegistation extends StatefulWidget {
@@ -19,6 +20,23 @@ class _DriveRegistationState extends State<DriveRegistation> {
   TextEditingController emailController = TextEditingController();
   TextEditingController addressController = TextEditingController();
   TextEditingController vehicalownerController = TextEditingController();
+
+  String selectedDate = '';
+
+  Future<void> selectBirthDay() async {
+    DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(1900),
+      lastDate: DateTime(2200),
+    );
+
+    if (picked != null && picked != DateTime.now()) {
+      setState(() {
+        brithdayController.text = DateFormat.yMMMMd().format(picked);
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -124,9 +142,14 @@ class _DriveRegistationState extends State<DriveRegistation> {
                     Padding(
                       padding: const EdgeInsets.all(4.0),
                       child: TextFormField(
+                        readOnly: true,
                         controller: brithdayController,
-                        keyboardType: TextInputType.number,
                         decoration: InputDecoration(
+                          suffixIcon: IconButton(
+                              onPressed: () {
+                                selectBirthDay();
+                              },
+                              icon: Icon(Icons.calendar_month)),
                           contentPadding:
                               const EdgeInsets.fromLTRB(15, 1, 1, 1),
                           border: OutlineInputBorder(
