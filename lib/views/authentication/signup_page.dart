@@ -3,9 +3,11 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:taxia/constants/app_colors.dart';
 import 'package:taxia/models/user.dart';
+import 'package:taxia/providers/auth/phone_number_provider.dart';
 import 'package:taxia/providers/user/user_provider.dart';
 import 'package:taxia/widgets/custom_button.dart';
 import 'package:taxia/widgets/custom_textFiled.dart';
+import 'package:taxia/widgets/phone_textFiled.dart';
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
@@ -46,9 +48,9 @@ class _SignUpPageState extends State<SignUpPage> {
         padding: EdgeInsets.symmetric(horizontal: 20),
         width: screenWidth,
         child: SingleChildScrollView(
-          child: Consumer(
+          child: Consumer2(
             builder: (BuildContext context, UserProvider userProvider,
-                    Widget? child) =>
+                    PhoneNumberProvider phoneNumberProvider, Widget? child) =>
                 Column(
               children: [
                 SizedBox(
@@ -70,8 +72,55 @@ class _SignUpPageState extends State<SignUpPage> {
                 CustomTextField(
                     controller: lastNameController, labelText: "Last Name"),
 
-                CustomTextField(
-                    controller: phoneController, labelText: "Phone Number"),
+                GestureDetector(
+                  onTap: () {
+                    phoneNumberProvider.selectCountry(context);
+                  },
+                  child: Container(
+                    width: screenWidth,
+                    margin: const EdgeInsets.symmetric(vertical: 5),
+                    height: 50,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(5.0),
+                      border: Border.all(
+                        color: AppColors.grayColor,
+                        width: 0.5,
+                      ),
+                    ),
+                    child: Row(
+                      children: [
+                        SizedBox(
+                          width: 15,
+                        ),
+                        Text(
+                          phoneNumberProvider.countryCode?.name ??
+                              "Select Country",
+                          style: TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w400,
+                            color: AppColors.textColor,
+                          ),
+                        ),
+                        SizedBox(
+                          width: 5,
+                        ),
+                        Text(
+                          phoneNumberProvider.countryCode?.dialCode ?? "",
+                          style: TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w400,
+                            color: AppColors.textColor,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                PhoneTextField(
+                  controller: phoneController,
+                  labelText: "Phone Number",
+                  hintText: '71XXXXXXX',
+                ),
 
                 CustomTextField(
                     controller: emailController, labelText: "Email"),
@@ -93,15 +142,26 @@ class _SignUpPageState extends State<SignUpPage> {
                         emailController.text.isEmpty ||
                         provinceController.text.isEmpty ||
                         phoneController.text.isEmpty ||
-                        districtController.text.isEmpty) {
+                        districtController.text.isEmpty ||
+                        phoneNumberProvider.countryCode?.name == null) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
-                          content: Text("Please enter all required details!"),
+                          backgroundColor: Colors.red,
+                          content: Text(
+                            "Please enter all required details correctly!",
+                            style: TextStyle(
+                              color: Colors.white,
+                            ),
+                          ),
                         ),
                       );
                     } else {
                       // userProvider.userID =
                       //     userProvider.generateRandomId().toString();
+
+                      String phoneNo =
+                          "${phoneNumberProvider.countryCode?.dialCode}" +
+                              phoneController.text;
                       userProvider.loading = true;
 
                       final addUser = User(
@@ -111,7 +171,8 @@ class _SignUpPageState extends State<SignUpPage> {
                         email: emailController.text,
                         province: provinceController.text,
                         district: districtController.text,
-                        phoneNum: phoneController.text,
+                        phoneNum: phoneNo,
+                        date: DateTime.now(),
                       );
 
                       userProvider.addUserToFirebase(addUser, context, userID!);
