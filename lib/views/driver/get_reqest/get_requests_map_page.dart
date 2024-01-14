@@ -177,7 +177,8 @@ class _GetRequestsMapState extends State<GetRequestsMap> {
         if (distance < 10.0) {
           if (requiredVehicleType == loginProvider!.vehicleType) {
             //Match Vehicle Type
-            await markers.add(
+
+            markers.add(
               Marker(
                 icon: BitmapDescriptor.fromBytes(
                   customMarkerIcon,
@@ -204,7 +205,7 @@ class _GetRequestsMapState extends State<GetRequestsMap> {
                           Row(
                             children: [
                               Text(
-                                "In $distance KM",
+                                "In $distanceText",
                                 style: TextStyle(
                                   fontWeight: FontWeight.w500,
                                 ),
@@ -225,7 +226,7 @@ class _GetRequestsMapState extends State<GetRequestsMap> {
                             onTap: () async {
                               //remove marker
 
-                              //accept the ride request
+                              //accept or decline the ride request
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
@@ -236,7 +237,7 @@ class _GetRequestsMapState extends State<GetRequestsMap> {
                                         LatLng(startLatitude!, startLongitude!),
                                     driverLatLon:
                                         LatLng(endLatitude, endLongitude),
-                                    distance: distance,
+                                    distance: distanceText,
                                     timeDuration: durationText,
                                     dropLoationLat: dropLoationLat!,
                                     dropLoationLon: dropLoationLon!,
@@ -263,6 +264,29 @@ class _GetRequestsMapState extends State<GetRequestsMap> {
                     LatLng(endLatitude, endLongitude),
                   );
                 },
+              ),
+            );
+
+            //accept or decline the ride request
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => AcceptRide(
+                  rideID: rideID!,
+                  passengerID: passengerID!,
+                  pickupLatLon: LatLng(startLatitude!, startLongitude!),
+                  driverLatLon: LatLng(endLatitude, endLongitude),
+                  distance: distanceText,
+                  timeDuration: durationText,
+                  dropLoationLat: dropLoationLat!,
+                  dropLoationLon: dropLoationLon!,
+                  selectedVehicle: selectedVehicle!,
+                  totalPrice: totalPrice!,
+                  totalKM: totalKM!,
+                  driverID: driverId!,
+                  pickAddress: pickAddress!,
+                  dropAddress: dropAddress!,
+                ),
               ),
             );
           } else {

@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:taxia/constants/app_colors.dart';
-import 'package:geocoding/geocoding.dart';
 import 'package:taxia/views/driver/goto_passenger_location/goto_passenger.dart';
 
 class AcceptRide extends StatefulWidget {
@@ -13,7 +12,7 @@ class AcceptRide extends StatefulWidget {
   final String passengerID;
   final LatLng pickupLatLon;
   final LatLng driverLatLon;
-  final double distance;
+  final String distance;
   final String timeDuration;
   final double dropLoationLat;
   final double dropLoationLon;
@@ -56,25 +55,16 @@ class _AcceptRideState extends State<AcceptRide> {
 
   Set<Marker> markers = Set<Marker>();
 
-  String? dropLocation;
-
   GoogleMapController? controllerGoogleMap;
+
+  String? totalAmount;
 
   @override
   void initState() {
     super.initState();
-    getAddresses();
     drowMap();
-  }
-
-  getAddresses() async {
-    List<Placemark> placemarks = await placemarkFromCoordinates(
-        widget.dropLoationLat, widget.dropLoationLon);
-
     setState(() {
-      dropLocation = placemarks.reversed.last.locality.toString() +
-          ", " +
-          placemarks.reversed.first.country.toString();
+      totalAmount = widget.totalPrice.toStringAsFixed(2);
     });
   }
 
@@ -185,25 +175,45 @@ class _AcceptRideState extends State<AcceptRide> {
                 ),
               ),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  Row(
+                    children: [
+                      Text(
+                        "In ${widget.timeDuration}",
+                        style: TextStyle(
+                          fontSize: 25,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      Spacer(),
+                      Text(
+                        "${widget.distance}",
+                        style: TextStyle(
+                          fontSize: 15,
+                          color: AppColors.grayColor,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
+                  ),
+
                   Text(
-                    "In ${widget.timeDuration}",
+                    "Pickup - ${widget.pickAddress}",
                     style: TextStyle(
-                      fontSize: 25,
-                      fontWeight: FontWeight.w600,
+                      fontSize: 18,
+                      fontWeight: FontWeight.w500,
                     ),
                   ),
                   Text(
-                    "${widget.distance} Km",
+                    "Drop - ${widget.dropAddress}",
                     style: TextStyle(
-                      fontSize: 15,
-                      color: AppColors.grayColor,
-                      fontWeight: FontWeight.w600,
+                      fontSize: 18,
+                      fontWeight: FontWeight.w500,
                     ),
                   ),
                   Text(
-                    "Drop - $dropLocation",
+                    "Rs. $totalAmount",
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.w500,
@@ -218,97 +228,143 @@ class _AcceptRideState extends State<AcceptRide> {
                   //   ),
                   // ),
                   SizedBox(
-                    height: 20,
+                    height: 30,
                   ),
 
-                  GestureDetector(
-                    onTap: () async {
-                      DatabaseReference databaseReferenceRides =
-                          await FirebaseDatabase.instance.ref('rides');
-
-                      DatabaseEvent event = await databaseReferenceRides
-                          .child(widget.rideID)
-                          .once();
-
-                      if (event.snapshot.value != null) {
-                        print('Data available under "rides" node.');
-                        await databaseReference
-                            .child(widget.driverID)
-                            .child(widget.rideID)
-                            .set({
-                          "driverID": widget.driverID,
-                          "rideID": widget.rideID,
-                          "pID": widget.passengerID,
-                          "picupLocationLong": widget.pickupLatLon.longitude,
-                          "picupLocationLat": widget.pickupLatLon.latitude,
-                          "dropLocationLong": widget.dropLoationLon,
-                          "dropLocationLat": widget.dropLoationLat,
-                          "vehicleType": widget.selectedVehicle,
-                          "totalKm": widget.distance,
-                          "totalPrice": widget.totalPrice,
-                          "driverLocationLat": widget.driverLatLon.latitude,
-                          "driverLocationLon": widget.driverLatLon.longitude,
-                          "pickAddress": widget.pickAddress,
-                          "dropAddress": widget.dropAddress,
-                        });
-
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => GoToPassenger(
-                              driverID: widget.driverID,
-                              rideID: widget.rideID,
-                              passengerID: widget.passengerID,
-                              pickupLatLon: widget.pickupLatLon,
-                              driverLatLon: widget.driverLatLon,
-                              pickAddress: widget.pickAddress,
-                              dropAddress: widget.dropAddress,
-                            ),
-                          ),
-                        );
-                      } else {
-                        print('No data found under "rides" node.');
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text("Ride not Available!"),
-                          ),
-                        );
-                        Navigator.pop(context);
-                      }
-                    },
-                    child: Container(
-                      height: 55,
-                      width: 200,
-                      decoration: BoxDecoration(
-                        color: Colors.greenAccent,
-                        borderRadius: BorderRadius.circular(10),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey.withOpacity(0.5),
-                            blurRadius: 3,
-                            offset: Offset(0, 3),
-                          ),
-                        ],
-                      ),
-                      child: Center(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              'Accept',
-                              style: TextStyle(
-                                fontWeight: FontWeight.w400,
-                                fontSize: 18,
-                                color: Colors.black,
+                  Row(
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.pop(context);
+                        },
+                        child: Container(
+                          padding: EdgeInsets.symmetric(horizontal: 30),
+                          height: 55,
+                          decoration: BoxDecoration(
+                            color: Color.fromARGB(255, 248, 61, 61),
+                            borderRadius: BorderRadius.circular(10),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.withOpacity(0.5),
+                                blurRadius: 3,
+                                offset: Offset(0, 3),
                               ),
+                            ],
+                          ),
+                          child: Center(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  'Decline',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w400,
+                                    fontSize: 18,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 10,
+                                ),
+                                Icon(Icons.close),
+                              ],
                             ),
-                            SizedBox(
-                              width: 10,
-                            ),
-                            Icon(Icons.navigation_rounded),
-                          ],
+                          ),
                         ),
                       ),
-                    ),
+                      Spacer(),
+                      GestureDetector(
+                        onTap: () async {
+                          DatabaseReference databaseReferenceRides =
+                              await FirebaseDatabase.instance.ref('rides');
+
+                          DatabaseEvent event = await databaseReferenceRides
+                              .child(widget.rideID)
+                              .once();
+
+                          if (event.snapshot.value != null) {
+                            print('Data available under "rides" node.');
+                            await databaseReference
+                                .child(widget.driverID)
+                                .child(widget.rideID)
+                                .set({
+                              "driverID": widget.driverID,
+                              "rideID": widget.rideID,
+                              "pID": widget.passengerID,
+                              "picupLocationLong":
+                                  widget.pickupLatLon.longitude,
+                              "picupLocationLat": widget.pickupLatLon.latitude,
+                              "dropLocationLong": widget.dropLoationLon,
+                              "dropLocationLat": widget.dropLoationLat,
+                              "vehicleType": widget.selectedVehicle,
+                              "totalKm": widget.distance,
+                              "totalPrice": widget.totalPrice,
+                              "driverLocationLat": widget.driverLatLon.latitude,
+                              "driverLocationLon":
+                                  widget.driverLatLon.longitude,
+                              "pickAddress": widget.pickAddress,
+                              "dropAddress": widget.dropAddress,
+                            });
+
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) => GoToPassenger(
+                                  driverID: widget.driverID,
+                                  rideID: widget.rideID,
+                                  passengerID: widget.passengerID,
+                                  pickupLatLon: widget.pickupLatLon,
+                                  driverLatLon: widget.driverLatLon,
+                                  pickAddress: widget.pickAddress,
+                                  dropAddress: widget.dropAddress,
+                                ),
+                              ),
+                            );
+                          } else {
+                            print('No data found under "rides" node.');
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text("Ride not Available!"),
+                              ),
+                            );
+                            Navigator.pop(context);
+                          }
+                        },
+                        child: Container(
+                          padding: EdgeInsets.symmetric(horizontal: 30),
+                          height: 55,
+                          decoration: BoxDecoration(
+                            color: Colors.greenAccent,
+                            borderRadius: BorderRadius.circular(10),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.withOpacity(0.5),
+                                blurRadius: 3,
+                                offset: Offset(0, 3),
+                              ),
+                            ],
+                          ),
+                          child: Center(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  'Accept',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w400,
+                                    fontSize: 18,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 10,
+                                ),
+                                Icon(Icons.navigation_rounded),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   )
                 ],
               ),
