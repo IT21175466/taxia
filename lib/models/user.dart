@@ -6,6 +6,7 @@ class User {
   final String province;
   final String district;
   final String phoneNum;
+  final DateTime date;
 
   User({
     required this.userID,
@@ -15,6 +16,7 @@ class User {
     required this.province,
     required this.district,
     required this.phoneNum,
+    required this.date,
   });
 
   factory User.fromJson(Map<String, dynamic> json) {
@@ -26,6 +28,7 @@ class User {
       province: json['Province'].toString(),
       district: json['District'].toString(),
       phoneNum: json['PhoneNumber'].toString(),
+      date: json['Registed_Date'],
     );
   }
 
@@ -38,6 +41,7 @@ class User {
       'Province': province,
       'District': district,
       'PhoneNumber': phoneNum,
+      'Registed_Date': date,
     };
   }
 }

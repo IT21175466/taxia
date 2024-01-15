@@ -35,6 +35,7 @@ class _SearchDriverState extends State<SearchDriver> {
   double _progressValue = 1.0;
   final db = FirebaseFirestore.instance;
   Timer? timer;
+  bool isCancel = false;
 
   @override
   void initState() {
@@ -49,14 +50,16 @@ class _SearchDriverState extends State<SearchDriver> {
       if (values != null && values.containsKey('rideID')) {
         String removedRideID = values['rideID'];
 
-        if (removedRideID == widget.rideID) {
-          _navigateToAnotherScreen();
+        if (isCancel == false && removedRideID == widget.rideID) {
+          _navigateToAcceptedScreen();
+        } else {
+          Navigator.pop(context);
         }
       }
     });
   }
 
-  void _navigateToAnotherScreen() {
+  void _navigateToAcceptedScreen() {
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
@@ -94,6 +97,7 @@ class _SearchDriverState extends State<SearchDriver> {
 
   void cancelRide() async {
     try {
+      timer!.cancel();
       DatabaseReference databaseReference =
           await FirebaseDatabase.instance.ref('rides');
       db
@@ -111,8 +115,17 @@ class _SearchDriverState extends State<SearchDriver> {
       setState(() {
         isLoading = false;
       });
-      timer!.cancel();
-      Navigator.pop(context);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          backgroundColor: Colors.red,
+          content: Text(
+            "You canceled the ride!",
+            style: TextStyle(
+              color: Colors.white,
+            ),
+          ),
+        ),
+      );
     }
   }
 
@@ -167,6 +180,7 @@ class _SearchDriverState extends State<SearchDriver> {
             child: GestureDetector(
               onTap: () {
                 isLoading = true;
+                isCancel = true;
                 cancelRide();
               },
               child: Container(
@@ -177,7 +191,13 @@ class _SearchDriverState extends State<SearchDriver> {
                 ),
                 child: Center(
                   child: isLoading
-                      ? CircularProgressIndicator()
+                      ? Text(
+                          "Canceling...",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        )
                       : Text(
                           "Cancel",
                           style: TextStyle(
