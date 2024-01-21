@@ -285,8 +285,8 @@ class _AcceptRideState extends State<AcceptRide> {
                           if (event.snapshot.value != null) {
                             print('Data available under "rides" node.');
                             await databaseReference
-                                .child(widget.driverID)
                                 .child(widget.rideID)
+                                .child(widget.driverID)
                                 .set({
                               "driverID": widget.driverID,
                               "rideID": widget.rideID,

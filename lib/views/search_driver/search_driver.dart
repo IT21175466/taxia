@@ -53,7 +53,7 @@ class _SearchDriverState extends State<SearchDriver> {
         if (isCancel == false && removedRideID == widget.rideID) {
           _navigateToAcceptedScreen();
         } else {
-          Navigator.pop(context);
+          //Navigator.pop(context);
         }
       }
     });

@@ -18,7 +18,7 @@ class Driver {
   final String brand;
   final String model;
   final String vehicleImg;
-  final DateTime date;
+  final String date;
 
   // Constructor
   Driver({
@@ -92,7 +92,7 @@ class Driver {
       brand: json['brand'],
       model: json['model'],
       vehicleImg: json['vehicleImg'],
-      date: json['registed_date'],
+      date: json['registed_date'].toString(),
     );
   }
 }

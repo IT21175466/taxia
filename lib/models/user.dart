@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class User {
   final String userID;
   final String firstName;
@@ -28,7 +30,7 @@ class User {
       province: json['Province'].toString(),
       district: json['District'].toString(),
       phoneNum: json['PhoneNumber'].toString(),
-      date: json['Registed_Date'],
+      date: (json['Registed_Date'] as Timestamp).toDate(),
     );
   }
 

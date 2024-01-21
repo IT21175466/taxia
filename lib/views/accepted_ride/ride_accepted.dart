@@ -1,12 +1,14 @@
 import 'dart:async';
-
+import 'dart:math';
+import 'dart:ui' as ui;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:taxia/constants/app_colors.dart';
-import 'package:taxia/global/global.dart';
 import 'package:taxia/models/Driver.dart';
 
 class RideAccepted extends StatefulWidget {
@@ -28,6 +30,8 @@ class _RideAcceptedState extends State<RideAccepted> {
   DatabaseReference databaseReference =
       FirebaseDatabase.instance.ref('ongoing_rides');
 
+  late Uint8List customMarkerIcon;
+
   LatLng? driverLocation;
 
   Completer<GoogleMapController> googleMapCompleterController =
@@ -48,9 +52,10 @@ class _RideAcceptedState extends State<RideAccepted> {
   @override
   void initState() {
     super.initState();
+    loadCustomMaker();
     //getCurrentLiveLocationOfUser();
-    getRideInfo(widget.rideID);
-    getDriverData();
+
+    getPickupData();
   }
 
   getDriverData() async {
@@ -69,6 +74,8 @@ class _RideAcceptedState extends State<RideAccepted> {
       }
     } catch (e) {
       print(e);
+    } finally {
+      print("Succesfully get data");
     }
   }
 
@@ -89,73 +96,167 @@ class _RideAcceptedState extends State<RideAccepted> {
   //   });
   // }
 
-  getRideInfo(String rID) async {
-    databaseReference.child(rID).onValue.listen((event) {
-      DataSnapshot dataSnapshot = event.snapshot;
-      Map<dynamic, dynamic>? values = dataSnapshot.value as Map?;
+  void getPickupData() {
+    databaseReference
+        .child(widget.rideID)
+        //.child('c5f50ff7-a5eb-435d-9b71-954c3e9276d7')
+        .onValue
+        .listen((event) {
+      if (event.snapshot.value != null) {
+        Map<dynamic, dynamic> data = event.snapshot.value as Map;
 
-      if (values != null) {
-        values.forEach((key, rideData) {
-          print('Key: $key');
+        data.forEach((key, tripData) {
+          if (tripData != null) {
+            if (tripData is Map && tripData.containsKey('pickAddress')) {
+              if (tripData['rideID'].toString() == widget.rideID) {
+                setState(() {
+                  driverID = tripData['driverID'].toString();
+                  driverLocation = LatLng(
+                      double.parse(tripData['picupLocationLat'].toString()),
+                      double.parse(tripData['picupLocationLong'].toString()));
+                  // firstName = tripData['pickAddress'].toString();
+                  // driverLocation = LatLng(
+                  //     double.parse(tripData['driverLocationLat'].toString()),
+                  //     double.parse(tripData['driverLocationLon'].toString()));
 
-          if (rideData is Map) {
-            setState(() {
-              rideData['driverLocationLat'] = driverLocation!.latitude;
-              rideData['driverLocationLon'] = driverLocation!.longitude;
-              rideData['driverID'] = driverID!;
-            });
+                  // CameraPosition cameraPosition = CameraPosition(
+                  //     target: LatLng(6.9060787, 79.96962769999999), zoom: 15);
+
+                  // controllerGoogleMap!.animateCamera(
+                  //     CameraUpdate.newCameraPosition(cameraPosition));
+                  print(driverLocation);
+                  markers.add(
+                    Marker(
+                      icon: BitmapDescriptor.defaultMarker,
+                      markerId: const MarkerId('pickup'),
+                      position: widget.pickupLocation,
+                      infoWindow: const InfoWindow(title: 'Pickup Location'),
+                    ),
+                  );
+
+                  markers.add(
+                    Marker(
+                      icon: BitmapDescriptor.fromBytes(
+                        customMarkerIcon,
+                      ),
+                      markerId: const MarkerId('driver'),
+                      position: LatLng(
+                          double.parse(tripData['picupLocationLat'].toString()),
+                          double.parse(
+                              tripData['picupLocationLong'].toString())),
+                      infoWindow: const InfoWindow(title: 'Driver Location'),
+                    ),
+                  );
+
+                  //   drowPolylineRoute(LatLng(
+                  //       double.parse(tripData['picupLocationLat'].toString()),
+                  //       double.parse(tripData['picupLocationLong'].toString())));
+                });
+
+                drowPolylineRoute(
+                  LatLng(double.parse(tripData['picupLocationLat'].toString()),
+                      double.parse(tripData['picupLocationLong'].toString())),
+                );
+                getDriverData();
+                //drowMap();
+                //print(driverLocation);
+
+                //Mark in map
+
+                // CameraPosition cameraPosition = CameraPosition(
+                //     target: LatLng(
+                //         double.parse(tripData['driverLocationLat'].toString()),
+                //         double.parse(tripData['driverLocationLon'].toString())),
+                //     zoom: 15);
+
+                // controllerGoogleMap!.animateCamera(
+                //     CameraUpdate.newCameraPosition(cameraPosition));
+              } else {
+                print('Invalid Ride!!');
+              }
+            } else {
+              print('Not Map');
+            }
           } else {
-            print('Invalid data structure or missing values for key $key');
+            print('No pickAddress data for key $key');
           }
         });
       } else {
-        print('No data found under "rides" node.');
+        print('No data available under the specified path.');
       }
     });
+
+    // databaseReference
+    //     .child('F4G3rBkZs4cT0Hup1nHNXq0L5sC2')
+    //     .child('d013d045-17c3-44e1-9882-514da7accf2e')
+    //     .onValue
+    //     .listen((event) {
+    //   setState(() {
+    //     firstName = event.snapshot.value.toString();
+    //   });
+    //   print(firstName);
+    // });
   }
 
-  void drowMap() async {
-    markers.add(
-      Marker(
-        icon: BitmapDescriptor.defaultMarker,
-        markerId: const MarkerId('pickup'),
-        position: widget.pickupLocation,
-        infoWindow: const InfoWindow(title: 'Pickup Location'),
-      ),
-    );
-
-    markers.add(
-      Marker(
-        icon: BitmapDescriptor.defaultMarker,
-        markerId: const MarkerId('driver'),
-        //position: widget.driverLatLon,
-        infoWindow: const InfoWindow(title: 'Driver Location'),
-      ),
-    );
-
-    //drowPolyline();
-  }
-
-  // void drowPolyline() async {
-  //   PolylinePoints polylinePoints = PolylinePoints();
-
-  //   PolylineResult polylineResult =
-  //       await polylinePoints.getRouteBetweenCoordinates(
-  //     "AIzaSyDWlxEQU9GMmFEmZwiT3OGVVxTyc984iNY",
-  //     PointLatLng(widget.driverLatLon.latitude, widget.driverLatLon.longitude),
-  //     PointLatLng(widget.pickupLatLon.latitude, widget.pickupLatLon.longitude),
+  // void drowMap() async {
+  //   markers.add(
+  //     Marker(
+  //       icon: BitmapDescriptor.defaultMarker,
+  //       markerId: const MarkerId('pickup'),
+  //       position: widget.pickupLocation,
+  //       infoWindow: const InfoWindow(title: 'Pickup Location'),
+  //     ),
   //   );
 
-  //   setState(() {
-  //     polylineCordinates.clear();
-
-  //     polylineResult.points.forEach(
-  //       (PointLatLng points) => polylineCordinates.add(
-  //         LatLng(points.latitude, points.longitude),
-  //       ),
-  //     );
-  //   });
+  //   markers.add(
+  //     Marker(
+  //       icon: BitmapDescriptor.defaultMarker,
+  //       markerId: const MarkerId('driver'),
+  //       position: driverLocation!,
+  //       infoWindow: const InfoWindow(title: 'Driver Location'),
+  //     ),
+  //   );
   // }
+
+  loadCustomMaker() async {
+    customMarkerIcon = await loadAsset('assets/images/driverLoc.png', 150);
+  }
+
+  double radians(double degrees) {
+    return degrees * (pi / 180.0);
+  }
+
+  Future<Uint8List> loadAsset(String path, int width) async {
+    ByteData data = await rootBundle.load(path);
+    ui.Codec codec = await ui.instantiateImageCodec(data.buffer.asUint8List(),
+        targetWidth: width);
+    ui.FrameInfo fi = await codec.getNextFrame();
+    return (await fi.image.toByteData(format: ui.ImageByteFormat.png))!
+        .buffer
+        .asUint8List();
+  }
+
+  void drowPolylineRoute(LatLng driverLoc) async {
+    PolylinePoints polylinePoints = PolylinePoints();
+
+    PolylineResult polylineResult =
+        await polylinePoints.getRouteBetweenCoordinates(
+      "AIzaSyDWlxEQU9GMmFEmZwiT3OGVVxTyc984iNY",
+      PointLatLng(driverLoc.latitude, driverLoc.longitude),
+      PointLatLng(
+          widget.pickupLocation.latitude, widget.pickupLocation.longitude),
+    );
+
+    setState(() {
+      polylineCordinates.clear();
+
+      polylineResult.points.forEach(
+        (PointLatLng points) => polylineCordinates.add(
+          LatLng(points.latitude, points.longitude),
+        ),
+      );
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -163,12 +264,27 @@ class _RideAcceptedState extends State<RideAccepted> {
       body: Stack(
         children: [
           GoogleMap(
+            polylines: {
+              Polyline(
+                polylineId: const PolylineId("route"),
+                points: polylineCordinates,
+                visible: true,
+                width: 3,
+                color: const Color.fromARGB(255, 18, 7, 212),
+              ),
+            },
             markers: markers,
             zoomControlsEnabled: false,
-            initialCameraPosition: googlePlexInitialPosition,
+            initialCameraPosition: CameraPosition(
+                target: driverLocation == null
+                    ? widget.pickupLocation
+                    : driverLocation!,
+                zoom: 15),
             onMapCreated: (GoogleMapController controller) {
               if (!googleMapCompleterController.isCompleted) {
                 googleMapCompleterController.complete(controller);
+                controllerGoogleMap = controller;
+                //customInfoWindowController.googleMapController = mapController;
               }
             },
           ),
@@ -187,14 +303,20 @@ class _RideAcceptedState extends State<RideAccepted> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  const Row(
+                  Row(
                     children: [
                       Icon(Icons.home),
                       Spacer(),
-                      Text(
-                        "Cancel",
-                        style: TextStyle(
-                          fontWeight: FontWeight.w500,
+                      GestureDetector(
+                        onTap: () {
+                          //drowMap();
+                          //getDriverData();
+                        },
+                        child: Text(
+                          "Cancel",
+                          style: TextStyle(
+                            fontWeight: FontWeight.w500,
+                          ),
                         ),
                       ),
                     ],

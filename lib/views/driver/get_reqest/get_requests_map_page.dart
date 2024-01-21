@@ -122,7 +122,7 @@ class _GetRequestsMapState extends State<GetRequestsMap> {
                 rideData['dropLocationLat'],
                 rideData['dropLocationLong'],
                 rideData['vehicleType'],
-                rideData['totalPrice'],
+                double.parse(rideData['totalPrice'].toString()),
                 double.parse(rideData['totalKm'].toString()),
                 rideData['rideID'],
                 rideData['pID']);
@@ -234,9 +234,9 @@ class _GetRequestsMapState extends State<GetRequestsMap> {
                                     rideID: rideID!,
                                     passengerID: passengerID!,
                                     pickupLatLon:
-                                        LatLng(startLatitude!, startLongitude!),
-                                    driverLatLon:
                                         LatLng(endLatitude, endLongitude),
+                                    driverLatLon:
+                                        LatLng(startLatitude!, startLongitude!),
                                     distance: distanceText,
                                     timeDuration: durationText,
                                     dropLoationLat: dropLoationLat!,
