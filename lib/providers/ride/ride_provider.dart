@@ -8,6 +8,7 @@ class RideProvider extends ChangeNotifier {
 
   confirmRide(
       Ride ride, String userID, BuildContext context, String rideID) async {
+    loading = true;
     try {
       db
           .collection("Rides")
@@ -18,6 +19,7 @@ class RideProvider extends ChangeNotifier {
           .then((value) async {
         loading = false;
         notifyListeners();
+        print('Added');
       });
       notifyListeners();
     } catch (e) {
@@ -27,6 +29,10 @@ class RideProvider extends ChangeNotifier {
         ),
       );
       notifyListeners();
+    } finally {
+      loading = false;
+      Navigator.pushNamedAndRemoveUntil(
+          context, '/drivermap', (route) => false);
     }
   }
 }

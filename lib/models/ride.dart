@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class Ride {
@@ -10,6 +11,8 @@ class Ride {
   final double totalPrice;
   final String pickupAddress;
   final String dropAddresss;
+  final DateTime date;
+  final String driverID;
 
   Ride({
     required this.rideID,
@@ -21,6 +24,8 @@ class Ride {
     required this.totalPrice,
     required this.dropAddresss,
     required this.pickupAddress,
+    required this.date,
+    required this.driverID,
   });
 
   Map<String, dynamic> toJson() {
@@ -40,6 +45,8 @@ class Ride {
       'totalPrice': totalPrice,
       'pickAddress': pickupAddress,
       'dropAddress': dropAddresss,
+      'trip_Date': date,
+      'driver_ID': driverID,
     };
   }
 
@@ -60,6 +67,8 @@ class Ride {
       totalPrice: json['totalPrice'],
       pickupAddress: json['pickAddress'],
       dropAddresss: json['dropAddress'],
+      date: (json['Registed_Date'] as Timestamp).toDate(),
+      driverID: json['driver_ID'],
     );
   }
 }

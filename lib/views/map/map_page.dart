@@ -13,7 +13,6 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:taxia/constants/app_colors.dart';
 import 'package:taxia/global/global.dart';
-import 'package:taxia/models/ride.dart';
 import 'package:taxia/providers/map/map_provider.dart';
 import 'package:taxia/providers/ride/ride_provider.dart';
 import 'package:taxia/providers/user/user_provider.dart';
@@ -688,22 +687,22 @@ class _MapPageState extends State<MapPage> {
                               "dropAddress": endLocationController.text,
                             });
 
-                            rideProvider.confirmRide(
-                              Ride(
-                                rideID: rideID,
-                                passengerID: userID!,
-                                picupLocation: pickupLocation!,
-                                dropLocation: endLocation!,
-                                vehicleType: selectedVehicle,
-                                totalKMs: mapProvider.distance,
-                                totalPrice: totalCharge,
-                                dropAddresss: endLocationController.text,
-                                pickupAddress: pickupLocationController.text,
-                              ),
-                              userID!,
-                              context,
-                              rideID,
-                            );
+                            // rideProvider.confirmRide(
+                            //   Ride(
+                            //     rideID: rideID,
+                            //     passengerID: userID!,
+                            //     picupLocation: pickupLocation!,
+                            //     dropLocation: endLocation!,
+                            //     vehicleType: selectedVehicle,
+                            //     totalKMs: mapProvider.distance,
+                            //     totalPrice: totalCharge,
+                            //     dropAddresss: endLocationController.text,
+                            //     pickupAddress: pickupLocationController.text,
+                            //   ),
+                            //   userID!,
+                            //   context,
+                            //   rideID,
+                            // );
 
                             Navigator.push(
                               context,

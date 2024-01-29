@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
@@ -5,7 +7,9 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:swipeable_button_view/swipeable_button_view.dart';
 import 'package:taxia/constants/app_colors.dart';
 import 'package:taxia/models/user.dart';
+import 'package:taxia/views/driver/start_trip/start_trip.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:location/location.dart' as loc;
 
 class GoToPassenger extends StatefulWidget {
   final String driverID;
@@ -15,6 +19,9 @@ class GoToPassenger extends StatefulWidget {
   final LatLng driverLatLon;
   final String pickAddress;
   final String dropAddress;
+  final double totalPrice;
+  final double totalKM;
+  final String selectedVehicle;
   const GoToPassenger(
       {super.key,
       required this.driverID,
@@ -23,13 +30,22 @@ class GoToPassenger extends StatefulWidget {
       required this.pickupLatLon,
       required this.driverLatLon,
       required this.pickAddress,
-      required this.dropAddress});
+      required this.dropAddress,
+      required this.totalPrice,
+      required this.totalKM,
+      required this.selectedVehicle});
 
   @override
   State<GoToPassenger> createState() => _GoToPassengerState();
 }
 
 class _GoToPassengerState extends State<GoToPassenger> {
+  final loc.Location location = loc.Location();
+  StreamSubscription<loc.LocationData>? _locationSubscription;
+
+  DatabaseReference databaseReference =
+      FirebaseDatabase.instance.ref('ongoing_rides');
+
   String? firstName;
   String? phoneNumber;
   bool isFinished = false;
@@ -39,6 +55,39 @@ class _GoToPassengerState extends State<GoToPassenger> {
     super.initState();
     deleteRequest();
     getUserData();
+    _listenLocation();
+  }
+
+  Future<void> _listenLocation() async {
+    _locationSubscription = location.onLocationChanged.handleError((onError) {
+      print(onError);
+      _locationSubscription?.cancel();
+
+      setState(() {
+        _locationSubscription = null;
+      });
+    }).listen((loc.LocationData currentLocation) async {
+      await databaseReference
+          .child(widget.rideID)
+          .child(widget.driverID)
+          .update({
+        "picupLocationLat": currentLocation.latitude,
+        "picupLocationLong": currentLocation.longitude,
+      });
+    });
+  }
+
+  _stopListning() {
+    _locationSubscription?.cancel();
+    setState(() {
+      _locationSubscription = null;
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _locationSubscription?.cancel();
   }
 
   void deleteRequest() async {
@@ -89,7 +138,7 @@ class _GoToPassengerState extends State<GoToPassenger> {
               height: AppBar().preferredSize.height,
             ),
             Text(
-              'You Started The Trip',
+              'You Accepted The Trip',
               style: TextStyle(
                 fontWeight: FontWeight.w500,
                 fontSize: 20,
@@ -229,7 +278,28 @@ class _GoToPassengerState extends State<GoToPassenger> {
                   });
                 });
               },
-              onFinish: () async {},
+              onFinish: () async {
+                await _stopListning();
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => StartTrip(
+                      driverID: widget.driverID,
+                      rideID: widget.rideID,
+                      passengerID: widget.passengerID,
+                      pickupLatLon: widget.pickupLatLon,
+                      driverLatLon: widget.driverLatLon,
+                      pickAddress: widget.pickAddress,
+                      dropAddress: widget.dropAddress,
+                      firstName: firstName!,
+                      phoneNumber: phoneNumber!,
+                      totalPrice: widget.totalPrice,
+                      totalKM: widget.totalKM,
+                      selectedVehicle: widget.selectedVehicle,
+                    ),
+                  ),
+                );
+              },
             ),
           ],
         ),
