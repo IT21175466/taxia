@@ -10,6 +10,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:taxia/constants/app_colors.dart';
 import 'package:taxia/models/Driver.dart';
+import 'package:taxia/views/started_trip/started_trip.dart';
 
 class RideAccepted extends StatefulWidget {
   final String rideID;
@@ -34,6 +35,8 @@ class _RideAcceptedState extends State<RideAccepted> {
 
   LatLng? driverLocation;
 
+  LatLng? dropLoc;
+
   Completer<GoogleMapController> googleMapCompleterController =
       Completer<GoogleMapController>();
 
@@ -49,6 +52,8 @@ class _RideAcceptedState extends State<RideAccepted> {
   String? phoneNumber;
   String? driverID;
 
+  bool isStartedTrip = false;
+
   @override
   void initState() {
     super.initState();
@@ -56,6 +61,99 @@ class _RideAcceptedState extends State<RideAccepted> {
     //getCurrentLiveLocationOfUser();
 
     getPickupData();
+
+    //listn
+    //markers.clear();
+    listnToTheChanges();
+  }
+
+  navigateToTripStartedScreen() {
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => TripStarted(
+          rideID: widget.rideID,
+          userID: widget.userID,
+          phoneNumber: phoneNumber!,
+          firstName: firstName!,
+          pickupLocation: widget.pickupLocation,
+          dropLocation: dropLoc!,
+        ),
+      ),
+    );
+  }
+
+  listnToTheChanges() {
+    databaseReference
+        .child(widget.rideID)
+        //.child('c5f50ff7-a5eb-435d-9b71-954c3e9276d7')
+        .onValue
+        .listen((event) {
+      if (event.snapshot.value != null) {
+        Map<dynamic, dynamic> data = event.snapshot.value as Map;
+
+        data.forEach((key, tripData) {
+          if (tripData != null) {
+            if (tripData is Map && tripData.containsKey('pickAddress')) {
+              if (tripData['rideID'].toString() == widget.rideID) {
+                if (this.mounted) {
+                  setState(() {
+                    driverLocation = LatLng(
+                        double.parse(tripData['picupLocationLat'].toString()),
+                        double.parse(tripData['picupLocationLong'].toString()));
+
+                    dropLoc = LatLng(
+                        double.parse(tripData['dropLocationLat'].toString()),
+                        double.parse(tripData['dropLocationLong'].toString()));
+
+                    if (tripData['isStarted'] == true) {
+                      navigateToTripStartedScreen();
+                    }
+                    //isDriverInLocation = tripData['isStarted'];
+                    print(driverLocation);
+
+                    markers.clear();
+
+                    markers.add(
+                      Marker(
+                        icon: BitmapDescriptor.defaultMarker,
+                        markerId: const MarkerId('pickup'),
+                        position: widget.pickupLocation,
+                        infoWindow: const InfoWindow(title: 'Pickup Location'),
+                      ),
+                    );
+
+                    markers.add(
+                      Marker(
+                        icon: BitmapDescriptor.fromBytes(
+                          customMarkerIcon,
+                        ),
+                        markerId: const MarkerId('driver'),
+                        position: LatLng(
+                            double.parse(
+                                tripData['picupLocationLat'].toString()),
+                            double.parse(
+                                tripData['picupLocationLong'].toString())),
+                        infoWindow: const InfoWindow(title: 'Driver Location'),
+                      ),
+                    );
+                  });
+                }
+                print(markers);
+              } else {
+                print('Invalid Ride!!');
+              }
+            } else {
+              print('Not Map');
+            }
+          } else {
+            print('No pickAddress data for key $key');
+          }
+        });
+      } else {
+        print('No data available under the specified path.');
+      }
+    });
   }
 
   getDriverData() async {
@@ -97,11 +195,12 @@ class _RideAcceptedState extends State<RideAccepted> {
   // }
 
   void getPickupData() {
+    markers.clear();
     databaseReference
         .child(widget.rideID)
         //.child('c5f50ff7-a5eb-435d-9b71-954c3e9276d7')
-        .onValue
-        .listen((event) {
+        .once()
+        .then((event) {
       if (event.snapshot.value != null) {
         Map<dynamic, dynamic> data = event.snapshot.value as Map;
 
@@ -125,6 +224,7 @@ class _RideAcceptedState extends State<RideAccepted> {
                   // controllerGoogleMap!.animateCamera(
                   //     CameraUpdate.newCameraPosition(cameraPosition));
                   print(driverLocation);
+
                   markers.add(
                     Marker(
                       icon: BitmapDescriptor.defaultMarker,
@@ -158,6 +258,7 @@ class _RideAcceptedState extends State<RideAccepted> {
                       double.parse(tripData['picupLocationLong'].toString())),
                 );
                 getDriverData();
+                print(markers);
                 //drowMap();
                 //print(driverLocation);
 

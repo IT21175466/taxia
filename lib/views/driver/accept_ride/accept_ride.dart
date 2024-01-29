@@ -304,6 +304,8 @@ class _AcceptRideState extends State<AcceptRide> {
                                   widget.driverLatLon.longitude,
                               "pickAddress": widget.pickAddress,
                               "dropAddress": widget.dropAddress,
+                              "isStarted": false,
+                              "isEnded": false,
                             });
 
                             Navigator.of(context).push(
@@ -316,6 +318,9 @@ class _AcceptRideState extends State<AcceptRide> {
                                   driverLatLon: widget.driverLatLon,
                                   pickAddress: widget.pickAddress,
                                   dropAddress: widget.dropAddress,
+                                  totalPrice: widget.totalPrice,
+                                  totalKM: widget.totalKM,
+                                  selectedVehicle: widget.selectedVehicle,
                                 ),
                               ),
                             );
