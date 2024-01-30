@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:taxia/constants/app_colors.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class TripStarted extends StatefulWidget {
   final String rideID;
@@ -48,6 +49,12 @@ class _TripStartedState extends State<TripStarted> {
   Completer<GoogleMapController> googleMapCompleterController =
       Completer<GoogleMapController>();
 
+  Uri? dialNumber;
+
+  callNumber() async {
+    await launchUrl(dialNumber!);
+  }
+
   void drowMap() async {
     markers.add(
       Marker(
@@ -80,16 +87,17 @@ class _TripStartedState extends State<TripStarted> {
       PointLatLng(
           widget.pickupLocation.latitude, widget.pickupLocation.longitude),
     );
+    if (this.mounted) {
+      setState(() {
+        polylineCordinates.clear();
 
-    setState(() {
-      polylineCordinates.clear();
-
-      polylineResult.points.forEach(
-        (PointLatLng points) => polylineCordinates.add(
-          LatLng(points.latitude, points.longitude),
-        ),
-      );
-    });
+        polylineResult.points.forEach(
+          (PointLatLng points) => polylineCordinates.add(
+            LatLng(points.latitude, points.longitude),
+          ),
+        );
+      });
+    }
   }
 
   loadCustomMaker() async {
@@ -115,6 +123,10 @@ class _TripStartedState extends State<TripStarted> {
     super.initState();
     loadCustomMaker();
     drowMap();
+    setState(() {
+      dialNumber = Uri(scheme: 'tel', path: widget.phoneNumber);
+    });
+
     databaseReference
         .child(widget.rideID)
         //.child('c5f50ff7-a5eb-435d-9b71-954c3e9276d7')
@@ -127,42 +139,50 @@ class _TripStartedState extends State<TripStarted> {
           if (tripData != null) {
             if (tripData is Map && tripData.containsKey('pickAddress')) {
               if (tripData['rideID'].toString() == widget.rideID) {
-                setState(() {
-                  driverLocation = LatLng(
-                      double.parse(tripData['picupLocationLat'].toString()),
-                      double.parse(tripData['picupLocationLong'].toString()));
+                if (this.mounted) {
+                  setState(() {
+                    driverLocation = LatLng(
+                        double.parse(tripData['picupLocationLat'].toString()),
+                        double.parse(tripData['picupLocationLong'].toString()));
 
-                  dropLoc = LatLng(
-                      double.parse(tripData['dropLocationLat'].toString()),
-                      double.parse(tripData['dropLocationLong'].toString()));
+                    dropLoc = LatLng(
+                        double.parse(tripData['dropLocationLat'].toString()),
+                        double.parse(tripData['dropLocationLong'].toString()));
 
-                  //isDriverInLocation = tripData['isStarted'];
+                    //isDriverInLocation = tripData['isStarted'];
 
-                  markers.clear();
+                    if (tripData['isEnded'] == true) {
+                      Navigator.pushNamedAndRemoveUntil(
+                          context, '/home', (route) => false);
+                    }
 
-                  markers.add(
-                    Marker(
-                      icon: BitmapDescriptor.defaultMarker,
-                      markerId: const MarkerId('pickup'),
-                      position: widget.pickupLocation,
-                      infoWindow: const InfoWindow(title: 'Pickup Location'),
-                    ),
-                  );
+                    markers.clear();
 
-                  markers.add(
-                    Marker(
-                      icon: BitmapDescriptor.fromBytes(
-                        customMarkerIcon,
+                    markers.add(
+                      Marker(
+                        icon: BitmapDescriptor.defaultMarker,
+                        markerId: const MarkerId('pickup'),
+                        position: widget.pickupLocation,
+                        infoWindow: const InfoWindow(title: 'Pickup Location'),
                       ),
-                      markerId: const MarkerId('driver'),
-                      position: LatLng(
-                          double.parse(tripData['picupLocationLat'].toString()),
-                          double.parse(
-                              tripData['picupLocationLong'].toString())),
-                      infoWindow: const InfoWindow(title: 'Driver Location'),
-                    ),
-                  );
-                });
+                    );
+
+                    markers.add(
+                      Marker(
+                        icon: BitmapDescriptor.fromBytes(
+                          customMarkerIcon,
+                        ),
+                        markerId: const MarkerId('driver'),
+                        position: LatLng(
+                            double.parse(
+                                tripData['picupLocationLat'].toString()),
+                            double.parse(
+                                tripData['picupLocationLong'].toString())),
+                        infoWindow: const InfoWindow(title: 'Driver Location'),
+                      ),
+                    );
+                  });
+                }
                 print(markers);
               } else {
                 print('Invalid Ride!!');
@@ -243,16 +263,21 @@ class _TripStartedState extends State<TripStarted> {
                   Row(
                     children: [
                       const Spacer(),
-                      Container(
-                        padding: const EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(100),
-                          border: Border.all(
-                            color: AppColors.grayColor,
+                      GestureDetector(
+                        onTap: () {
+                          callNumber();
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(100),
+                            border: Border.all(
+                              color: AppColors.grayColor,
+                            ),
                           ),
-                        ),
-                        child: const Center(
-                          child: Icon(Icons.call),
+                          child: const Center(
+                            child: Icon(Icons.call),
+                          ),
                         ),
                       ),
                       const SizedBox(

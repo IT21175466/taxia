@@ -11,6 +11,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:taxia/constants/app_colors.dart';
 import 'package:taxia/models/Driver.dart';
 import 'package:taxia/views/started_trip/started_trip.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class RideAccepted extends StatefulWidget {
   final String rideID;
@@ -47,6 +48,8 @@ class _RideAcceptedState extends State<RideAccepted> {
   GoogleMapController? controllerGoogleMap;
 
   Position? currentPositionOfUser;
+
+  Uri? dialNumber;
 
   String? firstName;
   String? phoneNumber;
@@ -156,6 +159,10 @@ class _RideAcceptedState extends State<RideAccepted> {
     });
   }
 
+  callNumber() async {
+    await launchUrl(dialNumber!);
+  }
+
   getDriverData() async {
     try {
       final DocumentSnapshot driversDoc = await FirebaseFirestore.instance
@@ -167,6 +174,7 @@ class _RideAcceptedState extends State<RideAccepted> {
         setState(() {
           firstName = driversDoc.get('firstName').toString();
           phoneNumber = driversDoc.get('telephone').toString();
+          dialNumber = Uri(scheme: 'tel', path: phoneNumber);
         });
         return Driver.fromJson(driversDoc.data() as Map<String, dynamic>);
       }
@@ -425,16 +433,21 @@ class _RideAcceptedState extends State<RideAccepted> {
                   Row(
                     children: [
                       const Spacer(),
-                      Container(
-                        padding: const EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(100),
-                          border: Border.all(
-                            color: AppColors.grayColor,
+                      GestureDetector(
+                        onTap: () {
+                          callNumber();
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(100),
+                            border: Border.all(
+                              color: AppColors.grayColor,
+                            ),
                           ),
-                        ),
-                        child: const Center(
-                          child: Icon(Icons.call),
+                          child: const Center(
+                            child: Icon(Icons.call),
+                          ),
                         ),
                       ),
                       const SizedBox(
