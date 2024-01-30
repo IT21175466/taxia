@@ -78,8 +78,7 @@ class PermissionProvider extends ChangeNotifier {
   }
 
   checkAllPermissions() {
-    if (isLocationPermissionGranted == true &&
-        isStoragePermissionGranted == true) {
+    if (isLocationPermissionGranted == true) {
       isAllPermissionGranted = true;
       notifyListeners();
     } else {
