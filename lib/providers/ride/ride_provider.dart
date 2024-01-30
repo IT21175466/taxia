@@ -31,8 +31,6 @@ class RideProvider extends ChangeNotifier {
       notifyListeners();
     } finally {
       loading = false;
-      Navigator.pushNamedAndRemoveUntil(
-          context, '/drivermap', (route) => false);
     }
   }
 }

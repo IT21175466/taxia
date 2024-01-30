@@ -50,12 +50,18 @@ class _GoToPassengerState extends State<GoToPassenger> {
   String? phoneNumber;
   bool isFinished = false;
 
+  Uri? dialNumber;
+
   @override
   void initState() {
     super.initState();
     deleteRequest();
     getUserData();
     _listenLocation();
+  }
+
+  callNumber() async {
+    await launchUrl(dialNumber!);
   }
 
   Future<void> _listenLocation() async {
@@ -114,6 +120,9 @@ class _GoToPassengerState extends State<GoToPassenger> {
         setState(() {
           firstName = usersDoc.get('FirstName').toString();
           phoneNumber = usersDoc.get('PhoneNumber').toString();
+          setState(() {
+            dialNumber = Uri(scheme: 'tel', path: phoneNumber);
+          });
         });
         return User.fromJson(usersDoc.data() as Map<String, dynamic>);
       }
@@ -218,9 +227,14 @@ class _GoToPassengerState extends State<GoToPassenger> {
                               ),
                             ),
                       Spacer(),
-                      Icon(
-                        Icons.phone,
-                        color: AppColors.grayColor,
+                      GestureDetector(
+                        onTap: () {
+                          callNumber();
+                        },
+                        child: Icon(
+                          Icons.phone,
+                          color: AppColors.grayColor,
+                        ),
                       ),
                     ],
                   ),

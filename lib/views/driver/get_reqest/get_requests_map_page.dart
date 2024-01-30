@@ -62,6 +62,7 @@ class _GetRequestsMapState extends State<GetRequestsMap> {
     gerCurrentLiveLocationOfUser();
     getUserID();
     loadCustomMaker();
+
     loginProvider = Provider.of<LoginProvider>(context, listen: false);
   }
 
@@ -72,23 +73,27 @@ class _GetRequestsMapState extends State<GetRequestsMap> {
   }
 
   gerCurrentLiveLocationOfUser() async {
-    Position positionOfUser = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.bestForNavigation);
+    try {
+      Position positionOfUser = await Geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.bestForNavigation);
 
-    setState(() {
-      driverLocation = positionOfUser;
+      setState(() {
+        driverLocation = positionOfUser;
 
-      LatLng positionOfUserInLatLng =
-          LatLng(driverLocation!.latitude, driverLocation!.longitude);
+        LatLng positionOfUserInLatLng =
+            LatLng(driverLocation!.latitude, driverLocation!.longitude);
 
-      CameraPosition cameraPosition =
-          CameraPosition(target: positionOfUserInLatLng, zoom: 12);
+        CameraPosition cameraPosition =
+            CameraPosition(target: positionOfUserInLatLng, zoom: 12);
 
-      controllerGoogleMap!
-          .animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
+        controllerGoogleMap!
+            .animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
 
-      isLoading = false;
-    });
+        isLoading = false;
+      });
+    } catch (e) {
+      print(e);
+    }
   }
 
   DatabaseReference databaseReference = FirebaseDatabase.instance.ref('rides');

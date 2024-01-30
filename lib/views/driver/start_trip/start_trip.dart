@@ -62,6 +62,8 @@ class _StartTripState extends State<StartTrip> {
   // double? totalPrice;
   // String? vehicleType;
 
+  Uri? dialNumber;
+
   @override
   void initState() {
     _listenLocation();
@@ -70,7 +72,12 @@ class _StartTripState extends State<StartTrip> {
     setState(() {
       totalAmount = widget.totalPrice.toStringAsFixed(2);
       totalKms = widget.totalKM.toStringAsFixed(1);
+      dialNumber = Uri(scheme: 'tel', path: widget.phoneNumber);
     });
+  }
+
+  callNumber() async {
+    await launchUrl(dialNumber!);
   }
 
   Future<void> _listenLocation() async {
@@ -245,9 +252,14 @@ class _StartTripState extends State<StartTrip> {
                           ),
                         ),
                         const Spacer(),
-                        const Icon(
-                          Icons.phone,
-                          color: AppColors.grayColor,
+                        GestureDetector(
+                          onTap: () {
+                            callNumber();
+                          },
+                          child: Icon(
+                            Icons.phone,
+                            color: AppColors.grayColor,
+                          ),
                         ),
                       ],
                     ),
@@ -433,30 +445,45 @@ class _StartTripState extends State<StartTrip> {
                         Expanded(
                           child: GestureDetector(
                             onTap: () async {
-                              databaseReference
-                                  .child(widget.rideID)
-                                  .child(widget.driverID)
-                                  .remove();
-                              await _locationSubscription!.cancel();
-                              await rideProvider.confirmRide(
-                                Ride(
-                                  rideID: widget.rideID,
-                                  passengerID: widget.passengerID,
-                                  picupLocation: const LatLng(0, 0),
-                                  dropLocation: const LatLng(0, 0),
-                                  vehicleType: widget.selectedVehicle,
-                                  totalKMs: widget.totalKM,
-                                  totalPrice: widget.totalPrice,
-                                  dropAddresss: widget.pickAddress,
-                                  pickupAddress: widget.dropAddress,
-                                  date: DateTime.now(),
-                                  driverID: widget.driverID,
-                                ),
-                                widget.passengerID,
-                                context,
-                                widget.rideID,
-                              );
-                              rideProvider.loading = false;
+                              try {
+                                await databaseReference
+                                    .child(widget.rideID)
+                                    .child(widget.driverID)
+                                    .update({
+                                  "isEnded": true,
+                                });
+
+                                _locationSubscription!.cancel();
+                                await rideProvider.confirmRide(
+                                  Ride(
+                                    rideID: widget.rideID,
+                                    passengerID: widget.passengerID,
+                                    picupLocation: const LatLng(0, 0),
+                                    dropLocation: const LatLng(0, 0),
+                                    vehicleType: widget.selectedVehicle,
+                                    totalKMs: widget.totalKM,
+                                    totalPrice: widget.totalPrice,
+                                    dropAddresss: widget.pickAddress,
+                                    pickupAddress: widget.dropAddress,
+                                    date: DateTime.now(),
+                                    driverID: widget.driverID,
+                                  ),
+                                  widget.passengerID,
+                                  context,
+                                  widget.rideID,
+                                );
+                              } catch (e) {
+                                print(e);
+                              } finally {
+                                databaseReference
+                                    .child(widget.rideID)
+                                    .child(widget.driverID)
+                                    .remove();
+
+                                rideProvider.loading = false;
+
+                                Navigator.pushNamed(context, '/drivermap');
+                              }
                             },
                             child: rideProvider.loading
                                 ? const SizedBox(
