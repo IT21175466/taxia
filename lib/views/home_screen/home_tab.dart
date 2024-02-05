@@ -85,6 +85,29 @@ class _HomeTabState extends State<HomeTab> {
     });
   }
 
+  void deleteRide() async {
+    try {
+      DatabaseReference databaseReference =
+          await FirebaseDatabase.instance.ref('sheduled_rides');
+
+      await databaseReference.child(userId!).remove();
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          backgroundColor: Colors.red,
+          content: Text(
+            "You deleted the ride!",
+            style: TextStyle(
+              color: Colors.white,
+            ),
+          ),
+        ),
+      );
+      print("Sucessfully Deleted!");
+    } catch (e) {
+      print(e);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
@@ -184,12 +207,17 @@ class _HomeTabState extends State<HomeTab> {
                           ),
                         ),
                         Spacer(),
-                        Text(
-                          "See More",
-                          style: TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.w500,
-                            color: Colors.blue,
+                        GestureDetector(
+                          onTap: () {
+                            deleteRide();
+                          },
+                          child: Text(
+                            "Delete Ride",
+                            style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.red,
+                            ),
                           ),
                         ),
                       ],
