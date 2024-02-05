@@ -33,7 +33,7 @@ class LoginProvider extends ChangeNotifier {
         notifyListeners();
 
         Navigator.pushReplacementNamed(context,
-            '/drivermap'); // Navigate to driver home page , shoud modify
+            '/driverhome'); // Navigate to driver home page , shoud modify
 
         notifyListeners();
       } else if (docSnapshotUsers.exists) {

@@ -482,7 +482,7 @@ class _StartTripState extends State<StartTrip> {
 
                                 rideProvider.loading = false;
 
-                                Navigator.pushNamed(context, '/drivermap');
+                                Navigator.pushNamed(context, '/driverhome');
                               }
                             },
                             child: rideProvider.loading

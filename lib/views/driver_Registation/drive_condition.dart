@@ -218,7 +218,7 @@ class _TeamandconditionState extends State<Teamandcondition> {
           .set(newDriver.toMap())
           .then((value) {
         Navigator.pushNamedAndRemoveUntil(
-            context, '/drivermap', (route) => false);
+            context, '/driverhome', (route) => false);
       });
       print('Data has been successfully written to Firestore.');
 

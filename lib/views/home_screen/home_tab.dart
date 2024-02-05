@@ -12,6 +12,7 @@ class HomeTab extends StatefulWidget {
 class _HomeTabState extends State<HomeTab> {
   @override
   Widget build(BuildContext context) {
+    //double screenWidth = MediaQuery.of(context).size.width;
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
       child: SingleChildScrollView(
@@ -85,10 +86,56 @@ class _HomeTabState extends State<HomeTab> {
                 ),
               ],
             ),
+            // Container(
+            //   width: screenWidth,
+            //   height: 120,
+            //   padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+            //   margin: EdgeInsets.only(top: 10),
+            //   decoration: BoxDecoration(
+            //     borderRadius: BorderRadius.circular(15),
+            //     color: Colors.blueAccent.withOpacity(0.2),
+            //   ),
+            //   child: Column(
+            //     crossAxisAlignment: CrossAxisAlignment.start,
+            //     children: [
+            //       Row(
+            //         children: [
+            //           Text(
+            //             "Ongoing Ride...",
+            //             style: TextStyle(
+            //               fontSize: 16,
+            //               fontWeight: FontWeight.w700,
+            //             ),
+            //           ),
+            //           Spacer(),
+            //           Text(
+            //             "See More",
+            //             style: TextStyle(
+            //               fontSize: 15,
+            //               fontWeight: FontWeight.w500,
+            //               color: Colors.blue,
+            //             ),
+            //           ),
+            //         ],
+            //       ),
+            //       Text(
+            //         "Register in 1 minute!",
+            //         style: TextStyle(
+            //           fontSize: 15,
+            //           fontWeight: FontWeight.w400,
+            //           color: AppColors.grayColor,
+            //         ),
+            //       ),
+            //     ],
+            //   ),
+            // ),
+
             SizedBox(
               height: 25,
             ),
             Row(
+              //Tempory
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -100,14 +147,14 @@ class _HomeTabState extends State<HomeTab> {
                         Navigator.pushNamed(context, '/map');
                       },
                     ),
-                    // SizedBox(
-                    //   height: 20,
-                    // ),
-                    // CustomElement(
-                    //   label: "Quick",
-                    //   imagePath: 'assets/images/delivery.png',
-                    //   onTap: () {},
-                    // ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    CustomElement(
+                      label: "Show All",
+                      imagePath: 'assets/images/dots.png',
+                      onTap: () {},
+                    ),
                     // SizedBox(
                     //   height: 20,
                     // ),
@@ -192,14 +239,22 @@ class _HomeTabState extends State<HomeTab> {
                     // SizedBox(
                     //   height: 20,
                     // ),
+
                     CustomElement(
-                      label: "Show All",
-                      imagePath: 'assets/images/dots.png',
-                      onTap: () {},
+                      label: "Quick",
+                      imagePath: 'assets/images/delivery.png',
+                      onTap: () {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                                'This feature not available at this moment'),
+                          ),
+                        );
+                      },
                     ),
                   ],
                 ),
-                Spacer(),
+                //Spacer(),
                 // Column(
                 //   crossAxisAlignment: CrossAxisAlignment.center,
                 //   children: [

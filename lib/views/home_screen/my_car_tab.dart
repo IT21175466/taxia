@@ -137,7 +137,9 @@ class _MyCarTabState extends State<MyCarTab> {
                     CustomElement(
                       label: "Navi",
                       imagePath: 'assets/images/navigation.png',
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.pushNamed(context, '/drivermap');
+                      },
                     ),
                     SizedBox(
                       height: 20,
