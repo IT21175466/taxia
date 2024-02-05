@@ -100,22 +100,22 @@ class _HomeTabState extends State<HomeTab> {
                         Navigator.pushNamed(context, '/map');
                       },
                     ),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    CustomElement(
-                      label: "Quick",
-                      imagePath: 'assets/images/delivery.png',
-                      onTap: () {},
-                    ),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    CustomElement(
-                      label: "Pet",
-                      imagePath: 'assets/images/pet.png',
-                      onTap: () {},
-                    ),
+                    // SizedBox(
+                    //   height: 20,
+                    // ),
+                    // CustomElement(
+                    //   label: "Quick",
+                    //   imagePath: 'assets/images/delivery.png',
+                    //   onTap: () {},
+                    // ),
+                    // SizedBox(
+                    //   height: 20,
+                    // ),
+                    // CustomElement(
+                    //   label: "Pet",
+                    //   imagePath: 'assets/images/pet.png',
+                    //   onTap: () {},
+                    // ),
                   ],
                 ),
                 Spacer(),
@@ -127,22 +127,22 @@ class _HomeTabState extends State<HomeTab> {
                       imagePath: 'assets/images/bookTaxi.png',
                       onTap: () {},
                     ),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    CustomElement(
-                      label: "Rent Car",
-                      imagePath: 'assets/images/rentCar.png',
-                      onTap: () {},
-                    ),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    CustomElement(
-                      label: "Train",
-                      imagePath: 'assets/images/train.png',
-                      onTap: () {},
-                    ),
+                    // SizedBox(
+                    //   height: 20,
+                    // ),
+                    // CustomElement(
+                    //   label: "Rent Car",
+                    //   imagePath: 'assets/images/rentCar.png',
+                    //   onTap: () {},
+                    // ),
+                    // SizedBox(
+                    //   height: 20,
+                    // ),
+                    // CustomElement(
+                    //   label: "Train",
+                    //   imagePath: 'assets/images/train.png',
+                    //   onTap: () {},
+                    // ),
                   ],
                 ),
                 Spacer(),
@@ -154,44 +154,44 @@ class _HomeTabState extends State<HomeTab> {
                       imagePath: 'assets/images/bike.png',
                       onTap: () {},
                     ),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    CustomElement(
-                      label: "Flight",
-                      imagePath: 'assets/images/airplane.png',
-                      onTap: () {},
-                    ),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    CustomElement(
-                      label: "Charter bus",
-                      imagePath: 'assets/images/charter.png',
-                      onTap: () {},
-                    ),
+                    // SizedBox(
+                    //   height: 20,
+                    // ),
+                    // CustomElement(
+                    //   label: "Flight",
+                    //   imagePath: 'assets/images/airplane.png',
+                    //   onTap: () {},
+                    // ),
+                    // SizedBox(
+                    //   height: 20,
+                    // ),
+                    // CustomElement(
+                    //   label: "Charter bus",
+                    //   imagePath: 'assets/images/charter.png',
+                    //   onTap: () {},
+                    // ),
                   ],
                 ),
                 Spacer(),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    CustomElement(
-                      label: "Parking",
-                      imagePath: 'assets/images/parking.png',
-                      onTap: () {},
-                    ),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    CustomElement(
-                      label: "EV Charge",
-                      imagePath: 'assets/images/charging.png',
-                      onTap: () {},
-                    ),
-                    SizedBox(
-                      height: 20,
-                    ),
+                    // CustomElement(
+                    //   label: "Parking",
+                    //   imagePath: 'assets/images/parking.png',
+                    //   onTap: () {},
+                    // ),
+                    // SizedBox(
+                    //   height: 20,
+                    // ),
+                    // CustomElement(
+                    //   label: "EV Charge",
+                    //   imagePath: 'assets/images/charging.png',
+                    //   onTap: () {},
+                    // ),
+                    // SizedBox(
+                    //   height: 20,
+                    // ),
                     CustomElement(
                       label: "Show All",
                       imagePath: 'assets/images/dots.png',
@@ -200,32 +200,32 @@ class _HomeTabState extends State<HomeTab> {
                   ],
                 ),
                 Spacer(),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    CustomElement(
-                      label: "Driver",
-                      imagePath: 'assets/images/driverElement.png',
-                      onTap: () {},
-                    ),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    CustomElement(
-                      label: "Request",
-                      imagePath: 'assets/images/request.png',
-                      onTap: () {},
-                    ),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    CustomElement(
-                      label: "Request",
-                      imagePath: 'assets/images/request.png',
-                      onTap: () {},
-                    ),
-                  ],
-                ),
+                // Column(
+                //   crossAxisAlignment: CrossAxisAlignment.center,
+                //   children: [
+                //     CustomElement(
+                //       label: "Driver",
+                //       imagePath: 'assets/images/driverElement.png',
+                //       onTap: () {},
+                //     ),
+                //     SizedBox(
+                //       height: 20,
+                //     ),
+                //     CustomElement(
+                //       label: "Request",
+                //       imagePath: 'assets/images/request.png',
+                //       onTap: () {},
+                //     ),
+                //     SizedBox(
+                //       height: 20,
+                //     ),
+                //     CustomElement(
+                //       label: "Request",
+                //       imagePath: 'assets/images/request.png',
+                //       onTap: () {},
+                //     ),
+                //   ],
+                // ),
               ],
             ),
             SizedBox(
