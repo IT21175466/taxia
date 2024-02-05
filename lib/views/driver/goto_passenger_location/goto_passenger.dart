@@ -58,6 +58,25 @@ class _GoToPassengerState extends State<GoToPassenger> {
     deleteRequest();
     getUserData();
     _listenLocation();
+
+    databaseReference.child(widget.rideID).onChildRemoved.listen((event) async {
+      await _locationSubscription?.cancel();
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            backgroundColor: Colors.red,
+            content: Text(
+              "Passenger canceled the ride!",
+              style: TextStyle(
+                color: Colors.white,
+              ),
+            ),
+          ),
+        );
+        Navigator.pushNamedAndRemoveUntil(
+            context, '/drivermap', (route) => false);
+      }
+    });
   }
 
   callNumber() async {

@@ -60,16 +60,18 @@ class _SearchDriverState extends State<SearchDriver> {
   }
 
   void _navigateToAcceptedScreen() {
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(
-        builder: (context) => RideAccepted(
-          rideID: widget.rideID,
-          userID: widget.userID,
-          pickupLocation: widget.pickupLocation,
+    if (mounted) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => RideAccepted(
+            rideID: widget.rideID,
+            userID: widget.userID,
+            pickupLocation: widget.pickupLocation,
+          ),
         ),
-      ),
-    );
+      );
+    }
   }
 
   void startTimer() {
@@ -83,15 +85,14 @@ class _SearchDriverState extends State<SearchDriver> {
 
       if (t.tick >= totalSeconds) {
         t.cancel();
-        timer =
-            null; // Set timer to null after canceling to indicate that it's not active.
+        timer = null;
       }
     });
   }
 
   @override
   void dispose() {
-    timer!.cancel();
+    cancelRide();
     super.dispose();
   }
 
@@ -112,20 +113,23 @@ class _SearchDriverState extends State<SearchDriver> {
     } catch (e) {
       print(e);
     } finally {
-      setState(() {
-        isLoading = false;
-      });
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          backgroundColor: Colors.red,
-          content: Text(
-            "You canceled the ride!",
-            style: TextStyle(
-              color: Colors.white,
+      // setState(() {
+      //   isLoading = false;
+      // });
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            backgroundColor: Colors.red,
+            content: Text(
+              "You canceled the ride!",
+              style: TextStyle(
+                color: Colors.white,
+              ),
             ),
           ),
-        ),
-      );
+        );
+        Navigator.pop(context);
+      }
     }
   }
 

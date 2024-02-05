@@ -163,6 +163,42 @@ class _RideAcceptedState extends State<RideAccepted> {
     await launchUrl(dialNumber!);
   }
 
+  @override
+  void dispose() {
+    super.dispose();
+    cancelRide();
+  }
+
+  void cancelRide() async {
+    try {
+      DatabaseReference databaseReference =
+          await FirebaseDatabase.instance.ref('ongoing_rides');
+
+      databaseReference.child(widget.rideID).remove();
+      print("Sucessfully Deleted!");
+    } catch (e) {
+      print(e);
+    } finally {
+      // setState(() {
+      //   isLoading = false;
+      // });
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            backgroundColor: Colors.red,
+            content: Text(
+              "You canceled the ride!",
+              style: TextStyle(
+                color: Colors.white,
+              ),
+            ),
+          ),
+        );
+        Navigator.pop(context);
+      }
+    }
+  }
+
   getDriverData() async {
     try {
       final DocumentSnapshot driversDoc = await FirebaseFirestore.instance
@@ -420,6 +456,7 @@ class _RideAcceptedState extends State<RideAccepted> {
                         onTap: () {
                           //drowMap();
                           //getDriverData();
+                          cancelRide();
                         },
                         child: Text(
                           "Cancel",
