@@ -89,6 +89,8 @@ class _HomeTabState extends State<HomeTab> {
               height: 25,
             ),
             Row(
+              //Tempory
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -100,14 +102,14 @@ class _HomeTabState extends State<HomeTab> {
                         Navigator.pushNamed(context, '/map');
                       },
                     ),
-                    // SizedBox(
-                    //   height: 20,
-                    // ),
-                    // CustomElement(
-                    //   label: "Quick",
-                    //   imagePath: 'assets/images/delivery.png',
-                    //   onTap: () {},
-                    // ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    CustomElement(
+                      label: "Show All",
+                      imagePath: 'assets/images/dots.png',
+                      onTap: () {},
+                    ),
                     // SizedBox(
                     //   height: 20,
                     // ),
@@ -192,14 +194,22 @@ class _HomeTabState extends State<HomeTab> {
                     // SizedBox(
                     //   height: 20,
                     // ),
+
                     CustomElement(
-                      label: "Show All",
-                      imagePath: 'assets/images/dots.png',
-                      onTap: () {},
+                      label: "Quick",
+                      imagePath: 'assets/images/delivery.png',
+                      onTap: () {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                                'This feature not available at this moment'),
+                          ),
+                        );
+                      },
                     ),
                   ],
                 ),
-                Spacer(),
+                //Spacer(),
                 // Column(
                 //   crossAxisAlignment: CrossAxisAlignment.center,
                 //   children: [
