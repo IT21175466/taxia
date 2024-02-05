@@ -26,6 +26,8 @@ class Teamandcondition extends StatefulWidget {
   final String model;
   final String vehicalimg;
 
+  final bool onlyMyVehicle;
+
   const Teamandcondition({
     required this.firstName,
     required this.lastName,
@@ -45,6 +47,7 @@ class Teamandcondition extends StatefulWidget {
     required this.band,
     required this.model,
     required this.vehicalimg,
+    required this.onlyMyVehicle,
   });
 
   Future<void> saveDriver(Driver driver, String dID) async {
@@ -204,6 +207,7 @@ class _TeamandconditionState extends State<Teamandcondition> {
       model: widget.model,
       vehicleImg: widget.vehicalimg,
       date: DateTime.now().toString(),
+      yourVehicleOnly: widget.onlyMyVehicle,
     );
 
     CollectionReference driversCollection =

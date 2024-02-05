@@ -14,6 +14,7 @@ class UploadDument extends StatefulWidget {
   final String email;
   final String address;
   final bool isVehicleOwner;
+  final bool onlyMyVehicle;
 
   UploadDument({
     required this.firstName,
@@ -24,6 +25,7 @@ class UploadDument extends StatefulWidget {
     required this.email,
     required this.address,
     required this.isVehicleOwner,
+    required this.onlyMyVehicle,
   });
 
   @override
@@ -199,6 +201,7 @@ class _UploadDumentState extends State<UploadDument> {
                                   nicback: nicback,
                                   drivingfont: drivingfont,
                                   drivingback: drivingback,
+                                  onlyMyVehicle: widget.onlyMyVehicle,
                                 )), // Replace UploadScreen() with your desired destination screen
                       );
                     },

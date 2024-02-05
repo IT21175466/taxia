@@ -21,6 +21,7 @@ class SelectVehical extends StatefulWidget {
   final String nicback;
   final String drivingfont;
   final String drivingback;
+  final bool onlyMyVehicle;
 
   const SelectVehical({
     required this.firstName,
@@ -36,6 +37,7 @@ class SelectVehical extends StatefulWidget {
     required this.nicback,
     required this.drivingfont,
     required this.drivingback,
+    required this.onlyMyVehicle,
   });
 
   @override
@@ -575,26 +577,28 @@ class _SelectVehicalState extends State<SelectVehical> {
     Navigator.push(
       context,
       MaterialPageRoute(
-          builder: (context) => Teamandcondition(
-                firstName: widget.firstName,
-                lastName: widget.lastName,
-                birthday: widget.birthday,
-                gender: widget.gender,
-                telephone: widget.telephone,
-                email: widget.email,
-                address: widget.address,
-                isVehicleOwner: widget.isVehicleOwner,
-                faceimg: widget.faceimg,
-                nicfont: widget.nicfont,
-                nicback: widget.nicback,
-                drivingfont: widget.drivingfont,
-                drivingback: widget.drivingback,
-                selectvehical: selectedvehical,
-                band: band,
-                model: modal,
-                vehicalnumber: vehicalnumber,
-                vehicalimg: vehicalimg,
-              )), // Replace UploadScreen() with your desired destination screen
+        builder: (context) => Teamandcondition(
+          firstName: widget.firstName,
+          lastName: widget.lastName,
+          birthday: widget.birthday,
+          gender: widget.gender,
+          telephone: widget.telephone,
+          email: widget.email,
+          address: widget.address,
+          isVehicleOwner: widget.isVehicleOwner,
+          faceimg: widget.faceimg,
+          nicfont: widget.nicfont,
+          nicback: widget.nicback,
+          drivingfont: widget.drivingfont,
+          drivingback: widget.drivingback,
+          selectvehical: selectedvehical,
+          band: band,
+          model: modal,
+          vehicalnumber: vehicalnumber,
+          vehicalimg: vehicalimg,
+          onlyMyVehicle: widget.onlyMyVehicle,
+        ),
+      ), // Replace UploadScreen() with your desired destination screen
     );
   }
 }

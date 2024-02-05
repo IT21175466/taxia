@@ -18,6 +18,7 @@ class Driver {
   final String brand;
   final String model;
   final String vehicleImg;
+  final bool yourVehicleOnly;
   final String date;
 
   // Constructor
@@ -41,6 +42,7 @@ class Driver {
     required this.brand,
     required this.model,
     required this.vehicleImg,
+    required this.yourVehicleOnly,
     required this.date,
   });
 
@@ -66,6 +68,7 @@ class Driver {
       'brand': brand,
       'model': model,
       'vehicleImg': vehicleImg,
+      'yourVehicleOnly': yourVehicleOnly,
       'registed_date': date,
     };
   }
@@ -92,6 +95,7 @@ class Driver {
       brand: json['brand'],
       model: json['model'],
       vehicleImg: json['vehicleImg'],
+      yourVehicleOnly: json['yourVehicleOnly'],
       date: json['registed_date'].toString(),
     );
   }

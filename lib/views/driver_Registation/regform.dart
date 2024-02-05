@@ -12,6 +12,7 @@ class DriveRegistation extends StatefulWidget {
 class _DriveRegistationState extends State<DriveRegistation> {
   String? selectedGender;
   bool checkboxValue2 = false;
+  bool onlyMyVehicle = false;
   TextEditingController firstNameController = TextEditingController();
   TextEditingController lastNameController = TextEditingController();
   TextEditingController brithdayController = TextEditingController();
@@ -264,6 +265,18 @@ class _DriveRegistationState extends State<DriveRegistation> {
                     'Check this box if you are the owner of the vehicle.'),
               ),
               const Divider(height: 0),
+              CheckboxListTile(
+                value: onlyMyVehicle,
+                onChanged: (bool? value) {
+                  setState(() {
+                    onlyMyVehicle = value!;
+                  });
+                },
+                title: const Text("Do you ride other driver's vehicles?"),
+                subtitle: const Text(
+                    'Check this box if you want to register as a driver and receive ride requests from other drivers.'),
+              ),
+              const Divider(height: 0),
               Padding(
                 padding:
                     const EdgeInsets.symmetric(vertical: 40.0, horizontal: 12),
@@ -311,6 +324,7 @@ class _DriveRegistationState extends State<DriveRegistation> {
     String email = emailController.text;
     String Address = addressController.text;
     bool vhicalowner = checkboxValue2;
+    bool onlyMyVehicleRide = onlyMyVehicle;
 
     Navigator.push(
       context,
@@ -324,6 +338,7 @@ class _DriveRegistationState extends State<DriveRegistation> {
           email: email,
           address: Address,
           isVehicleOwner: vhicalowner,
+          onlyMyVehicle: onlyMyVehicleRide,
         ),
       ),
     );
