@@ -3,6 +3,7 @@ import 'package:taxia/views/authentication/login_page.dart';
 import 'package:taxia/views/authentication/phone_validation_page.dart';
 import 'package:taxia/views/authentication/signup_page.dart';
 import 'package:taxia/views/authentication/type_selection.dart';
+import 'package:taxia/views/driver/driver_home/driver_home_page.dart';
 import 'package:taxia/views/driver/get_reqest/get_requests_map_page.dart';
 import 'package:taxia/views/driver_registation/regform.dart';
 import 'package:taxia/views/home_screen/home_page.dart';
@@ -23,6 +24,7 @@ class AppRoutes {
       '/driverregistation': (context) => DriveRegistation(),
       '/initsplash': (context) => InitialSplash(),
       '/drivermap': (context) => GetRequestsMap(),
+      '/driverhome': (context) => DriverHomePage(),
     };
   }
 }
