@@ -1,4 +1,9 @@
+import 'dart:ffi';
+
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:taxia/constants/app_colors.dart';
 import 'package:taxia/widgets/custom_element.dart';
 
@@ -10,9 +15,79 @@ class HomeTab extends StatefulWidget {
 }
 
 class _HomeTabState extends State<HomeTab> {
+  String? userId = '';
+
+  //Ride
+  String? rideID = '...';
+  LatLng? pickup;
+  LatLng? drop;
+  String? vehicleType = '...';
+  Double? totalKm;
+  Double? totalPrice;
+  String? pickAddress = '...';
+  String? dropAddress = '...';
+  String? scheduledTime = '...';
+  String? scheduledDate = '...';
+
+  bool isRecordAvailable = false;
+
+  @override
+  void initState() {
+    super.initState();
+    getUserID();
+  }
+
+  getUserID() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    setState(() {
+      userId = prefs.getString('userID');
+    });
+
+    DatabaseReference databaseReference =
+        FirebaseDatabase.instance.ref('sheduled_rides');
+
+    databaseReference.child(userId!).onValue.listen((event) {
+      DataSnapshot dataSnapshot = event.snapshot;
+      Map<dynamic, dynamic>? values = dataSnapshot.value as Map?;
+
+      if (values != null) {
+        setState(() {
+          isRecordAvailable = true;
+        });
+
+        values.forEach((key, rideData) {
+          print('Key: $key');
+
+          // if (rideData is Map &&
+          //     rideData.containsKey('pickupAddress') &&
+          //     rideData.containsKey('dropAddress') &&
+          //     rideData.containsKey('vehicleType')) {
+          // print('picupLocationLat: ${rideData['picupLocationLat']}');
+          // print('picupLocationLong: ${rideData['picupLocationLong']}');
+
+          setState(() {
+            pickAddress = rideData['pickupAddress'].toString();
+            dropAddress = rideData['dropAddress'].toString();
+            vehicleType = rideData['vehicleType'].toString();
+            scheduledTime = rideData['time'].toString();
+            scheduledDate = rideData['date'].toString();
+          });
+          // } else {
+          //   print('Invalid data structure or missing values for key $key');
+          // }
+        });
+      } else {
+        setState(() {
+          isRecordAvailable = false;
+        });
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    //double screenWidth = MediaQuery.of(context).size.width;
+    double screenWidth = MediaQuery.of(context).size.width;
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
       child: SingleChildScrollView(
@@ -86,50 +161,119 @@ class _HomeTabState extends State<HomeTab> {
                 ),
               ],
             ),
-            // Container(
-            //   width: screenWidth,
-            //   height: 120,
-            //   padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-            //   margin: EdgeInsets.only(top: 10),
-            //   decoration: BoxDecoration(
-            //     borderRadius: BorderRadius.circular(15),
-            //     color: Colors.blueAccent.withOpacity(0.2),
-            //   ),
-            //   child: Column(
-            //     crossAxisAlignment: CrossAxisAlignment.start,
-            //     children: [
-            //       Row(
-            //         children: [
-            //           Text(
-            //             "Ongoing Ride...",
-            //             style: TextStyle(
-            //               fontSize: 16,
-            //               fontWeight: FontWeight.w700,
-            //             ),
-            //           ),
-            //           Spacer(),
-            //           Text(
-            //             "See More",
-            //             style: TextStyle(
-            //               fontSize: 15,
-            //               fontWeight: FontWeight.w500,
-            //               color: Colors.blue,
-            //             ),
-            //           ),
-            //         ],
-            //       ),
-            //       Text(
-            //         "Register in 1 minute!",
-            //         style: TextStyle(
-            //           fontSize: 15,
-            //           fontWeight: FontWeight.w400,
-            //           color: AppColors.grayColor,
-            //         ),
-            //       ),
-            //     ],
-            //   ),
-            // ),
-
+            Visibility(
+              visible: isRecordAvailable,
+              child: Container(
+                width: screenWidth,
+                padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                margin: EdgeInsets.only(top: 10),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(15),
+                  color: Colors.blueAccent.withOpacity(0.2),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Text(
+                          "Sheduled Ride",
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                        Spacer(),
+                        Text(
+                          "See More",
+                          style: TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w500,
+                            color: Colors.blue,
+                          ),
+                        ),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        Text(
+                          "Pickup - ",
+                          style: TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w400,
+                            color: AppColors.grayColor,
+                          ),
+                        ),
+                        Text(
+                          pickAddress!,
+                          style: TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        Text(
+                          "Drop - ",
+                          style: TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w400,
+                            color: AppColors.grayColor,
+                          ),
+                        ),
+                        Text(
+                          dropAddress!,
+                          style: TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        Text(
+                          "Date - ",
+                          style: TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w400,
+                            color: AppColors.grayColor,
+                          ),
+                        ),
+                        Text(
+                          scheduledDate!,
+                          style: TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        Text(
+                          "Time - ",
+                          style: TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w400,
+                            color: AppColors.grayColor,
+                          ),
+                        ),
+                        Text(
+                          scheduledTime!,
+                          style: TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
             SizedBox(
               height: 25,
             ),
@@ -172,7 +316,9 @@ class _HomeTabState extends State<HomeTab> {
                     CustomElement(
                       label: "Book Taxi",
                       imagePath: 'assets/images/bookTaxi.png',
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.pushNamed(context, '/booktaximap');
+                      },
                     ),
                     // SizedBox(
                     //   height: 20,
