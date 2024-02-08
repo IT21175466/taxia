@@ -1,10 +1,14 @@
 import 'dart:ffi';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:taxia/constants/app_colors.dart';
+import 'package:taxia/models/Driver.dart';
+import 'package:taxia/views/accepted_ride/ride_accepted.dart';
+import 'package:taxia/views/started_trip/started_trip.dart';
 import 'package:taxia/widgets/custom_element.dart';
 
 class HomeTab extends StatefulWidget {
@@ -16,6 +20,9 @@ class HomeTab extends StatefulWidget {
 
 class _HomeTabState extends State<HomeTab> {
   String? userId = '';
+
+  DatabaseReference ongoingRidesDatabaseReference =
+      FirebaseDatabase.instance.ref('ongoing_rides');
 
   //Ride
   String? rideID = '...';
@@ -29,12 +36,123 @@ class _HomeTabState extends State<HomeTab> {
   String? scheduledTime = '...';
   String? scheduledDate = '...';
 
+  //ongoing Ride
+  String? ongoingPickAddress = '...';
+  String? ongoingDropAddress = '...';
+  String? ongoingtotalKM = '...';
+  double? ongoingtotalPrice = 0;
+  String? ongoingvehicleType = '...';
+  String? ongoingRideID;
+  LatLng? ongoingPickupLocation;
+  LatLng? ongoingDriverLocation;
+  LatLng? ongoingDropLocation;
+  String ongoingFirstName = '...';
+  String ongoingTaxiNumber = '...';
+  String ongoingPhoneNumber = '...';
+
+  bool isRideStarted = false;
+
   bool isRecordAvailable = false;
+  bool isOngoingAvailable = false;
 
   @override
   void initState() {
     super.initState();
     getUserID();
+    listnToOngoings();
+  }
+
+  getDriverData(String driverID) async {
+    try {
+      final DocumentSnapshot driversDoc = await FirebaseFirestore.instance
+          .collection("Drivers")
+          .doc(driverID)
+          .get();
+
+      if (driversDoc.exists) {
+        if (mounted) {
+          setState(() {
+            ongoingFirstName = driversDoc.get('firstName').toString();
+            ongoingTaxiNumber = driversDoc.get('vehicleNumber').toString();
+            ongoingPhoneNumber = driversDoc.get('telephone').toString();
+          });
+        }
+
+        return Driver.fromJson(driversDoc.data() as Map<String, dynamic>);
+      }
+    } catch (e) {
+      print(e);
+    } finally {
+      print("Succesfully get data");
+    }
+  }
+
+  void listnToOngoings() {
+    ongoingRidesDatabaseReference.onValue.listen((event) {
+      DataSnapshot dataSnapshot = event.snapshot;
+      Map<dynamic, dynamic>? values = dataSnapshot.value as Map?;
+
+      if (values != null) {
+        values.forEach((key, rideData) {
+          ongoingRidesDatabaseReference.onValue.listen((event2) {
+            DataSnapshot dataSnapshot2 = event2.snapshot.child(key);
+            Map<dynamic, dynamic>? values2 = dataSnapshot2.value as Map?;
+
+            if (values2 != null) {
+              values2.forEach((key2, rideData2) {
+                print('Key2: $key2');
+
+                if (rideData2['pID'].toString() == userId) {
+                  getDriverData(rideData2['driverID'].toString());
+                  setState(() {
+                    isOngoingAvailable = true;
+                    ongoingPickAddress = rideData2['pickAddress'].toString();
+                    ongoingDropAddress = rideData2['dropAddress'].toString();
+                    ongoingtotalKM = rideData2['totalKm'].toString();
+                    ongoingvehicleType = rideData2['vehicleType'].toString();
+                    isRideStarted = rideData2['isStarted'];
+                    ongoingRideID = rideData2['rideID'].toString();
+                    ongoingPickupLocation = LatLng(
+                        double.parse(rideData2['driverLocationLat'].toString()),
+                        double.parse(
+                            rideData2['driverLocationLon'].toString()));
+
+                    ongoingDriverLocation = LatLng(
+                        double.parse(rideData2['picupLocationLat'].toString()),
+                        double.parse(
+                            rideData2['picupLocationLong'].toString()));
+
+                    ongoingDropLocation = LatLng(
+                        double.parse(rideData2['dropLocationLat'].toString()),
+                        double.parse(rideData2['dropLocationLong'].toString()));
+                    ongoingtotalPrice = double.parse(
+                        rideData2['totalPrice'].toStringAsFixed(2));
+                  });
+                } else {
+                  setState(() {
+                    isOngoingAvailable = false;
+                  });
+                }
+              });
+            } else {
+              if (mounted) {
+                setState(() {
+                  isOngoingAvailable = false;
+                });
+              }
+            }
+          });
+
+          print('Key: $key');
+        });
+      } else {
+        if (mounted) {
+          setState(() {
+            isOngoingAvailable = false;
+          });
+        }
+      }
+    });
   }
 
   getUserID() async {
@@ -383,6 +501,168 @@ class _HomeTabState extends State<HomeTab> {
                       ],
                     ),
                   ],
+                ),
+              ),
+            ),
+            Visibility(
+              visible: isOngoingAvailable,
+              child: GestureDetector(
+                onTap: () {
+                  if (isRideStarted) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => TripStarted(
+                          rideID: ongoingRideID!,
+                          userID: userId!,
+                          phoneNumber: ongoingPhoneNumber,
+                          firstName: ongoingFirstName,
+                          pickupLocation: ongoingPickupLocation!,
+                          dropLocation: ongoingDropLocation!,
+                          vehicleNumber: ongoingTaxiNumber,
+                          progileImage: 'progileImage',
+                        ),
+                      ),
+                    );
+                  } else {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => RideAccepted(
+                            rideID: ongoingRideID!,
+                            userID: userId!,
+                            pickupLocation: ongoingPickupLocation!),
+                      ),
+                    );
+                  }
+                },
+                child: Container(
+                  width: screenWidth,
+                  padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                  margin: EdgeInsets.only(top: 10),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(15),
+                    color: Colors.blueAccent.withOpacity(0.2),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Text(
+                            "Ongoing Ride ",
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                          isRideStarted
+                              ? Text(
+                                  " - Trip Started",
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                )
+                              : Text(
+                                  "",
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                ),
+                          Spacer(),
+                          Text(
+                            ongoingvehicleType!.toUpperCase(),
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w700,
+                              color: const Color.fromARGB(255, 92, 92, 92),
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 5,
+                      ),
+                      Row(
+                        children: [
+                          Text(
+                            "Driver Name - ",
+                            style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.w400,
+                              color: AppColors.grayColor,
+                            ),
+                          ),
+                          Text(
+                            ongoingFirstName,
+                            style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ),
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          Text(
+                            "Drop - ",
+                            style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.w400,
+                              color: AppColors.grayColor,
+                            ),
+                          ),
+                          Text(
+                            ongoingDropAddress!,
+                            style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ),
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          Text(
+                            "Taxi Number - ",
+                            style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.w400,
+                              color: AppColors.grayColor,
+                            ),
+                          ),
+                          Text(
+                            ongoingTaxiNumber,
+                            style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ),
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          Text(
+                            "Total Price - ",
+                            style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.w400,
+                              color: AppColors.grayColor,
+                            ),
+                          ),
+                          Text(
+                            "Rs. ${ongoingtotalPrice}",
+                            style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),

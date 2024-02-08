@@ -10,6 +10,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:taxia/constants/app_colors.dart';
 import 'package:taxia/models/Driver.dart';
+import 'package:taxia/views/home_screen/home_page.dart';
 import 'package:taxia/views/started_trip/started_trip.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -37,6 +38,9 @@ class _RideAcceptedState extends State<RideAccepted> {
   LatLng? driverLocation;
 
   LatLng? dropLoc;
+
+  String ptofileImage = '...';
+  String taxiNumber = '...';
 
   Completer<GoogleMapController> googleMapCompleterController =
       Completer<GoogleMapController>();
@@ -81,6 +85,8 @@ class _RideAcceptedState extends State<RideAccepted> {
           firstName: firstName!,
           pickupLocation: widget.pickupLocation,
           dropLocation: dropLoc!,
+          vehicleNumber: taxiNumber,
+          progileImage: ptofileImage,
         ),
       ),
     );
@@ -163,12 +169,6 @@ class _RideAcceptedState extends State<RideAccepted> {
     await launchUrl(dialNumber!);
   }
 
-  @override
-  void dispose() {
-    super.dispose();
-    cancelRide();
-  }
-
   void cancelRide() async {
     try {
       DatabaseReference databaseReference =
@@ -210,6 +210,8 @@ class _RideAcceptedState extends State<RideAccepted> {
         setState(() {
           firstName = driversDoc.get('firstName').toString();
           phoneNumber = driversDoc.get('telephone').toString();
+          ptofileImage = driversDoc.get('profileImg').toString();
+          taxiNumber = driversDoc.get('vehicleNumber').toString();
           dialNumber = Uri(scheme: 'tel', path: phoneNumber);
         });
         return Driver.fromJson(driversDoc.data() as Map<String, dynamic>);
@@ -450,7 +452,17 @@ class _RideAcceptedState extends State<RideAccepted> {
                 children: [
                   Row(
                     children: [
-                      Icon(Icons.home),
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => HomePage(),
+                            ),
+                          );
+                        },
+                        child: Icon(Icons.home),
+                      ),
                       Spacer(),
                       GestureDetector(
                         onTap: () {
@@ -499,9 +511,15 @@ class _RideAcceptedState extends State<RideAccepted> {
                           border: Border.all(
                             color: AppColors.grayColor,
                           ),
-                        ),
-                        child: const Center(
-                          child: Icon(Icons.man),
+                          // image: ptofileImage.isEmpty
+                          //     ? DecorationImage(
+                          //         fit: BoxFit.cover,
+                          //         image: AssetImage('assets/images/avator.png'),
+                          //       )
+                          //     : DecorationImage(
+                          //         fit: BoxFit.cover,
+                          //         image: NetworkImage(ptofileImage),
+                          //       ),
                         ),
                       ),
                       const SizedBox(
@@ -551,8 +569,8 @@ class _RideAcceptedState extends State<RideAccepted> {
                     decoration: const BoxDecoration(
                       color: Color.fromARGB(255, 255, 232, 22),
                     ),
-                    child: const Text(
-                      "Emergency - 1334",
+                    child: Text(
+                      taxiNumber,
                       style: TextStyle(
                         fontWeight: FontWeight.w400,
                         fontSize: 15,
