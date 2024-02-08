@@ -47,17 +47,61 @@ class _HomeTabState extends State<HomeTab> {
     DatabaseReference databaseReference =
         FirebaseDatabase.instance.ref('sheduled_rides');
 
-    databaseReference.child(userId!).onValue.listen((event) {
+    databaseReference.onValue.listen((event) {
       DataSnapshot dataSnapshot = event.snapshot;
       Map<dynamic, dynamic>? values = dataSnapshot.value as Map?;
 
       if (values != null) {
-        setState(() {
-          isRecordAvailable = true;
-        });
-
         values.forEach((key, rideData) {
           print('Key: $key');
+
+          if (key == userId) {
+            databaseReference.onValue.listen((event2) {
+              DataSnapshot dataSnapshot2 = event2.snapshot.child(key);
+              Map<dynamic, dynamic>? values2 = dataSnapshot2.value as Map?;
+
+              if (values2 != null) {
+                values2.forEach((key2, rideData2) {
+                  print('Key2: $key2');
+
+                  setState(() {
+                    isRecordAvailable = true;
+                    pickAddress = rideData2['pickupAddress'].toString();
+                    dropAddress = rideData2['dropAddress'].toString();
+                    vehicleType = rideData2['vehicleType'].toString();
+                    scheduledTime = rideData2['time'].toString();
+                    scheduledDate = rideData2['date'].toString();
+                  });
+                });
+              }
+            });
+          } else {
+            print('No Data');
+          }
+
+          // databaseReference.onValue.listen((event2) {
+          //   DataSnapshot dataSnapshot2 = event2.snapshot.child(key);
+          //   Map<dynamic, dynamic>? values2 = dataSnapshot2.value as Map?;
+
+          //   if (values2 != null) {
+          //     values2.forEach((key2, rideData2) {
+          //       print('Key: $key2');
+
+          //       if (key2 == userId) {
+          //         setState(() {
+          //           isRecordAvailable = true;
+          //           pickAddress = rideData2['pickupAddress'].toString();
+          //           dropAddress = rideData2['dropAddress'].toString();
+          //           vehicleType = rideData2['vehicleType'].toString();
+          //           scheduledTime = rideData2['time'].toString();
+          //           scheduledDate = rideData2['date'].toString();
+          //         });
+          //       }
+          //     });
+          //   } else {
+          //     print('No Data');
+          //   }
+          // });
 
           // if (rideData is Map &&
           //     rideData.containsKey('pickupAddress') &&
@@ -66,13 +110,7 @@ class _HomeTabState extends State<HomeTab> {
           // print('picupLocationLat: ${rideData['picupLocationLat']}');
           // print('picupLocationLong: ${rideData['picupLocationLong']}');
 
-          setState(() {
-            pickAddress = rideData['pickupAddress'].toString();
-            dropAddress = rideData['dropAddress'].toString();
-            vehicleType = rideData['vehicleType'].toString();
-            scheduledTime = rideData['time'].toString();
-            scheduledDate = rideData['date'].toString();
-          });
+          print(rideData);
           // } else {
           //   print('Invalid data structure or missing values for key $key');
           // }

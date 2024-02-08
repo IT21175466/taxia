@@ -165,7 +165,8 @@ class _BookTaxiMapPageState extends State<BookTaxiMapPage> {
 
     if (timeOfDay != null) {
       setState(() {
-        timeController.text = '${timeOfDay.hour} ${timeOfDay.minute}';
+        timeController.text = DateFormat.Hm()
+            .format(DateTime(2022, 1, 1, timeOfDay.hour, timeOfDay.minute));
       });
     }
   }
