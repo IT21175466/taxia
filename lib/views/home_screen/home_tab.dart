@@ -240,24 +240,34 @@ class _HomeTabState extends State<HomeTab> {
             ),
             Row(
               children: [
-                Icon(Icons.home_outlined),
+                Icon(
+                  Icons.home_outlined,
+                  color: Colors.grey,
+                ),
                 SizedBox(
                   width: 5,
                 ),
                 Text(
                   "Home",
-                  style: TextStyle(),
+                  style: TextStyle(
+                    color: Colors.grey,
+                  ),
                 ),
                 SizedBox(
                   width: 15,
                 ),
-                Icon(Icons.work_outline),
+                Icon(
+                  Icons.work_outline,
+                  color: Colors.grey,
+                ),
                 SizedBox(
                   width: 5,
                 ),
                 Text(
                   "Work",
-                  style: TextStyle(),
+                  style: TextStyle(
+                    color: Colors.grey,
+                  ),
                 ),
               ],
             ),
