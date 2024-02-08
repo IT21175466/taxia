@@ -116,46 +116,85 @@ class _HomeTabState extends State<HomeTab> {
       child: SingleChildScrollView(
         child: Column(
           children: [
-            Container(
-              child: TextField(
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(5.0),
+            GestureDetector(
+              onTap: () {
+                Navigator.pushNamed(context, '/map');
+              },
+              child: Container(
+                padding: EdgeInsets.symmetric(horizontal: 10),
+                height: 50,
+                width: screenWidth,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(
+                    color: Color.fromARGB(255, 14, 88, 216),
+                    width: 1,
                   ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10.0),
-                    borderSide: const BorderSide(
-                      color: Color.fromARGB(255, 14, 88, 216),
-                      width: 1,
-                    ),
-                  ),
-                  labelText: "Where should I go?",
-                  labelStyle: TextStyle(
-                    fontWeight: FontWeight.w500,
-                    color: AppColors.grayColor,
-                  ),
-                  suffixIcon: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text("Leave"),
-                        SizedBox(
-                          width: 5,
-                        ),
-                        Text(
-                          "now",
-                          style: TextStyle(
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                        Icon(Icons.arrow_drop_down_outlined),
-                      ],
-                    ),
-                  ),
-                  contentPadding:
-                      const EdgeInsets.symmetric(vertical: 16, horizontal: 10),
                 ),
+                child: Row(
+                  children: [
+                    Text(
+                      'Where should I go?',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w500,
+                        color: AppColors.grayColor,
+                        fontSize: 16,
+                      ),
+                    ),
+                    Spacer(),
+                    Text("Leave"),
+                    SizedBox(
+                      width: 5,
+                    ),
+                    Text(
+                      "now",
+                      style: TextStyle(
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    Icon(Icons.arrow_drop_down_outlined),
+                  ],
+                ),
+                // TextField(
+                //   decoration: InputDecoration(
+                //     border: OutlineInputBorder(
+                //       borderRadius: BorderRadius.circular(5.0),
+                //     ),
+                //     enabledBorder: OutlineInputBorder(
+                //       borderRadius: BorderRadius.circular(10.0),
+                //       borderSide: const BorderSide(
+                //         color: Color.fromARGB(255, 14, 88, 216),
+                //         width: 1,
+                //       ),
+                //     ),
+                //     labelText: "Where should I go?",
+                //     labelStyle: TextStyle(
+                //       fontWeight: FontWeight.w500,
+                //       color: AppColors.grayColor,
+                //     ),
+                //     suffixIcon: Padding(
+                //       padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                //       child: Row(
+                //         mainAxisSize: MainAxisSize.min,
+                //         children: [
+                //           Text("Leave"),
+                //           SizedBox(
+                //             width: 5,
+                //           ),
+                //           Text(
+                //             "now",
+                //             style: TextStyle(
+                //               fontWeight: FontWeight.w500,
+                //             ),
+                //           ),
+                //           Icon(Icons.arrow_drop_down_outlined),
+                //         ],
+                //       ),
+                //     ),
+                //     contentPadding: const EdgeInsets.symmetric(
+                //         vertical: 16, horizontal: 10),
+                //   ),
+                // ),
               ),
             ),
             SizedBox(
@@ -211,13 +250,10 @@ class _HomeTabState extends State<HomeTab> {
                           onTap: () {
                             deleteRide();
                           },
-                          child: Text(
-                            "Delete Ride",
-                            style: TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.w500,
-                              color: Colors.red,
-                            ),
+                          child: Icon(
+                            Icons.delete,
+                            color: Colors.red,
+                            size: 28,
                           ),
                         ),
                       ],
@@ -415,7 +451,7 @@ class _HomeTabState extends State<HomeTab> {
                     // ),
 
                     CustomElement(
-                      label: "Quick",
+                      label: "XD",
                       imagePath: 'assets/images/delivery.png',
                       onTap: () {
                         ScaffoldMessenger.of(context).showSnackBar(
