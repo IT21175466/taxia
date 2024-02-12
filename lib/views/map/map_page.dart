@@ -217,11 +217,53 @@ class _MapPageState extends State<MapPage> {
               child: Container(
                 child: isSelectedLocation
                     ? Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
                           SizedBox(
                             height: Platform.isIOS
                                 ? AppBar().preferredSize.height - 15
                                 : null,
+                          ),
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.pushNamedAndRemoveUntil(
+                                  context, '/home', (route) => false);
+                            },
+                            child: Container(
+                              height: 40,
+                              width: 100,
+                              padding: EdgeInsets.symmetric(horizontal: 5),
+                              decoration: BoxDecoration(
+                                color: AppColors.accentColor,
+                                borderRadius: BorderRadius.circular(25),
+                                border: Border.all(
+                                  color: Colors.white,
+                                ),
+                              ),
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Spacer(),
+                                  Icon(
+                                    Icons.home,
+                                    color: Colors.black,
+                                  ),
+                                  SizedBox(
+                                    width: 5,
+                                  ),
+                                  Text(
+                                    "Home",
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                  Spacer(),
+                                ],
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            height: 5,
                           ),
                           Container(
                             width: screenWidth,
@@ -297,11 +339,53 @@ class _MapPageState extends State<MapPage> {
                         ],
                       )
                     : Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
                           SizedBox(
                             height: Platform.isIOS
                                 ? AppBar().preferredSize.height - 15
                                 : null,
+                          ),
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.pushNamedAndRemoveUntil(
+                                  context, '/home', (route) => false);
+                            },
+                            child: Container(
+                              height: 40,
+                              width: 100,
+                              padding: EdgeInsets.symmetric(horizontal: 5),
+                              decoration: BoxDecoration(
+                                color: AppColors.accentColor,
+                                borderRadius: BorderRadius.circular(25),
+                                border: Border.all(
+                                  color: Colors.white,
+                                ),
+                              ),
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Spacer(),
+                                  Icon(
+                                    Icons.home,
+                                    color: Colors.black,
+                                  ),
+                                  SizedBox(
+                                    width: 5,
+                                  ),
+                                  Text(
+                                    "Home",
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                  Spacer(),
+                                ],
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            height: 5,
                           ),
                           GooglePlaceAutoCompleteTextField(
                             boxDecoration: BoxDecoration(
