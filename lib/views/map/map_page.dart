@@ -6,6 +6,8 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_places_flutter/google_places_flutter.dart';
 import 'package:google_places_flutter/model/prediction.dart';
@@ -59,6 +61,8 @@ class _MapPageState extends State<MapPage> {
   final TextEditingController pickupLocationController =
       TextEditingController();
   final TextEditingController endLocationController = TextEditingController();
+
+  bool isLoading = false;
 
   @override
   void initState() {
@@ -174,9 +178,49 @@ class _MapPageState extends State<MapPage> {
     }
   }
 
+  Future<Position> _determinePosition() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      await Geolocator.openAppSettings();
+      return Future.error('Location services are disabled.');
+    }
+
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        return Future.error('Location permissions are denied');
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      return Future.error(
+          'Location permissions are permanently denied, we cannot request permissions.');
+    }
+
+    return await Geolocator.getCurrentPosition();
+  }
+
+  Future<void> getAddressFromLatLong(Position position) async {
+    List<Placemark> placemark =
+        await placemarkFromCoordinates(position.latitude, position.longitude);
+
+    Placemark place = placemark[0];
+
+    setState(() {
+      pickupLocationController.text =
+          '${place.street}, ${place.subLocality}, ${place.locality}';
+      isLoading = false;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
+    double screenHeight = MediaQuery.of(context).size.height;
 
     final userProvider = Provider.of<UserProvider>(context, listen: false);
     return Scaffold(
@@ -399,6 +443,19 @@ class _MapPageState extends State<MapPage> {
                             googleAPIKey:
                                 "AIzaSyDWlxEQU9GMmFEmZwiT3OGVVxTyc984iNY",
                             inputDecoration: InputDecoration(
+                              suffixIcon: GestureDetector(
+                                onTap: () async {
+                                  setState(() {
+                                    isLoading = true;
+                                  });
+
+                                  Position position =
+                                      await _determinePosition();
+
+                                  getAddressFromLatLong(position);
+                                },
+                                child: Icon(Icons.my_location),
+                              ),
                               hintText: "Pickup Location",
                               enabledBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(10.0),
@@ -564,6 +621,29 @@ class _MapPageState extends State<MapPage> {
                       ),
               ),
             ),
+            isLoading
+                ? Positioned(
+                    top: screenHeight / 3,
+                    left: 30,
+                    right: 30,
+                    child: Container(
+                      padding: EdgeInsets.all(20),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                      child: Row(
+                        children: [
+                          CircularProgressIndicator(),
+                          SizedBox(
+                            width: 20,
+                          ),
+                          Text("Loading your location...."),
+                        ],
+                      ),
+                    ),
+                  )
+                : SizedBox(),
             Visibility(
               visible: isSelectedLocation,
               child: Positioned(

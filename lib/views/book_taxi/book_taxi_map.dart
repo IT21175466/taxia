@@ -7,6 +7,8 @@ import 'package:fl_country_code_picker/fl_country_code_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_places_flutter/google_places_flutter.dart';
 import 'package:google_places_flutter/model/prediction.dart';
@@ -82,6 +84,7 @@ class _BookTaxiMapPageState extends State<BookTaxiMapPage> {
   }
 
   String? userID = '';
+  bool isLoading = false;
 
   getUserID() async {
     final prefs = await SharedPreferences.getInstance();
@@ -132,6 +135,45 @@ class _BookTaxiMapPageState extends State<BookTaxiMapPage> {
           LatLng(points.latitude, points.longitude),
         ),
       );
+    });
+  }
+
+  Future<Position> _determinePosition() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      await Geolocator.openAppSettings();
+      return Future.error('Location services are disabled.');
+    }
+
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        return Future.error('Location permissions are denied');
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      return Future.error(
+          'Location permissions are permanently denied, we cannot request permissions.');
+    }
+
+    return await Geolocator.getCurrentPosition();
+  }
+
+  Future<void> getAddressFromLatLong(Position position) async {
+    List<Placemark> placemark =
+        await placemarkFromCoordinates(position.latitude, position.longitude);
+
+    Placemark place = placemark[0];
+
+    setState(() {
+      pickupLocationController.text =
+          '${place.street}, ${place.subLocality}, ${place.locality}';
+      isLoading = false;
     });
   }
 
@@ -225,6 +267,7 @@ class _BookTaxiMapPageState extends State<BookTaxiMapPage> {
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
+    double screenHeight = MediaQuery.of(context).size.height;
 
     final userProvider = Provider.of<UserProvider>(context, listen: false);
     return Scaffold(
@@ -265,11 +308,53 @@ class _BookTaxiMapPageState extends State<BookTaxiMapPage> {
               child: Container(
                 child: isSelectedLocation
                     ? Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
                           SizedBox(
                             height: Platform.isIOS
                                 ? AppBar().preferredSize.height - 15
                                 : null,
+                          ),
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.pushNamedAndRemoveUntil(
+                                  context, '/home', (route) => false);
+                            },
+                            child: Container(
+                              height: 40,
+                              width: 100,
+                              padding: EdgeInsets.symmetric(horizontal: 5),
+                              decoration: BoxDecoration(
+                                color: AppColors.accentColor,
+                                borderRadius: BorderRadius.circular(25),
+                                border: Border.all(
+                                  color: Colors.white,
+                                ),
+                              ),
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Spacer(),
+                                  Icon(
+                                    Icons.home,
+                                    color: Colors.black,
+                                  ),
+                                  SizedBox(
+                                    width: 5,
+                                  ),
+                                  Text(
+                                    "Home",
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                  Spacer(),
+                                ],
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            height: 5,
                           ),
                           Container(
                             width: screenWidth,
@@ -419,11 +504,53 @@ class _BookTaxiMapPageState extends State<BookTaxiMapPage> {
                         ],
                       )
                     : Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
                           SizedBox(
                             height: Platform.isIOS
                                 ? AppBar().preferredSize.height - 15
                                 : null,
+                          ),
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.pushNamedAndRemoveUntil(
+                                  context, '/home', (route) => false);
+                            },
+                            child: Container(
+                              height: 40,
+                              width: 100,
+                              padding: EdgeInsets.symmetric(horizontal: 5),
+                              decoration: BoxDecoration(
+                                color: AppColors.accentColor,
+                                borderRadius: BorderRadius.circular(25),
+                                border: Border.all(
+                                  color: Colors.white,
+                                ),
+                              ),
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Spacer(),
+                                  Icon(
+                                    Icons.home,
+                                    color: Colors.black,
+                                  ),
+                                  SizedBox(
+                                    width: 5,
+                                  ),
+                                  Text(
+                                    "Home",
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                  Spacer(),
+                                ],
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            height: 5,
                           ),
                           Container(
                             height: 50,
@@ -505,6 +632,19 @@ class _BookTaxiMapPageState extends State<BookTaxiMapPage> {
                             googleAPIKey:
                                 "AIzaSyDWlxEQU9GMmFEmZwiT3OGVVxTyc984iNY",
                             inputDecoration: InputDecoration(
+                              suffixIcon: GestureDetector(
+                                onTap: () async {
+                                  setState(() {
+                                    isLoading = true;
+                                  });
+
+                                  Position position =
+                                      await _determinePosition();
+
+                                  getAddressFromLatLong(position);
+                                },
+                                child: Icon(Icons.my_location),
+                              ),
                               hintText: "Pickup Location",
                               enabledBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(10.0),
@@ -583,6 +723,19 @@ class _BookTaxiMapPageState extends State<BookTaxiMapPage> {
                             googleAPIKey:
                                 "AIzaSyDWlxEQU9GMmFEmZwiT3OGVVxTyc984iNY",
                             inputDecoration: InputDecoration(
+                              suffixIcon: GestureDetector(
+                                onTap: () async {
+                                  setState(() {
+                                    isLoading = true;
+                                  });
+
+                                  Position position =
+                                      await _determinePosition();
+
+                                  getAddressFromLatLong(position);
+                                },
+                                child: Icon(Icons.my_location),
+                              ),
                               hintText: "End Location",
                               enabledBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(10.0),
@@ -670,6 +823,29 @@ class _BookTaxiMapPageState extends State<BookTaxiMapPage> {
                       ),
               ),
             ),
+            isLoading
+                ? Positioned(
+                    top: screenHeight / 3,
+                    left: 30,
+                    right: 30,
+                    child: Container(
+                      padding: EdgeInsets.all(20),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                      child: Row(
+                        children: [
+                          CircularProgressIndicator(),
+                          SizedBox(
+                            width: 20,
+                          ),
+                          Text("Loading your location...."),
+                        ],
+                      ),
+                    ),
+                  )
+                : SizedBox(),
             Visibility(
               visible: isSelectedLocation,
               child: Positioned(
