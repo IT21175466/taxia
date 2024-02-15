@@ -9,6 +9,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:taxia/constants/app_colors.dart';
@@ -69,6 +70,7 @@ class _GetRequestsMapState extends State<GetRequestsMap> {
   void _startListening() {
     databaseReference.onValue.listen((event) {
       getPickupData();
+      getScheduledRideData();
     });
   }
 
@@ -97,6 +99,104 @@ class _GetRequestsMapState extends State<GetRequestsMap> {
   }
 
   DatabaseReference databaseReference = FirebaseDatabase.instance.ref('rides');
+
+  DatabaseReference scheduledRideDatabaseReference =
+      FirebaseDatabase.instance.ref('sheduled_rides');
+
+  void getScheduledRideData() {
+    markers.clear();
+    scheduledRideDatabaseReference.onValue.listen((event) {
+      DataSnapshot dataSnapshot = event.snapshot;
+      Map<dynamic, dynamic>? values = dataSnapshot.value as Map?;
+
+      if (values != null) {
+        values.forEach((key, rideData) {
+          print('Key: $key');
+
+          scheduledRideDatabaseReference.onValue.listen((event2) {
+            DataSnapshot dataSnapshot2 = event2.snapshot.child(key);
+            Map<dynamic, dynamic>? values2 = dataSnapshot2.value as Map?;
+
+            if (values2 != null) {
+              values2.forEach((key2, rideData2) {
+                print('Key2: $key2');
+
+                scheduledRideDatabaseReference.onValue.listen((event3) {
+                  DataSnapshot dataSnapshot3 =
+                      event3.snapshot.child(key).child(key2);
+                  Map<dynamic, dynamic>? values3 = dataSnapshot3.value as Map?;
+
+                  if (values3 != null) {
+                    if (rideData2 is Map) {
+                      print(rideData2['date'].toString());
+
+                      String dateString = '';
+                      String timeString = '';
+
+                      setState(() {
+                        dateString = rideData2['date'].toString();
+                        timeString = rideData2['time'].toString();
+                      });
+
+                      DateTime dateDateTime =
+                          DateFormat.yMMMMd().parse(dateString);
+
+                      DateTime timeDateTime = DateFormat.Hm().parse(timeString);
+
+                      DateTime dateTime = DateTime(
+                          dateDateTime.year,
+                          dateDateTime.month,
+                          dateDateTime.day,
+                          timeDateTime.hour,
+                          timeDateTime.minute);
+
+                      if (DateTime.now().isBefore(dateTime) ||
+                          DateTime.now().isAtSameMomentAs(DateTime.now())) {
+                        print(
+                            "Current date is equal to or past the database date.");
+                      } else {
+                        print("Current date is before the database date.");
+                      }
+
+                      print(dateTime);
+                    }
+                  }
+                });
+              });
+            }
+          });
+
+          // if (rideData is Map &&
+          //     rideData.containsKey('picupLocationLat') &&
+          //     rideData.containsKey('picupLocationLong') &&
+          //     rideData.containsKey('vehicleType')) {
+          // print('picupLocationLat: ${rideData['picupLocationLat']}');
+          // print('picupLocationLong: ${rideData['picupLocationLong']}');
+
+          // getDistance(
+          //     rideData['pickupAddress'],
+          //     rideData['dropAddress'],
+          //     driverLocation!.latitude,
+          //     driverLocation!.longitude,
+          //     rideData['picupLocationLat'],
+          //     rideData['picupLocationLong'],
+          //     rideData['vehicleType'],
+          //     rideData['dropLocationLat'],
+          //     rideData['dropLocationLong'],
+          //     rideData['vehicleType'],
+          //     double.parse(rideData['totalPrice'].toString()),
+          //     double.parse(rideData['totalKm'].toString()),
+          //     rideData['rideID'],
+          //     rideData['pID']);
+          // } else {
+          //   print('Invalid data structure or missing values for key $key');
+          // }
+        });
+      } else {
+        print('No data found under "sheduled rides" node.');
+      }
+    });
+  }
 
   //Get user pickup request distance
   void getPickupData() {

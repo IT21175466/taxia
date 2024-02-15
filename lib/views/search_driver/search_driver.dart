@@ -79,21 +79,17 @@ class _SearchDriverState extends State<SearchDriver> {
     int totalSeconds = duration.inSeconds;
 
     timer = Timer.periodic(Duration(seconds: 1), (Timer t) {
-      setState(() {
-        _progressValue = t.tick / totalSeconds;
-      });
+      if (mounted) {
+        setState(() {
+          _progressValue = t.tick / totalSeconds;
+        });
 
-      if (t.tick >= totalSeconds) {
-        t.cancel();
-        timer = null;
+        if (t.tick >= totalSeconds) {
+          t.cancel();
+          timer = null;
+        }
       }
     });
-  }
-
-  @override
-  void dispose() {
-    cancelRide();
-    super.dispose();
   }
 
   void cancelRide() async {

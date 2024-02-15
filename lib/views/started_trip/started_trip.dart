@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:taxia/constants/app_colors.dart';
+import 'package:taxia/views/home_screen/home_page.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class TripStarted extends StatefulWidget {
@@ -17,6 +18,8 @@ class TripStarted extends StatefulWidget {
   final String firstName;
   final LatLng pickupLocation;
   final LatLng dropLocation;
+  final String vehicleNumber;
+  final String progileImage;
   const TripStarted({
     super.key,
     required this.rideID,
@@ -25,6 +28,8 @@ class TripStarted extends StatefulWidget {
     required this.firstName,
     required this.pickupLocation,
     required this.dropLocation,
+    required this.vehicleNumber,
+    required this.progileImage,
   });
 
   @override
@@ -56,15 +61,6 @@ class _TripStartedState extends State<TripStarted> {
   }
 
   void drowMap() async {
-    markers.add(
-      Marker(
-        icon: BitmapDescriptor.defaultMarker,
-        markerId: const MarkerId('pickup'),
-        position: widget.pickupLocation,
-        infoWindow: const InfoWindow(title: 'Pickup Location'),
-      ),
-    );
-
     markers.add(
       Marker(
         icon: BitmapDescriptor.defaultMarker,
@@ -160,15 +156,6 @@ class _TripStartedState extends State<TripStarted> {
 
                     markers.add(
                       Marker(
-                        icon: BitmapDescriptor.defaultMarker,
-                        markerId: const MarkerId('pickup'),
-                        position: widget.pickupLocation,
-                        infoWindow: const InfoWindow(title: 'Pickup Location'),
-                      ),
-                    );
-
-                    markers.add(
-                      Marker(
                         icon: BitmapDescriptor.fromBytes(
                           customMarkerIcon,
                         ),
@@ -244,7 +231,17 @@ class _TripStartedState extends State<TripStarted> {
                 children: [
                   Row(
                     children: [
-                      Icon(Icons.home),
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => HomePage(),
+                            ),
+                          );
+                        },
+                        child: Icon(Icons.home),
+                      ),
                       Spacer(),
                       GestureDetector(
                         onTap: () {
@@ -335,8 +332,8 @@ class _TripStartedState extends State<TripStarted> {
                     decoration: const BoxDecoration(
                       color: Color.fromARGB(255, 255, 232, 22),
                     ),
-                    child: const Text(
-                      "Emergency - 1334",
+                    child: Text(
+                      widget.vehicleNumber,
                       style: TextStyle(
                         fontWeight: FontWeight.w400,
                         fontSize: 15,

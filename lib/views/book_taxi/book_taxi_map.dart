@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:math';
 import 'dart:ui' as ui;
 import 'package:firebase_database/firebase_database.dart';
+import 'package:fl_country_code_picker/fl_country_code_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
@@ -11,6 +12,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_places_flutter/google_places_flutter.dart';
 import 'package:google_places_flutter/model/prediction.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:taxia/constants/app_colors.dart';
@@ -18,19 +20,21 @@ import 'package:taxia/global/global.dart';
 import 'package:taxia/providers/map/map_provider.dart';
 import 'package:taxia/providers/ride/ride_provider.dart';
 import 'package:taxia/providers/user/user_provider.dart';
-import 'package:taxia/views/search_driver/search_driver.dart';
 import 'package:taxia/widgets/custom_button.dart';
 import 'package:uuid/uuid.dart';
 
-class MapPage extends StatefulWidget {
-  const MapPage({super.key});
+class BookTaxiMapPage extends StatefulWidget {
+  const BookTaxiMapPage({super.key});
 
   @override
-  State<MapPage> createState() => _MapPageState();
+  State<BookTaxiMapPage> createState() => _BookTaxiMapPageState();
 }
 
-class _MapPageState extends State<MapPage> {
-  DatabaseReference databaseReference = FirebaseDatabase.instance.ref('rides');
+class _BookTaxiMapPageState extends State<BookTaxiMapPage> {
+  DatabaseReference databaseReference =
+      FirebaseDatabase.instance.ref('sheduled_rides');
+
+  TimeOfDay selectedTime = TimeOfDay.now();
 
   late Uint8List customMarkerIcon;
 
@@ -62,7 +66,8 @@ class _MapPageState extends State<MapPage> {
       TextEditingController();
   final TextEditingController endLocationController = TextEditingController();
 
-  bool isLoading = false;
+  TextEditingController dateController = TextEditingController();
+  TextEditingController timeController = TextEditingController();
 
   @override
   void initState() {
@@ -79,6 +84,7 @@ class _MapPageState extends State<MapPage> {
   }
 
   String? userID = '';
+  bool isLoading = false;
 
   getUserID() async {
     final prefs = await SharedPreferences.getInstance();
@@ -132,52 +138,6 @@ class _MapPageState extends State<MapPage> {
     });
   }
 
-  // gerCurrentLiveLocationOfUser() async {
-  //   Position positionOfUser = await Geolocator.getCurrentPosition(
-  //       desiredAccuracy: LocationAccuracy.bestForNavigation);
-
-  //   currentPositionOfUser = positionOfUser;
-
-  //   LatLng positionOfUserInLatLng = LatLng(
-  //       currentPositionOfUser!.latitude, currentPositionOfUser!.longitude);
-
-  //   CameraPosition cameraPosition =
-  //       CameraPosition(target: positionOfUserInLatLng, zoom: 45);
-
-  //   controllerGoogleMap!
-  //       .animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
-  //   notifyListeners();
-  // }
-
-  void focusCameraOnPickupAndEndLocations() {
-    if (pickupLocation != null && endLocation != null) {
-      LatLngBounds bounds = LatLngBounds(
-        southwest: LatLng(
-          pickupLocation!.latitude < endLocation!.latitude
-              ? pickupLocation!.latitude
-              : endLocation!.latitude,
-          pickupLocation!.longitude < endLocation!.longitude
-              ? pickupLocation!.longitude
-              : endLocation!.longitude,
-        ),
-        northeast: LatLng(
-          pickupLocation!.latitude > endLocation!.latitude
-              ? pickupLocation!.latitude
-              : endLocation!.latitude,
-          pickupLocation!.longitude > endLocation!.longitude
-              ? pickupLocation!.longitude
-              : endLocation!.longitude,
-        ),
-      );
-
-      setState(() {
-        controllerGoogleMap!.animateCamera(
-          CameraUpdate.newLatLngBounds(bounds, 80.0),
-        );
-      });
-    }
-  }
-
   Future<Position> _determinePosition() async {
     bool serviceEnabled;
     LocationPermission permission;
@@ -215,6 +175,93 @@ class _MapPageState extends State<MapPage> {
           '${place.street}, ${place.subLocality}, ${place.locality}';
       isLoading = false;
     });
+  }
+
+  // gerCurrentLiveLocationOfUser() async {
+  //   Position positionOfUser = await Geolocator.getCurrentPosition(
+  //       desiredAccuracy: LocationAccuracy.bestForNavigation);
+
+  //   currentPositionOfUser = positionOfUser;
+
+  //   LatLng positionOfUserInLatLng = LatLng(
+  //       currentPositionOfUser!.latitude, currentPositionOfUser!.longitude);
+
+  //   CameraPosition cameraPosition =
+  //       CameraPosition(target: positionOfUserInLatLng, zoom: 45);
+
+  //   controllerGoogleMap!
+  //       .animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
+  //   notifyListeners();
+  // }
+
+  String selectedDate = '';
+  final countryPicker = const FlCountryCodePicker();
+  CountryCode? countryCode;
+  bool loading = false;
+
+  Future<void> selectTime(BuildContext context) async {
+    TimeOfDay? timeOfDay = await showTimePicker(
+      context: context,
+      initialTime: selectedTime,
+    );
+
+    if (timeOfDay != null) {
+      setState(() {
+        timeController.text = DateFormat.Hm()
+            .format(DateTime(2022, 1, 1, timeOfDay.hour, timeOfDay.minute));
+      });
+    }
+  }
+
+  Future<void> selectDate(BuildContext context) async {
+    DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(1900),
+      lastDate: DateTime(2200),
+    );
+
+    if (picked != null && picked != DateTime.now()) {
+      setState(() {
+        dateController.text = DateFormat.yMMMMd().format(picked);
+      });
+    }
+  }
+
+  selectCountry(BuildContext context) async {
+    countryCode = await countryPicker.showPicker(
+      pickerMinHeight: 30,
+      context: context,
+    );
+  }
+
+  void focusCameraOnPickupAndEndLocations() {
+    if (pickupLocation != null && endLocation != null) {
+      LatLngBounds bounds = LatLngBounds(
+        southwest: LatLng(
+          pickupLocation!.latitude < endLocation!.latitude
+              ? pickupLocation!.latitude
+              : endLocation!.latitude,
+          pickupLocation!.longitude < endLocation!.longitude
+              ? pickupLocation!.longitude
+              : endLocation!.longitude,
+        ),
+        northeast: LatLng(
+          pickupLocation!.latitude > endLocation!.latitude
+              ? pickupLocation!.latitude
+              : endLocation!.latitude,
+          pickupLocation!.longitude > endLocation!.longitude
+              ? pickupLocation!.longitude
+              : endLocation!.longitude,
+        ),
+      );
+
+      setState(() {
+        controllerGoogleMap!.animateCamera(
+          CameraUpdate.newLatLngBounds(bounds, 80.0),
+        );
+      });
+    }
   }
 
   @override
@@ -333,7 +380,7 @@ class _MapPageState extends State<MapPage> {
                                 GestureDetector(
                                   onTap: () {
                                     Navigator.pushReplacementNamed(
-                                        context, '/map');
+                                        context, '/booktaximap');
                                   },
                                   child: const Icon(
                                     Icons.change_circle,
@@ -370,7 +417,81 @@ class _MapPageState extends State<MapPage> {
                                 GestureDetector(
                                   onTap: () {
                                     Navigator.pushReplacementNamed(
-                                        context, '/map');
+                                        context, '/booktaximap');
+                                  },
+                                  child: const Icon(
+                                    Icons.change_circle,
+                                    size: 16,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 5,
+                          ),
+                          Container(
+                            width: screenWidth,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(5.0),
+                              border: Border.all(
+                                color: Colors.blueAccent,
+                              ),
+                            ),
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 10, horizontal: 10),
+                            child: Row(
+                              children: [
+                                const Text(
+                                  "Date - ",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                                Text(dateController.text),
+                                const Spacer(),
+                                GestureDetector(
+                                  onTap: () {
+                                    Navigator.pushReplacementNamed(
+                                        context, '/booktaximap');
+                                  },
+                                  child: const Icon(
+                                    Icons.change_circle,
+                                    size: 16,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 5,
+                          ),
+                          Container(
+                            width: screenWidth,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(5.0),
+                              border: Border.all(
+                                color: Colors.blueAccent,
+                              ),
+                            ),
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 10, horizontal: 10),
+                            child: Row(
+                              children: [
+                                const Text(
+                                  "Time - ",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                                Text(timeController.text),
+                                const Spacer(),
+                                GestureDetector(
+                                  onTap: () {
+                                    Navigator.pushReplacementNamed(
+                                        context, '/booktaximap');
                                   },
                                   child: const Icon(
                                     Icons.change_circle,
@@ -430,6 +551,74 @@ class _MapPageState extends State<MapPage> {
                           ),
                           SizedBox(
                             height: 5,
+                          ),
+                          Container(
+                            height: 50,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                            ),
+                            child: TextField(
+                              readOnly: true,
+                              controller: dateController,
+                              decoration: InputDecoration(
+                                hintText: "Date",
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                  borderSide: BorderSide(
+                                    color: Colors.blue,
+                                    width: 0.5,
+                                  ),
+                                ),
+                                suffixIcon: GestureDetector(
+                                  onTap: () {
+                                    selectDate(context);
+                                  },
+                                  child: Icon(Icons.calendar_month),
+                                ),
+                                contentPadding: const EdgeInsets.symmetric(
+                                    vertical: 12, horizontal: 10),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 5,
+                          ),
+                          Container(
+                            height: 50,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                            ),
+                            child: TextField(
+                              readOnly: true,
+                              controller: timeController,
+                              decoration: InputDecoration(
+                                hintText: "Time",
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                  borderSide: BorderSide(
+                                    color: Colors.blue,
+                                    width: 0.5,
+                                  ),
+                                ),
+                                suffixIcon: GestureDetector(
+                                  onTap: () {
+                                    selectTime(context);
+                                  },
+                                  child: Icon(Icons.timelapse),
+                                ),
+                                contentPadding: const EdgeInsets.symmetric(
+                                    vertical: 12, horizontal: 10),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 10,
                           ),
                           GooglePlaceAutoCompleteTextField(
                             boxDecoration: BoxDecoration(
@@ -534,6 +723,19 @@ class _MapPageState extends State<MapPage> {
                             googleAPIKey:
                                 "AIzaSyDWlxEQU9GMmFEmZwiT3OGVVxTyc984iNY",
                             inputDecoration: InputDecoration(
+                              suffixIcon: GestureDetector(
+                                onTap: () async {
+                                  setState(() {
+                                    isLoading = true;
+                                  });
+
+                                  Position position =
+                                      await _determinePosition();
+
+                                  getAddressFromLatLong(position);
+                                },
+                                child: Icon(Icons.my_location),
+                              ),
                               hintText: "End Location",
                               enabledBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(10.0),
@@ -837,7 +1039,10 @@ class _MapPageState extends State<MapPage> {
                               0.0;
                             }
 
-                            databaseReference.child(rideID).set({
+                            await databaseReference
+                                .child(userID!)
+                                .child(rideID)
+                                .set({
                               "rideID": rideID,
                               "pID": userID,
                               "picupLocationLong": pickupLocation!.longitude,
@@ -849,6 +1054,8 @@ class _MapPageState extends State<MapPage> {
                               "totalPrice": totalCharge,
                               "pickupAddress": pickupLocationController.text,
                               "dropAddress": endLocationController.text,
+                              "date": dateController.text,
+                              "time": timeController.text,
                             });
 
                             // rideProvider.confirmRide(
@@ -867,21 +1074,22 @@ class _MapPageState extends State<MapPage> {
                             //   context,
                             //   rideID,
                             // );
-
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => SearchDriver(
-                                  pickupLocation: pickupLocation!,
-                                  selectedVehicle: selectedVehicle,
-                                  userID: userID!,
-                                  rideID: rideID,
+                            if (mounted) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(
+                                    "You sheduled a ride!",
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                    ),
+                                  ),
                                 ),
-                              ),
-                            );
+                              );
+                              Navigator.pushReplacementNamed(context, '/home');
+                            }
                           },
                           child: CustomButton(
-                            text: 'CONFIRM',
+                            text: 'SHEDULE',
                             height: 50,
                             width: screenWidth,
                             backgroundColor: AppColors.buttonColor,

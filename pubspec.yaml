@@ -61,6 +61,7 @@ dependencies:
   intl: ^0.18.1
   location: ^5.0.3
   flutter_phone_direct_caller: ^2.1.1
+  blinking_text: ^1.0.2
 
 dev_dependencies:
   flutter_test:

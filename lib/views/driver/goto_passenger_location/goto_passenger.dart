@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:blinking_text/blinking_text.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
@@ -269,11 +270,17 @@ class _GoToPassengerState extends State<GoToPassenger> {
                     },
                     child: Row(
                       children: [
-                        Text(
+                        BlinkText(
                           'Navigate',
                           style: TextStyle(
                             fontSize: 18,
                             color: AppColors.textColor,
+                          ),
+                          beginColor: Colors.black,
+                          endColor: Colors.orange,
+                          times: 10,
+                          duration: Duration(
+                            seconds: 1,
                           ),
                         ),
                         Spacer(),
