@@ -7,6 +7,13 @@ import 'package:taxia/models/user.dart';
 class UserProvider extends ChangeNotifier {
   final db = FirebaseFirestore.instance;
   bool loading = false;
+  String? userID = '';
+  String? phoneNumber = '...';
+  String? email = '...';
+  String? province = '...';
+  String? fistName = '...';
+  String? lastName = '...';
+  String? district = '...';
 
   addUserToFirebase(User user, BuildContext context, String uID) async {
     try {
@@ -30,6 +37,37 @@ class UserProvider extends ChangeNotifier {
           content: Text(e.toString()),
         ),
       );
+      notifyListeners();
+    }
+  }
+
+  getUserID() async {
+    final prefs = await SharedPreferences.getInstance();
+    userID = prefs.getString('userID');
+    notifyListeners();
+  }
+
+  getUserInfo() async {
+    await getUserID();
+    try {
+      final DocumentSnapshot usersDoc = await FirebaseFirestore.instance
+          .collection("Users")
+          .doc(userID)
+          .get();
+
+      if (usersDoc.exists) {
+        fistName = usersDoc.get('FirstName');
+        lastName = usersDoc.get('LastName');
+        phoneNumber = usersDoc.get('PhoneNumber');
+        email = usersDoc.get('Email');
+        district = usersDoc.get('District');
+        province = usersDoc.get('Province');
+        notifyListeners();
+      }
+    } catch (e) {
+      print(e);
+    } finally {
+      loading = false;
       notifyListeners();
     }
   }
