@@ -17,7 +17,7 @@ class _InfoPageState extends State<InfoPage> {
   void initState() {
     super.initState();
     final userProvider = Provider.of<UserProvider>(context, listen: false);
-    userProvider.getUserInfo();
+    userProvider.checkUserTypeAndGetInfo();
   }
 
   @override
@@ -49,10 +49,36 @@ class _InfoPageState extends State<InfoPage> {
               UserInfoCard(hint: 'Email', detail: '${userProvider.email}'),
               UserInfoCard(
                   hint: 'Phone Number', detail: '${userProvider.phoneNumber}'),
-              UserInfoCard(
-                  hint: 'District', detail: '${userProvider.district}'),
-              UserInfoCard(
-                  hint: 'Province', detail: '${userProvider.province}'),
+              userProvider.isDriver
+                  ? UserInfoCard(
+                      hint: 'Address', detail: '${userProvider.address}')
+                  : SizedBox(),
+              userProvider.isDriver
+                  ? UserInfoCard(
+                      hint: 'BirthDay', detail: '${userProvider.birthDay}')
+                  : SizedBox(),
+              userProvider.isDriver
+                  ? UserInfoCard(
+                      hint: 'Gender', detail: '${userProvider.gender}')
+                  : SizedBox(),
+              userProvider.isDriver
+                  ? UserInfoCard(
+                      hint: 'Vehicle Brand', detail: '${userProvider.brand}')
+                  : SizedBox(),
+              userProvider.isDriver
+                  ? UserInfoCard(
+                      hint: 'Vehicle Model', detail: '${userProvider.model}')
+                  : SizedBox(),
+              userProvider.isDriver
+                  ? UserInfoCard(
+                      hint: 'Vehicle Type',
+                      detail: '${userProvider.vehicleType}')
+                  : SizedBox(),
+              userProvider.isDriver
+                  ? UserInfoCard(
+                      hint: 'Vehicle Number',
+                      detail: '${userProvider.vehicleNumber}')
+                  : SizedBox(),
               Spacer(),
               CustomButton(
                 text: 'LOGOUT',
