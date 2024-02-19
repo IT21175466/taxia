@@ -17,7 +17,7 @@ class _InfoPageState extends State<InfoPage> {
   void initState() {
     super.initState();
     final userProvider = Provider.of<UserProvider>(context, listen: false);
-    userProvider.checkUserTypeAndGetInfo();
+    userProvider.getUserAccountInfo();
   }
 
   @override

@@ -56,7 +56,7 @@ class UserProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  checkUserTypeAndGetInfo() async {
+  getDriverAccountInfo() async {
     await getUserID();
     try {
       FirebaseFirestore firestore = FirebaseFirestore.instance;
@@ -65,12 +65,6 @@ class UserProvider extends ChangeNotifier {
           firestore.collection("Drivers").doc(userID);
 
       DocumentSnapshot docSnapshot = await documentRef.get();
-
-      //Users
-      DocumentReference documentRefUsers =
-          firestore.collection("Users").doc(userID);
-
-      DocumentSnapshot docSnapshotUsers = await documentRefUsers.get();
 
       if (docSnapshot.exists) {
         print("Driver document exists");
@@ -87,8 +81,8 @@ class UserProvider extends ChangeNotifier {
         lastName = documentRefDrivers.get('lastName');
         phoneNumber = documentRefDrivers.get('telephone');
         email = documentRefDrivers.get('email');
-        district = documentRefDrivers.get('District');
-        province = documentRefDrivers.get('Province');
+        // district = documentRefDrivers.get('District');
+        // province = documentRefDrivers.get('Province');
         //
         address = documentRefDrivers.get('address');
         birthDay = documentRefDrivers.get('birthday');
@@ -98,15 +92,42 @@ class UserProvider extends ChangeNotifier {
         vehicleNumber = documentRefDrivers.get('vehicleNumber');
         vehicleType = documentRefDrivers.get('whichVehicle');
         notifyListeners();
-      } else {
-        print("User document exist");
-        fistName = docSnapshotUsers.get('FirstName');
-        lastName = docSnapshotUsers.get('LastName');
-        phoneNumber = docSnapshotUsers.get('PhoneNumber');
-        email = docSnapshotUsers.get('Email');
-        district = docSnapshotUsers.get('District');
-        province = docSnapshotUsers.get('Province');
-        isDriver = false;
+      }
+    } catch (error) {
+      print("Error checking document: $error");
+    }
+  }
+
+  getUserAccountInfo() async {
+    await getUserID();
+    try {
+      FirebaseFirestore firestore = FirebaseFirestore.instance;
+
+      //Users
+      DocumentReference documentRefUsers =
+          firestore.collection("Users").doc(userID);
+
+      DocumentSnapshot docSnapshotUsers = await documentRefUsers.get();
+
+      if (docSnapshotUsers.exists) {
+        print("User document exists");
+        notifyListeners();
+
+        final DocumentSnapshot documentRefDrivers = await FirebaseFirestore
+            .instance
+            .collection("Drivers")
+            .doc(userID)
+            .get();
+
+        isDriver = true;
+        fistName = documentRefDrivers.get('firstName');
+        lastName = documentRefDrivers.get('lastName');
+        phoneNumber = documentRefDrivers.get('telephone');
+        email = documentRefDrivers.get('email');
+        district = documentRefDrivers.get('District');
+        province = documentRefDrivers.get('Province');
+        //
+
         notifyListeners();
       }
     } catch (error) {
