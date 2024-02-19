@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:taxia/providers/home/bootom_nav_bar_provider.dart';
+import 'package:taxia/views/home_screen/my_info/my_info.dart';
 import 'package:taxia/widgets/bottom_nav_bar.dart';
 import 'package:taxia/views/home_screen/tab_bar.dart';
 
@@ -21,9 +22,7 @@ class _HomePageState extends State<HomePage> {
     Center(
       child: Text("Notifications"),
     ),
-    Center(
-      child: Text("My Info"),
-    ),
+    MyInfoUser(),
   ];
 
   @override

@@ -7,6 +7,22 @@ import 'package:taxia/models/user.dart';
 class UserProvider extends ChangeNotifier {
   final db = FirebaseFirestore.instance;
   bool loading = false;
+  String? userID = '';
+  String? phoneNumber = '...';
+  String? email = '...';
+  String? province = '...';
+  String? fistName = '...';
+  String? lastName = '...';
+  String? district = '...';
+  //Driver
+  String? address = '...';
+  String? birthDay = '...';
+  String? gender = '...';
+  String? model = '...';
+  String? brand = '...';
+  String? vehicleNumber = '...';
+  String? vehicleType = '...';
+  bool isDriver = false;
 
   addUserToFirebase(User user, BuildContext context, String uID) async {
     try {
@@ -33,6 +49,115 @@ class UserProvider extends ChangeNotifier {
       notifyListeners();
     }
   }
+
+  getUserID() async {
+    final prefs = await SharedPreferences.getInstance();
+    userID = prefs.getString('userID');
+    notifyListeners();
+  }
+
+  getDriverAccountInfo() async {
+    await getUserID();
+    try {
+      FirebaseFirestore firestore = FirebaseFirestore.instance;
+
+      DocumentReference documentRef =
+          firestore.collection("Drivers").doc(userID);
+
+      DocumentSnapshot docSnapshot = await documentRef.get();
+
+      if (docSnapshot.exists) {
+        print("Driver document exists");
+        notifyListeners();
+
+        final DocumentSnapshot documentRefDrivers = await FirebaseFirestore
+            .instance
+            .collection("Drivers")
+            .doc(userID)
+            .get();
+
+        isDriver = true;
+        fistName = documentRefDrivers.get('firstName');
+        lastName = documentRefDrivers.get('lastName');
+        phoneNumber = documentRefDrivers.get('telephone');
+        email = documentRefDrivers.get('email');
+        // district = documentRefDrivers.get('District');
+        // province = documentRefDrivers.get('Province');
+        //
+        address = documentRefDrivers.get('address');
+        birthDay = documentRefDrivers.get('birthday');
+        gender = documentRefDrivers.get('gender');
+        model = documentRefDrivers.get('model');
+        brand = documentRefDrivers.get('brand');
+        vehicleNumber = documentRefDrivers.get('vehicleNumber');
+        vehicleType = documentRefDrivers.get('whichVehicle');
+        notifyListeners();
+      }
+    } catch (error) {
+      print("Error checking document: $error");
+    }
+  }
+
+  getUserAccountInfo() async {
+    await getUserID();
+    try {
+      FirebaseFirestore firestore = FirebaseFirestore.instance;
+
+      //Users
+      DocumentReference documentRefUsers =
+          firestore.collection("Users").doc(userID);
+
+      DocumentSnapshot docSnapshotUsers = await documentRefUsers.get();
+
+      if (docSnapshotUsers.exists) {
+        print("User document exists");
+        notifyListeners();
+
+        final DocumentSnapshot documentRefDrivers = await FirebaseFirestore
+            .instance
+            .collection("Drivers")
+            .doc(userID)
+            .get();
+
+        isDriver = true;
+        fistName = documentRefDrivers.get('firstName');
+        lastName = documentRefDrivers.get('lastName');
+        phoneNumber = documentRefDrivers.get('telephone');
+        email = documentRefDrivers.get('email');
+        district = documentRefDrivers.get('District');
+        province = documentRefDrivers.get('Province');
+        //
+
+        notifyListeners();
+      }
+    } catch (error) {
+      print("Error checking document: $error");
+    }
+  }
+
+  // getUserInfo() async {
+  //   try {
+  //     final DocumentSnapshot usersDoc = await FirebaseFirestore.instance
+  //         .collection("Users")
+  //         .doc(userID)
+  //         .get();
+
+  //     if (usersDoc.exists) {
+  //       fistName = usersDoc.get('FirstName');
+  //       lastName = usersDoc.get('LastName');
+  //       phoneNumber = usersDoc.get('PhoneNumber');
+  //       email = usersDoc.get('Email');
+  //       district = usersDoc.get('District');
+  //       province = usersDoc.get('Province');
+  //       notifyListeners();
+  //     }
+  //   } catch (e) {
+  //     print(e);
+  //   } finally {
+  //     loading = false;
+  //     notifyListeners();
+  //   }
+  // }
 
   getUserData() async {
     try {

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:taxia/providers/home/bootom_nav_bar_provider.dart';
 import 'package:taxia/views/driver/driver_home/driver_home_tab.dart';
+import 'package:taxia/views/driver/driver_home/my_info_driver.dart';
 import 'package:taxia/widgets/bottom_nav_bar.dart';
 
 class DriverHomePage extends StatefulWidget {
@@ -21,9 +22,7 @@ class _DriverHomePageState extends State<DriverHomePage> {
     Center(
       child: Text("Notifications"),
     ),
-    Center(
-      child: Text("My Info"),
-    ),
+    MyInfoDriver(),
   ];
 
   @override
