@@ -465,7 +465,7 @@ class _StartTripState extends State<StartTrip> {
                                     totalPrice: widget.totalPrice,
                                     dropAddresss: widget.pickAddress,
                                     pickupAddress: widget.dropAddress,
-                                    date: DateTime.now(),
+                                    date: DateTime.now().toString(),
                                     driverID: widget.driverID,
                                   ),
                                   widget.passengerID,

@@ -113,19 +113,12 @@ class UserProvider extends ChangeNotifier {
         print("User document exists");
         notifyListeners();
 
-        final DocumentSnapshot documentRefDrivers = await FirebaseFirestore
-            .instance
-            .collection("Drivers")
-            .doc(userID)
-            .get();
-
-        isDriver = true;
-        fistName = documentRefDrivers.get('firstName');
-        lastName = documentRefDrivers.get('lastName');
-        phoneNumber = documentRefDrivers.get('telephone');
-        email = documentRefDrivers.get('email');
-        district = documentRefDrivers.get('District');
-        province = documentRefDrivers.get('Province');
+        fistName = docSnapshotUsers.get('FirstName');
+        lastName = docSnapshotUsers.get('LastName');
+        phoneNumber = docSnapshotUsers.get('PhoneNumber');
+        email = docSnapshotUsers.get('Email');
+        district = docSnapshotUsers.get('District');
+        province = docSnapshotUsers.get('Province');
         //
 
         notifyListeners();
