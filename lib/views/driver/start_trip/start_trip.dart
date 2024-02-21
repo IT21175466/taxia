@@ -472,6 +472,24 @@ class _StartTripState extends State<StartTrip> {
                                   context,
                                   widget.rideID,
                                 );
+                                await rideProvider.confirmRideToDriver(
+                                  Ride(
+                                    rideID: widget.rideID,
+                                    passengerID: widget.passengerID,
+                                    picupLocation: const LatLng(0, 0),
+                                    dropLocation: const LatLng(0, 0),
+                                    vehicleType: widget.selectedVehicle,
+                                    totalKMs: widget.totalKM,
+                                    totalPrice: widget.totalPrice,
+                                    dropAddresss: widget.pickAddress,
+                                    pickupAddress: widget.dropAddress,
+                                    date: DateTime.now().toString(),
+                                    driverID: widget.driverID,
+                                  ),
+                                  widget.driverID,
+                                  context,
+                                  widget.rideID,
+                                );
                               } catch (e) {
                                 print(e);
                               } finally {
