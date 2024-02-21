@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:taxia/constants/app_colors.dart';
 import 'package:taxia/views/home_screen/my_info/info.dart';
+import 'package:taxia/views/ride_history/users/user_ride_history.dart';
 import 'package:taxia/widgets/setting_card.dart';
 
 class MyInfoUser extends StatefulWidget {
@@ -17,7 +18,6 @@ class _MyInfoUserState extends State<MyInfoUser> {
     double screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
       appBar: AppBar(
-        automaticallyImplyLeading: false,
         centerTitle: true,
         title: Text(
           "Settings",
@@ -49,7 +49,17 @@ class _MyInfoUserState extends State<MyInfoUser> {
               },
               child: SettingCard(title: "My Info"),
             ),
-            SettingCard(title: "Ride History"),
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => UserRideHistory(),
+                  ),
+                );
+              },
+              child: SettingCard(title: "Ride History"),
+            ),
             SettingCard(title: "Language"),
           ],
         ),

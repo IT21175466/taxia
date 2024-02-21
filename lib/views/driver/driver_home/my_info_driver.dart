@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:taxia/constants/app_colors.dart';
 import 'package:taxia/views/driver/driver_home/driver_info_page.dart';
+import 'package:taxia/views/ride_history/drivers/driver_ride_history.dart';
 import 'package:taxia/widgets/setting_card.dart';
 
 class MyInfoDriver extends StatefulWidget {
@@ -49,7 +50,17 @@ class _MyInfoDriverState extends State<MyInfoDriver> {
               },
               child: SettingCard(title: "My Info"),
             ),
-            SettingCard(title: "Ride History"),
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => DriverRideHistory(),
+                  ),
+                );
+              },
+              child: SettingCard(title: "Ride History"),
+            ),
             SettingCard(title: "Language"),
           ],
         ),

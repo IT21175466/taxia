@@ -33,4 +33,32 @@ class RideProvider extends ChangeNotifier {
       loading = false;
     }
   }
+
+  confirmRideToDriver(
+      Ride ride, String driverID, BuildContext context, String rideID) async {
+    loading = true;
+    try {
+      db
+          .collection("Rides")
+          .doc(driverID)
+          .collection('Users')
+          .doc(rideID)
+          .set(ride.toJson())
+          .then((value) async {
+        loading = false;
+        notifyListeners();
+        print('Added');
+      });
+      notifyListeners();
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(e.toString()),
+        ),
+      );
+      notifyListeners();
+    } finally {
+      loading = false;
+    }
+  }
 }

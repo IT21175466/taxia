@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class Ride {
@@ -11,7 +10,7 @@ class Ride {
   final double totalPrice;
   final String pickupAddress;
   final String dropAddresss;
-  final DateTime date;
+  final String date;
   final String driverID;
 
   Ride({
@@ -67,7 +66,7 @@ class Ride {
       totalPrice: json['totalPrice'],
       pickupAddress: json['pickAddress'],
       dropAddresss: json['dropAddress'],
-      date: (json['Registed_Date'] as Timestamp).toDate(),
+      date: json['Registed_Date'],
       driverID: json['driver_ID'],
     );
   }
