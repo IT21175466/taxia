@@ -16,7 +16,8 @@ class HistoryRideCard extends StatelessWidget {
       required this.pickupLocation,
       required this.dropLocation,
       required this.totalPrice,
-      required this.totalKM, required this.ratingStars});
+      required this.totalKM,
+      required this.ratingStars});
 
   @override
   Widget build(BuildContext context) {
@@ -75,8 +76,8 @@ class HistoryRideCard extends StatelessWidget {
               color: Colors.amber,
             ),
             itemCount: 5,
-            itemSize: 50.0,
-            direction: Axis.vertical,
+            itemSize: 25.0,
+            direction: Axis.horizontal,
           ),
           Divider(),
           Row(

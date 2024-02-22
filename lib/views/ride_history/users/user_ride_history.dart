@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:taxia/constants/app_colors.dart';
+import 'package:taxia/global/global.dart';
 import 'package:taxia/providers/user/user_provider.dart';
 import 'package:taxia/widgets/history_ride_card.dart';
 
@@ -42,7 +43,7 @@ class _UserRideHistoryState extends State<UserRideHistory> {
           child: StreamBuilder(
             stream: FirebaseFirestore.instance
                 .collection('Rides')
-                .doc(userProvider.userID)
+                .doc(globalUserID)
                 .collection("Users")
                 .snapshots(),
             builder: (context, snapshot) {
@@ -87,7 +88,9 @@ class _UserRideHistoryState extends State<UserRideHistory> {
                             double.parse(docs[index]['totalPrice'].toString()),
                         totalKM: double.parse(
                           docs[index]['totalKMs'].toString(),
-                        ), ratingStars: double.parse(docs[index]['rating_Starts'].toString()),
+                        ),
+                        ratingStars: double.parse(
+                            docs[index]['rating_Starts'].toString()),
                       );
                       // QuizHistoryCard(
                       //   title: docs[index]['QuizName'],
