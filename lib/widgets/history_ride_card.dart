@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
 class HistoryRideCard extends StatelessWidget {
   final String vehicleType;
@@ -7,6 +8,7 @@ class HistoryRideCard extends StatelessWidget {
   final String dropLocation;
   final double totalPrice;
   final double totalKM;
+  final double ratingStars;
   const HistoryRideCard(
       {super.key,
       required this.vehicleType,
@@ -14,7 +16,7 @@ class HistoryRideCard extends StatelessWidget {
       required this.pickupLocation,
       required this.dropLocation,
       required this.totalPrice,
-      required this.totalKM});
+      required this.totalKM, required this.ratingStars});
 
   @override
   Widget build(BuildContext context) {
@@ -64,6 +66,17 @@ class HistoryRideCard extends StatelessWidget {
               fontSize: 13,
               color: Colors.black,
             ),
+          ),
+          Divider(),
+          RatingBarIndicator(
+            rating: ratingStars,
+            itemBuilder: (context, index) => Icon(
+              Icons.star,
+              color: Colors.amber,
+            ),
+            itemCount: 5,
+            itemSize: 50.0,
+            direction: Axis.vertical,
           ),
           Divider(),
           Row(

@@ -87,7 +87,7 @@ class _UserRideHistoryState extends State<UserRideHistory> {
                             double.parse(docs[index]['totalPrice'].toString()),
                         totalKM: double.parse(
                           docs[index]['totalKMs'].toString(),
-                        ),
+                        ), ratingStars: double.parse(docs[index]['rating_Starts'].toString()),
                       );
                       // QuizHistoryCard(
                       //   title: docs[index]['QuizName'],

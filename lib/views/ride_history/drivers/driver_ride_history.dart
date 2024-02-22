@@ -88,6 +88,7 @@ class _DriverRideHistoryState extends State<DriverRideHistory> {
                         totalKM: double.parse(
                           docs[index]['totalKMs'].toString(),
                         ),
+                      ratingStars: double.parse(docs[index]['rating_Starts'].toString()),
                       );
                       // QuizHistoryCard(
                       //   title: docs[index]['QuizName'],

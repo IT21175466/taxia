@@ -12,6 +12,8 @@ class Ride {
   final String dropAddresss;
   final String date;
   final String driverID;
+  final double ratingStars;
+  final String ratingComment;
 
   Ride({
     required this.rideID,
@@ -25,6 +27,8 @@ class Ride {
     required this.pickupAddress,
     required this.date,
     required this.driverID,
+    required this.ratingStars,
+    required this.ratingComment,
   });
 
   Map<String, dynamic> toJson() {
@@ -46,6 +50,8 @@ class Ride {
       'dropAddress': dropAddresss,
       'trip_Date': date,
       'driver_ID': driverID,
+      'rating_Starts': ratingStars,
+      'rating_Comment': ratingComment,
     };
   }
 
@@ -68,6 +74,8 @@ class Ride {
       dropAddresss: json['dropAddress'],
       date: json['Registed_Date'],
       driverID: json['driver_ID'],
+      ratingStars: json['rating_Starts'] ?? 0.0,
+      ratingComment: json['rating_Comment'],
     );
   }
 }

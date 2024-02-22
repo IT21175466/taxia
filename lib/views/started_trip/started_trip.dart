@@ -9,6 +9,7 @@ import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:taxia/constants/app_colors.dart';
 import 'package:taxia/views/home_screen/home_page.dart';
+import 'package:taxia/views/rating_screen/user_rating.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class TripStarted extends StatefulWidget {
@@ -20,6 +21,7 @@ class TripStarted extends StatefulWidget {
   final LatLng dropLocation;
   final String vehicleNumber;
   final String progileImage;
+  final String driverID;
   const TripStarted({
     super.key,
     required this.rideID,
@@ -30,6 +32,7 @@ class TripStarted extends StatefulWidget {
     required this.dropLocation,
     required this.vehicleNumber,
     required this.progileImage,
+    required this.driverID,
   });
 
   @override
@@ -148,8 +151,20 @@ class _TripStartedState extends State<TripStarted> {
                     //isDriverInLocation = tripData['isStarted'];
 
                     if (tripData['isEnded'] == true) {
-                      Navigator.pushNamedAndRemoveUntil(
-                          context, '/home', (route) => false);
+                      // Navigator.pushNamedAndRemoveUntil(
+                      //     context, '/home', (route) => false);
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => UserRating(
+                            driverID: widget.driverID,
+                            rideID: widget.rideID,
+                            firstName: widget.firstName,
+                            vehicleNumber: widget.vehicleNumber,
+                            progileImage: widget.progileImage,
+                          ),
+                        ),
+                      );
                     }
 
                     markers.clear();
