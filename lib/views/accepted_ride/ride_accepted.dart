@@ -87,6 +87,7 @@ class _RideAcceptedState extends State<RideAccepted> {
           dropLocation: dropLoc!,
           vehicleNumber: taxiNumber,
           progileImage: ptofileImage,
+          driverID: driverID!,
         ),
       ),
     );

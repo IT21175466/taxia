@@ -25,6 +25,7 @@ class _HomeTabState extends State<HomeTab> {
       FirebaseDatabase.instance.ref('ongoing_rides');
 
   //Ride
+  String? driverID = '...';
   String? rideID = '...';
   LatLng? pickup;
   LatLng? drop;
@@ -105,6 +106,7 @@ class _HomeTabState extends State<HomeTab> {
                 if (rideData2['pID'].toString() == userId) {
                   getDriverData(rideData2['driverID'].toString());
                   setState(() {
+                    driverID = rideData2['driverID'].toString();
                     isOngoingAvailable = true;
                     ongoingPickAddress = rideData2['pickAddress'].toString();
                     ongoingDropAddress = rideData2['dropAddress'].toString();
@@ -521,6 +523,7 @@ class _HomeTabState extends State<HomeTab> {
                           dropLocation: ongoingDropLocation!,
                           vehicleNumber: ongoingTaxiNumber,
                           progileImage: 'progileImage',
+                          driverID: driverID!,
                         ),
                       ),
                     );

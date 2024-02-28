@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:taxia/constants/app_colors.dart';
 import 'package:taxia/models/ride.dart';
 import 'package:taxia/providers/ride/ride_provider.dart';
+import 'package:taxia/views/rating_screen/driver_rating.dart';
 import 'package:taxia/widgets/custom_button.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:location/location.dart' as loc;
@@ -467,6 +468,8 @@ class _StartTripState extends State<StartTrip> {
                                     pickupAddress: widget.dropAddress,
                                     date: DateTime.now().toString(),
                                     driverID: widget.driverID,
+                                    ratingComment: '',
+                                    ratingStars: 0.0,
                                   ),
                                   widget.passengerID,
                                   context,
@@ -485,6 +488,8 @@ class _StartTripState extends State<StartTrip> {
                                     pickupAddress: widget.dropAddress,
                                     date: DateTime.now().toString(),
                                     driverID: widget.driverID,
+                                    ratingStars: 0.0,
+                                    ratingComment: '',
                                   ),
                                   widget.driverID,
                                   context,
@@ -500,7 +505,7 @@ class _StartTripState extends State<StartTrip> {
 
                                 rideProvider.loading = false;
 
-                                Navigator.pushNamed(context, '/driverhome');
+                                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => DriverRating(passengerID: widget.passengerID, rideID: widget.rideID, firstName: widget.firstName, progileImage: '',)));
                               }
                             },
                             child: rideProvider.loading

@@ -34,6 +34,28 @@ class RideProvider extends ChangeNotifier {
     }
   }
 
+  updateReviewToDriver(String driverID, String rideID, double ratingStars,
+      String ratingComment) async {
+    await db
+        .collection("Rides")
+        .doc(driverID)
+        .collection("Users")
+        .doc(rideID)
+        .update(
+            {'rating_Starts': ratingStars, 'rating_Comment': ratingComment});
+  }
+
+  updateReviewToUser(String passengerID, String rideID, double ratingStars,
+      String ratingComment) async {
+    await db
+        .collection("Rides")
+        .doc(passengerID)
+        .collection("Users")
+        .doc(rideID)
+        .update(
+        {'rating_Starts': ratingStars, 'rating_Comment': ratingComment});
+  }
+
   confirmRideToDriver(
       Ride ride, String driverID, BuildContext context, String rideID) async {
     loading = true;
