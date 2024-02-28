@@ -14,6 +14,7 @@ class UserProvider extends ChangeNotifier {
   String? fistName = '...';
   String? lastName = '...';
   String? district = '...';
+  double? points = 0.0;
   //Driver
   String? address = '...';
   String? birthDay = '...';
@@ -85,6 +86,7 @@ class UserProvider extends ChangeNotifier {
         // province = documentRefDrivers.get('Province');
         //
         address = documentRefDrivers.get('address');
+        points = double.parse(documentRefDrivers.get('Points').toString());
         birthDay = documentRefDrivers.get('birthday');
         gender = documentRefDrivers.get('gender');
         model = documentRefDrivers.get('model');
@@ -117,6 +119,7 @@ class UserProvider extends ChangeNotifier {
         lastName = docSnapshotUsers.get('LastName');
         phoneNumber = docSnapshotUsers.get('PhoneNumber');
         email = docSnapshotUsers.get('Email');
+        points = double.parse(docSnapshotUsers.get('Points').toString());
         district = docSnapshotUsers.get('District');
         province = docSnapshotUsers.get('Province');
         //

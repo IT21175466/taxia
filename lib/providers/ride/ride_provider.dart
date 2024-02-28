@@ -5,6 +5,9 @@ import 'package:taxia/models/ride.dart';
 class RideProvider extends ChangeNotifier {
   final db = FirebaseFirestore.instance;
   bool loading = false;
+  bool isLoading = false;
+
+  double availablePoints = 0.0;
 
   confirmRide(
       Ride ride, String userID, BuildContext context, String rideID) async {
@@ -36,24 +39,60 @@ class RideProvider extends ChangeNotifier {
 
   updateReviewToDriver(String driverID, String rideID, double ratingStars,
       String ratingComment) async {
-    await db
-        .collection("Rides")
-        .doc(driverID)
-        .collection("Users")
-        .doc(rideID)
-        .update(
-            {'rating_Starts': ratingStars, 'rating_Comment': ratingComment});
+    isLoading = true;
+    notifyListeners();
+    try {
+      await db
+          .collection("Rides")
+          .doc(driverID)
+          .collection("Users")
+          .doc(rideID)
+          .update(
+              {'rating_Starts': ratingStars, 'rating_Comment': ratingComment});
+
+      DocumentSnapshot documentSnap =
+          await db.collection("Drivers").doc(driverID).get();
+
+      availablePoints = double.parse(documentSnap.get('Points').toString());
+      notifyListeners();
+    } catch (e) {
+      print(e);
+    } finally {
+      await db.collection("Drivers").doc(driverID).update(
+            ({'Points': availablePoints + ratingStars}),
+          );
+      isLoading = false;
+      notifyListeners();
+    }
   }
 
   updateReviewToUser(String passengerID, String rideID, double ratingStars,
       String ratingComment) async {
-    await db
-        .collection("Rides")
-        .doc(passengerID)
-        .collection("Users")
-        .doc(rideID)
-        .update(
-        {'rating_Starts': ratingStars, 'rating_Comment': ratingComment});
+    isLoading = true;
+    notifyListeners();
+    try {
+      await db
+          .collection("Rides")
+          .doc(passengerID)
+          .collection("Users")
+          .doc(rideID)
+          .update(
+              {'rating_Starts': ratingStars, 'rating_Comment': ratingComment});
+
+      DocumentSnapshot documentSnap =
+          await db.collection("Users").doc(passengerID).get();
+
+      availablePoints = double.parse(documentSnap.get('Points').toString());
+      notifyListeners();
+    } catch (e) {
+      print(e);
+    } finally {
+      await db.collection("Users").doc(passengerID).update(
+            ({'Points': availablePoints + ratingStars}),
+          );
+    }
+    isLoading = false;
+    notifyListeners();
   }
 
   confirmRideToDriver(

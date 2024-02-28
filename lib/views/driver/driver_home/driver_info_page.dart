@@ -44,6 +44,39 @@ class _DriverInfoPageState extends State<DriverInfoPage> {
           child: SingleChildScrollView(
             child: Column(
               children: [
+                Divider(),
+                Row(
+                  children: [
+                    Text(
+                      'Points',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        fontSize: 15,
+                        color: Colors.grey,
+                      ),
+                    ),
+                    Spacer(),
+                    Text(
+                      userProvider.points!.toStringAsFixed(1),
+                      style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        fontSize: 15,
+                        color: Colors.black,
+                      ),
+                    ),
+                    SizedBox(
+                      width: 5,
+                    ),
+                    SizedBox(
+                      height: 25,
+                      child: Image.asset('assets/images/points.png'),
+                    ),
+                  ],
+                ),
+                Divider(),
+                SizedBox(
+                  height: 15,
+                ),
                 UserInfoCard(
                     hint: 'Full Name',
                     detail:

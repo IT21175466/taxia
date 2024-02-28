@@ -358,13 +358,20 @@ class _StartTripState extends State<StartTrip> {
                             color: AppColors.textColor,
                           ),
                         ),
-                        Text(
-                          widget.pickAddress,
-                          style: const TextStyle(
-                            fontSize: 18,
-                            color: AppColors.textColor,
-                          ),
-                        ),
+                      Expanded(
+
+                              child: Text(
+
+                                widget.pickAddress,
+
+                                style:  TextStyle(
+                                  fontSize: 15,
+                                  color: AppColors.textColor,
+                                ),
+                              ),
+                            ),
+
+
                       ],
                     ),
                     const SizedBox(
@@ -380,13 +387,20 @@ class _StartTripState extends State<StartTrip> {
                             color: AppColors.textColor,
                           ),
                         ),
-                        Text(
-                          widget.dropAddress,
-                          style: const TextStyle(
-                            fontSize: 18,
-                            color: AppColors.textColor,
+                       Expanded(
+                              child: Text(
+                                widget.dropAddress,
+                                style: const TextStyle(
+                                  fontSize: 15,
+                                  color: AppColors.textColor,
+                                ),
+                              ),
+
                           ),
-                        ),
+
+
+
+
                       ],
                     ),
                     const SizedBox(
@@ -505,7 +519,15 @@ class _StartTripState extends State<StartTrip> {
 
                                 rideProvider.loading = false;
 
-                                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => DriverRating(passengerID: widget.passengerID, rideID: widget.rideID, firstName: widget.firstName, progileImage: '',)));
+                                Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => DriverRating(
+                                              passengerID: widget.passengerID,
+                                              rideID: widget.rideID,
+                                              firstName: widget.firstName,
+                                              progileImage: '',
+                                            )));
                               }
                             },
                             child: rideProvider.loading

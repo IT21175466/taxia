@@ -208,6 +208,7 @@ class _TeamandconditionState extends State<Teamandcondition> {
       vehicleImg: widget.vehicalimg,
       date: DateTime.now().toString(),
       yourVehicleOnly: widget.onlyMyVehicle,
+      points: 0,
     );
 
     CollectionReference driversCollection =

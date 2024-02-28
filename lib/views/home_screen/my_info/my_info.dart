@@ -18,6 +18,7 @@ class _MyInfoUserState extends State<MyInfoUser> {
     double screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         centerTitle: true,
         title: Text(
           "Settings",

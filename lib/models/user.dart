@@ -9,6 +9,7 @@ class User {
   final String district;
   final String phoneNum;
   final DateTime date;
+  final double points;
 
   User({
     required this.userID,
@@ -19,19 +20,20 @@ class User {
     required this.district,
     required this.phoneNum,
     required this.date,
+    required this.points,
   });
 
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
-      userID: json['UserID'].toString(),
-      firstName: json['FirstName'].toString(),
-      lastName: json['LastName'].toString(),
-      email: json['Email'].toString(),
-      province: json['Province'].toString(),
-      district: json['District'].toString(),
-      phoneNum: json['PhoneNumber'].toString(),
-      date: (json['Registed_Date'] as Timestamp).toDate(),
-    );
+        userID: json['UserID'].toString(),
+        firstName: json['FirstName'].toString(),
+        lastName: json['LastName'].toString(),
+        email: json['Email'].toString(),
+        province: json['Province'].toString(),
+        district: json['District'].toString(),
+        phoneNum: json['PhoneNumber'].toString(),
+        date: (json['Registed_Date'] as Timestamp).toDate(),
+        points: double.parse(json['Points'].toString()));
   }
 
   Map<String, dynamic> toJson() {
@@ -44,6 +46,7 @@ class User {
       'District': district,
       'PhoneNumber': phoneNum,
       'Registed_Date': date,
+      'Points': points,
     };
   }
 }

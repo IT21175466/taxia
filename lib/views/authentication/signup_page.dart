@@ -173,6 +173,7 @@ class _SignUpPageState extends State<SignUpPage> {
                         district: districtController.text,
                         phoneNum: phoneNo,
                         date: DateTime.now(),
+                        points: 0,
                       );
 
                       userProvider.addUserToFirebase(addUser, context, userID!);

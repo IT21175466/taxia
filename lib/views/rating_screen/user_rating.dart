@@ -138,12 +138,20 @@ class _UserRatingState extends State<UserRating> {
                   Navigator.pushNamedAndRemoveUntil(
                       context, '/home', (route) => false);
                 },
-                child: CustomButton(
-                  text: 'Done',
-                  height: 50,
-                  width: screenWidth,
-                  backgroundColor: AppColors.accentColor,
-                ),
+                child: rideProvider.isLoading
+                    ? SizedBox(
+                        height: 50,
+                        width: screenHeight,
+                        child: Center(
+                          child: CircularProgressIndicator.adaptive(),
+                        ),
+                      )
+                    : CustomButton(
+                        text: 'Done',
+                        height: 50,
+                        width: screenWidth,
+                        backgroundColor: AppColors.accentColor,
+                      ),
               ),
             ],
           ),
