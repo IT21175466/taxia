@@ -20,6 +20,7 @@ class Driver {
   final String vehicleImg;
   final bool yourVehicleOnly;
   final String date;
+  final double points;
 
   // Constructor
   Driver({
@@ -44,6 +45,7 @@ class Driver {
     required this.vehicleImg,
     required this.yourVehicleOnly,
     required this.date,
+    required this.points,
   });
 
   // Convert the object to a Map for Firestore
@@ -70,6 +72,7 @@ class Driver {
       'vehicleImg': vehicleImg,
       'yourVehicleOnly': yourVehicleOnly,
       'registed_date': date,
+      'Points': points,
     };
   }
 
@@ -97,6 +100,7 @@ class Driver {
       vehicleImg: json['vehicleImg'],
       yourVehicleOnly: json['yourVehicleOnly'],
       date: json['registed_date'].toString(),
+      points: double.parse(json['Points'].toString()),
     );
   }
 }
