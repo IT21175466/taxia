@@ -197,11 +197,17 @@ class _TeamandconditionState extends State<Teamandcondition> {
 
   Future<void> submitalldata() async {
     Coupon newCoupen = Coupon(
-      driverID: driverID!,
-      couponID: coupenID!,
-      couponTime: 24,
-      couponAmount: 90,
-    );
+        driverID: driverID!,
+        couponID: coupenID!,
+        couponTime: 24,
+        couponAmount: 90,
+        couponEndDate: DateTime.now()
+            .add(
+              Duration(
+                hours: 24 * 90,
+              ),
+            )
+            .toString());
 
     Driver newDriver = Driver(
       driverID: driverID!,
