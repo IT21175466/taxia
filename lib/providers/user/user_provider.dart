@@ -124,20 +124,32 @@ class UserProvider extends ChangeNotifier {
           int couponAmount = int.parse(couponData['couponAmount'].toString());
           int couponTime = int.parse(couponData['couponTime'].toString());
 
-          availableTime += int.parse(DateTime.parse(couponData['couponEndOn'])
-              .difference(DateTime.now())
-              .inHours
-              .toString());
+          if (DateTime.parse(couponData['couponEndOn'])
+              .isBefore(DateTime.now())) {
+            FirebaseFirestore.instance
+                .collection('Coupons')
+                .doc(userID)
+                .collection('coupon')
+                .doc(couponData['couponID'].toString())
+                .delete();
+          } else {
+            availableTime += int.parse(DateTime.parse(couponData['couponEndOn'])
+                .difference(DateTime.now())
+                .inHours
+                .toString());
 
-          // Add couponAmount * couponTime to totalCouponHours
-          totalCouponHours += couponAmount * couponTime;
-          print(totalCouponHours);
-          print(availableTime);
+            // Add couponAmount * couponTime to totalCouponHours
+            totalCouponHours += couponAmount * couponTime;
+            print(totalCouponHours);
+            print(availableTime);
 
-          progress = double.parse(availableTime.toString()) /
-              double.parse(totalCouponHours.toString());
+            progress = double.parse(availableTime.toString()) /
+                double.parse(totalCouponHours.toString());
 
-          print(progress);
+            print(progress);
+
+            notifyListeners();
+          }
 
           notifyListeners();
         });
