@@ -118,6 +118,7 @@ class UserProvider extends ChangeNotifier {
         notifyListeners();
       } else {
         noCoupens = false;
+        notifyListeners();
         querySnapshot.docs.forEach((DocumentSnapshot documentSnapshot) {
           //add all (couponAmount * couponTime) to totalCouponHours variable
           final couponData = documentSnapshot.data() as Map<String, dynamic>;
