@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:provider/provider.dart';
 import 'package:taxia/constants/app_colors.dart';
 import 'package:taxia/providers/user/user_provider.dart';
@@ -57,7 +56,8 @@ class _DriverCoupenPageState extends State<DriverCoupenPage> {
               LinearPercentIndicator(
                 width: screenWidth - 50,
                 lineHeight: 20.0,
-                percent: userProvider.progress < 0.0? 0.0 :userProvider.progress,
+                percent:
+                    userProvider.progress < 0.0 ? 0.0 : userProvider.progress,
                 center: Text(
                   "Ends in ${userProvider.availableTime ~/ 24} days and ${userProvider.availableTime % 24} hours",
                   style: TextStyle(
