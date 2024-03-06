@@ -15,6 +15,7 @@ class UserProvider extends ChangeNotifier {
   String? lastName = '...';
   String? district = '...';
   double? points = 0.0;
+  bool noCoupens = false;
   //Driver
   String? address = '...';
   String? birthDay = '...';
@@ -24,6 +25,10 @@ class UserProvider extends ChangeNotifier {
   String? vehicleNumber = '...';
   String? vehicleType = '...';
   bool isDriver = false;
+
+  int totalCouponHours = 0;
+  int availableTime = 0;
+  double progress = 0.0;
 
   addUserToFirebase(User user, BuildContext context, String uID) async {
     try {
@@ -98,6 +103,59 @@ class UserProvider extends ChangeNotifier {
     } catch (error) {
       print("Error checking document: $error");
     }
+  }
+
+  Future<void> getDriverCoupens() async {
+    await getUserID();
+    FirebaseFirestore.instance
+        .collection('Coupons')
+        .doc(userID)
+        .collection('coupon')
+        .get()
+        .then((QuerySnapshot querySnapshot) {
+      if (querySnapshot.docs.isEmpty) {
+        noCoupens = true;
+        notifyListeners();
+      } else {
+        noCoupens = false;
+        notifyListeners();
+        querySnapshot.docs.forEach((DocumentSnapshot documentSnapshot) {
+          //add all (couponAmount * couponTime) to totalCouponHours variable
+          final couponData = documentSnapshot.data() as Map<String, dynamic>;
+          int couponAmount = int.parse(couponData['couponAmount'].toString());
+          int couponTime = int.parse(couponData['couponTime'].toString());
+
+          if (DateTime.parse(couponData['couponEndOn'])
+              .isBefore(DateTime.now())) {
+            FirebaseFirestore.instance
+                .collection('Coupons')
+                .doc(userID)
+                .collection('coupon')
+                .doc(couponData['couponID'].toString())
+                .delete();
+          } else {
+            availableTime += int.parse(DateTime.parse(couponData['couponEndOn'])
+                .difference(DateTime.now())
+                .inHours
+                .toString());
+
+            // Add couponAmount * couponTime to totalCouponHours
+            totalCouponHours += couponAmount * couponTime;
+            print(totalCouponHours);
+            print(availableTime);
+
+            progress = double.parse(availableTime.toString()) /
+                double.parse(totalCouponHours.toString());
+
+            print(progress);
+
+            notifyListeners();
+          }
+
+          notifyListeners();
+        });
+      }
+    });
   }
 
   getUserAccountInfo() async {

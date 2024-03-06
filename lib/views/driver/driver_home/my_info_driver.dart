@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:taxia/constants/app_colors.dart';
+import 'package:taxia/views/coupens/driver/driver_coupen_page.dart';
 import 'package:taxia/views/driver/driver_home/driver_info_page.dart';
 import 'package:taxia/views/ride_history/drivers/driver_ride_history.dart';
 import 'package:taxia/widgets/setting_card.dart';
@@ -12,6 +14,21 @@ class MyInfoDriver extends StatefulWidget {
 }
 
 class _MyInfoDriverState extends State<MyInfoDriver> {
+  String? driverID = '';
+
+  @override
+  void initState() {
+    getDriverID();
+    super.initState();
+  }
+
+  getDriverID() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      driverID = prefs.getString('userID');
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
@@ -49,6 +66,19 @@ class _MyInfoDriverState extends State<MyInfoDriver> {
                 );
               },
               child: SettingCard(title: "My Info"),
+            ),
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => DriverCoupenPage(
+                      driverId: driverID!,
+                    ),
+                  ),
+                );
+              },
+              child: SettingCard(title: "Coupens"),
             ),
             GestureDetector(
               onTap: () {

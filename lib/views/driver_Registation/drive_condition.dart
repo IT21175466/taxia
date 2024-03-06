@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:taxia/models/coupon.dart';
+import 'package:uuid/uuid.dart';
 
 import '../../models/Driver.dart';
 
@@ -62,6 +64,7 @@ class Teamandcondition extends StatefulWidget {
 
 class _TeamandconditionState extends State<Teamandcondition> {
   String? driverID = '';
+  String? coupenID = '';
 
   getUserID() async {
     final prefs = await SharedPreferences.getInstance();
@@ -74,6 +77,13 @@ class _TeamandconditionState extends State<Teamandcondition> {
   void initState() {
     super.initState();
     getUserID();
+    generateCoupenID();
+  }
+
+  generateCoupenID() {
+    setState(() {
+      coupenID = Uuid().v4();
+    });
   }
 
   ListTileTitleAlignment? titleAlignment;
@@ -186,6 +196,19 @@ class _TeamandconditionState extends State<Teamandcondition> {
   }
 
   Future<void> submitalldata() async {
+    Coupon newCoupen = Coupon(
+        driverID: driverID!,
+        couponID: coupenID!,
+        couponTime: 24,
+        couponAmount: 90,
+        couponEndDate: DateTime.now()
+            .add(
+              Duration(
+                hours: 24 * 90,
+              ),
+            )
+            .toString());
+
     Driver newDriver = Driver(
       driverID: driverID!,
       firstName: widget.firstName,
@@ -213,7 +236,16 @@ class _TeamandconditionState extends State<Teamandcondition> {
 
     CollectionReference driversCollection =
         FirebaseFirestore.instance.collection('Drivers');
+
+    CollectionReference driversCouponCollection =
+        FirebaseFirestore.instance.collection('Coupons');
     try {
+      await driversCouponCollection
+          .doc(driverID)
+          .collection('coupon')
+          .doc(coupenID)
+          .set(newCoupen.toMap());
+
       await driversCollection
           .doc(driverID)
           .set(newDriver.toMap())
