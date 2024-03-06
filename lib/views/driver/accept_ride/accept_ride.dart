@@ -3,7 +3,9 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:provider/provider.dart';
 import 'package:taxia/constants/app_colors.dart';
+import 'package:taxia/providers/user/user_provider.dart';
 import 'package:taxia/views/driver/goto_passenger_location/goto_passenger.dart';
 
 class AcceptRide extends StatefulWidget {
@@ -66,6 +68,8 @@ class _AcceptRideState extends State<AcceptRide> {
     setState(() {
       totalAmount = widget.totalPrice.toStringAsFixed(2);
     });
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
+    userProvider.getDriverCoupens();
   }
 
   void drowMap() async {
@@ -130,252 +134,274 @@ class _AcceptRideState extends State<AcceptRide> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
-        children: [
-          GoogleMap(
-            markers: markers,
-            zoomControlsEnabled: false,
-            polylines: {
-              Polyline(
-                polylineId: const PolylineId("route"),
-                points: polylineCordinates,
-                visible: true,
-                width: 3,
-                color: const Color.fromARGB(255, 18, 7, 212),
-              ),
-            },
-            onMapCreated: (GoogleMapController mapController) {
-              if (!googleMapCompleterController.isCompleted) {
-                googleMapCompleterController.complete(mapController);
-                controllerGoogleMap = mapController;
-              }
-
-              // mapProvider.controllerGoogleMap = mapController;
-
-              // mapProvider.googleMapCompleterController
-              //     .complete(mapProvider.controllerGoogleMap);
-            },
-            initialCameraPosition:
-                CameraPosition(target: widget.driverLatLon, zoom: 15),
-          ),
-          Positioned(
-            bottom: 0,
-            right: 0,
-            left: 0,
-            child: Container(
-              padding: EdgeInsets.symmetric(vertical: 15, horizontal: 20),
-              decoration: BoxDecoration(
-                border: Border.all(
-                  color: AppColors.accentColor,
+      body: Consumer(
+        builder:
+            (BuildContext context, UserProvider userProvider, Widget? child) =>
+                Stack(
+          children: [
+            GoogleMap(
+              markers: markers,
+              zoomControlsEnabled: false,
+              polylines: {
+                Polyline(
+                  polylineId: const PolylineId("route"),
+                  points: polylineCordinates,
+                  visible: true,
+                  width: 3,
+                  color: const Color.fromARGB(255, 18, 7, 212),
                 ),
-                color: Colors.white,
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(20),
-                  topRight: Radius.circular(20),
+              },
+              onMapCreated: (GoogleMapController mapController) {
+                if (!googleMapCompleterController.isCompleted) {
+                  googleMapCompleterController.complete(mapController);
+                  controllerGoogleMap = mapController;
+                }
+
+                // mapProvider.controllerGoogleMap = mapController;
+
+                // mapProvider.googleMapCompleterController
+                //     .complete(mapProvider.controllerGoogleMap);
+              },
+              initialCameraPosition:
+                  CameraPosition(target: widget.driverLatLon, zoom: 15),
+            ),
+            Positioned(
+              bottom: 0,
+              right: 0,
+              left: 0,
+              child: Container(
+                padding: EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    color: AppColors.accentColor,
+                  ),
+                  color: Colors.white,
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(20),
+                    topRight: Radius.circular(20),
+                  ),
                 ),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Text(
-                        "In ${widget.timeDuration}",
-                        style: TextStyle(
-                          fontSize: 25,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      Spacer(),
-                      Text(
-                        "${widget.distance}",
-                        style: TextStyle(
-                          fontSize: 15,
-                          color: AppColors.grayColor,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ],
-                  ),
-
-                  Text(
-                    "Pickup - ${widget.pickAddress}",
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                  Text(
-                    "Drop - ${widget.dropAddress}",
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                  Text(
-                    "Rs. $totalAmount",
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                  // Text(
-                  //   "From ${widget.fromText}",
-                  //   style: TextStyle(
-                  //     fontSize: 15,
-                  //     color: AppColors.grayColor,
-                  //     fontWeight: FontWeight.w600,
-                  //   ),
-                  // ),
-                  SizedBox(
-                    height: 30,
-                  ),
-
-                  Row(
-                    children: [
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.pop(context);
-                        },
-                        child: Container(
-                          padding: EdgeInsets.symmetric(horizontal: 30),
-                          height: 55,
-                          decoration: BoxDecoration(
-                            color: Color.fromARGB(255, 248, 61, 61),
-                            borderRadius: BorderRadius.circular(10),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.grey.withOpacity(0.5),
-                                blurRadius: 3,
-                                offset: Offset(0, 3),
-                              ),
-                            ],
-                          ),
-                          child: Center(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(
-                                  'Decline',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.w400,
-                                    fontSize: 18,
-                                    color: Colors.black,
-                                  ),
-                                ),
-                                SizedBox(
-                                  width: 10,
-                                ),
-                                Icon(Icons.close),
-                              ],
-                            ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Text(
+                          "In ${widget.timeDuration}",
+                          style: TextStyle(
+                            fontSize: 25,
+                            fontWeight: FontWeight.w600,
                           ),
                         ),
+                        Spacer(),
+                        Text(
+                          "${widget.distance}",
+                          style: TextStyle(
+                            fontSize: 15,
+                            color: AppColors.grayColor,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
+                    ),
+
+                    Text(
+                      "Pickup - ${widget.pickAddress}",
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w500,
                       ),
-                      Spacer(),
-                      GestureDetector(
-                        onTap: () async {
-                          DatabaseReference databaseReferenceRides =
-                              await FirebaseDatabase.instance.ref('rides');
+                    ),
+                    Text(
+                      "Drop - ${widget.dropAddress}",
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    Text(
+                      "Rs. $totalAmount",
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    // Text(
+                    //   "From ${widget.fromText}",
+                    //   style: TextStyle(
+                    //     fontSize: 15,
+                    //     color: AppColors.grayColor,
+                    //     fontWeight: FontWeight.w600,
+                    //   ),
+                    // ),
+                    SizedBox(
+                      height: 30,
+                    ),
 
-                          DatabaseEvent event = await databaseReferenceRides
-                              .child(widget.rideID)
-                              .once();
-
-                          if (event.snapshot.value != null) {
-                            print('Data available under "rides" node.');
-                            await databaseReference
-                                .child(widget.rideID)
-                                .child(widget.driverID)
-                                .set({
-                              "driverID": widget.driverID,
-                              "rideID": widget.rideID,
-                              "pID": widget.passengerID,
-                              "picupLocationLong":
-                                  widget.pickupLatLon.longitude,
-                              "picupLocationLat": widget.pickupLatLon.latitude,
-                              "dropLocationLong": widget.dropLoationLon,
-                              "dropLocationLat": widget.dropLoationLat,
-                              "vehicleType": widget.selectedVehicle,
-                              "totalKm": widget.distance,
-                              "totalPrice": widget.totalPrice,
-                              "driverLocationLat": widget.driverLatLon.latitude,
-                              "driverLocationLon":
-                                  widget.driverLatLon.longitude,
-                              "pickAddress": widget.pickAddress,
-                              "dropAddress": widget.dropAddress,
-                              "isStarted": false,
-                              "isEnded": false,
-                            });
-
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (context) => GoToPassenger(
-                                  driverID: widget.driverID,
-                                  rideID: widget.rideID,
-                                  passengerID: widget.passengerID,
-                                  pickupLatLon: widget.pickupLatLon,
-                                  driverLatLon: widget.driverLatLon,
-                                  pickAddress: widget.pickAddress,
-                                  dropAddress: widget.dropAddress,
-                                  totalPrice: widget.totalPrice,
-                                  totalKM: widget.totalKM,
-                                  selectedVehicle: widget.selectedVehicle,
-                                ),
-                              ),
-                            );
-                          } else {
-                            print('No data found under "rides" node.');
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text("Ride not Available!"),
-                              ),
-                            );
+                    Row(
+                      children: [
+                        GestureDetector(
+                          onTap: () {
                             Navigator.pop(context);
-                          }
-                        },
-                        child: Container(
-                          padding: EdgeInsets.symmetric(horizontal: 30),
-                          height: 55,
-                          decoration: BoxDecoration(
-                            color: Colors.greenAccent,
-                            borderRadius: BorderRadius.circular(10),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.grey.withOpacity(0.5),
-                                blurRadius: 3,
-                                offset: Offset(0, 3),
-                              ),
-                            ],
-                          ),
-                          child: Center(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(
-                                  'Accept',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.w400,
-                                    fontSize: 18,
-                                    color: Colors.black,
-                                  ),
+                          },
+                          child: Container(
+                            padding: EdgeInsets.symmetric(horizontal: 30),
+                            height: 55,
+                            decoration: BoxDecoration(
+                              color: Color.fromARGB(255, 248, 61, 61),
+                              borderRadius: BorderRadius.circular(10),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.grey.withOpacity(0.5),
+                                  blurRadius: 3,
+                                  offset: Offset(0, 3),
                                 ),
-                                SizedBox(
-                                  width: 10,
-                                ),
-                                Icon(Icons.navigation_rounded),
                               ],
+                            ),
+                            child: Center(
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    'Decline',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w400,
+                                      fontSize: 18,
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: 10,
+                                  ),
+                                  Icon(Icons.close),
+                                ],
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                    ],
-                  )
-                ],
+                        Spacer(),
+                        GestureDetector(
+                          onTap: () async {
+                            await userProvider.getDriverCoupens();
+
+                            if (userProvider.noCoupens == true) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(
+                                    "You have no coupens to accept this ride!!",
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                  backgroundColor: Colors.red,
+                                ),
+                              );
+                            } else {
+                              DatabaseReference databaseReferenceRides =
+                                  await FirebaseDatabase.instance.ref('rides');
+
+                              DatabaseEvent event = await databaseReferenceRides
+                                  .child(widget.rideID)
+                                  .once();
+
+                              if (event.snapshot.value != null) {
+                                print('Data available under "rides" node.');
+                                await databaseReference
+                                    .child(widget.rideID)
+                                    .child(widget.driverID)
+                                    .set({
+                                  "driverID": widget.driverID,
+                                  "rideID": widget.rideID,
+                                  "pID": widget.passengerID,
+                                  "picupLocationLong":
+                                      widget.pickupLatLon.longitude,
+                                  "picupLocationLat":
+                                      widget.pickupLatLon.latitude,
+                                  "dropLocationLong": widget.dropLoationLon,
+                                  "dropLocationLat": widget.dropLoationLat,
+                                  "vehicleType": widget.selectedVehicle,
+                                  "totalKm": widget.distance,
+                                  "totalPrice": widget.totalPrice,
+                                  "driverLocationLat":
+                                      widget.driverLatLon.latitude,
+                                  "driverLocationLon":
+                                      widget.driverLatLon.longitude,
+                                  "pickAddress": widget.pickAddress,
+                                  "dropAddress": widget.dropAddress,
+                                  "isStarted": false,
+                                  "isEnded": false,
+                                });
+
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (context) => GoToPassenger(
+                                      driverID: widget.driverID,
+                                      rideID: widget.rideID,
+                                      passengerID: widget.passengerID,
+                                      pickupLatLon: widget.pickupLatLon,
+                                      driverLatLon: widget.driverLatLon,
+                                      pickAddress: widget.pickAddress,
+                                      dropAddress: widget.dropAddress,
+                                      totalPrice: widget.totalPrice,
+                                      totalKM: widget.totalKM,
+                                      selectedVehicle: widget.selectedVehicle,
+                                    ),
+                                  ),
+                                );
+                              } else {
+                                print('No data found under "rides" node.');
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text("Ride not Available!"),
+                                  ),
+                                );
+                                Navigator.pop(context);
+                              }
+                            }
+                          },
+                          child: Container(
+                            padding: EdgeInsets.symmetric(horizontal: 30),
+                            height: 55,
+                            decoration: BoxDecoration(
+                              color: Colors.greenAccent,
+                              borderRadius: BorderRadius.circular(10),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.grey.withOpacity(0.5),
+                                  blurRadius: 3,
+                                  offset: Offset(0, 3),
+                                ),
+                              ],
+                            ),
+                            child: Center(
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    'Accept',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w400,
+                                      fontSize: 18,
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: 10,
+                                  ),
+                                  Icon(Icons.navigation_rounded),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    )
+                  ],
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
