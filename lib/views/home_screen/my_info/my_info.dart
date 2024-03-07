@@ -61,7 +61,7 @@ class _MyInfoUserState extends State<MyInfoUser> {
               },
               child: SettingCard(title: "Ride History"),
             ),
-            SettingCard(title: "Language"),
+            //SettingCard(title: "Language"),
           ],
         ),
       ),

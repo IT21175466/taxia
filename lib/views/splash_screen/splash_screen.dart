@@ -47,7 +47,7 @@ class _SplashScreenState extends State<SplashScreen> {
           children: [
             Spacer(),
             Text(
-              'Welcome to Taxia',
+              'Welcome to Flego Taxi',
               style: TextStyle(
                 fontSize: 25,
                 fontWeight: FontWeight.w700,

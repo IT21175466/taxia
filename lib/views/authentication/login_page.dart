@@ -33,7 +33,7 @@ class _LoginPageState extends State<LoginPage> {
                 height: AppBar().preferredSize.height + 20,
               ),
               Text(
-                'Welcome to Taxia',
+                'Welcome to Flego Taxi',
                 style: TextStyle(
                   fontSize: 23,
                   fontWeight: FontWeight.w400,

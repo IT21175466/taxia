@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:taxia/constants/app_colors.dart';
 import 'package:taxia/providers/user/user_provider.dart';
 import 'package:taxia/widgets/custom_button.dart';
@@ -103,11 +104,20 @@ class _DriverInfoPageState extends State<DriverInfoPage> {
                 SizedBox(
                   height: 30,
                 ),
-                CustomButton(
-                  text: 'LOGOUT',
-                  height: 50,
-                  width: screenWidth,
-                  backgroundColor: AppColors.accentColor,
+                GestureDetector(
+                  onTap: () async {
+                    final prefs = await SharedPreferences.getInstance();
+                    prefs.setBool('logedIn', false);
+
+                    Navigator.pushNamedAndRemoveUntil(
+                        context, '/login', (route) => false);
+                  },
+                  child: CustomButton(
+                    text: 'LOGOUT',
+                    height: 50,
+                    width: screenWidth,
+                    backgroundColor: AppColors.accentColor,
+                  ),
                 ),
               ],
             ),

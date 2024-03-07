@@ -91,7 +91,7 @@ class _MyInfoDriverState extends State<MyInfoDriver> {
               },
               child: SettingCard(title: "Ride History"),
             ),
-            SettingCard(title: "Language"),
+            //SettingCard(title: "Language"),
           ],
         ),
       ),

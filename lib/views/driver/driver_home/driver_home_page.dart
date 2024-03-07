@@ -16,12 +16,12 @@ class _DriverHomePageState extends State<DriverHomePage> {
   //Tab Bar
   final List<Widget> pages = [
     DriverHomeTab(),
-    Center(
-      child: Text("Business"),
-    ),
-    Center(
-      child: Text("Notifications"),
-    ),
+    // Center(
+    //   child: Text("Business"),
+    // ),
+    // Center(
+    //   child: Text("Notifications"),
+    // ),
     MyInfoDriver(),
   ];
 

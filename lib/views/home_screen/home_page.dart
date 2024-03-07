@@ -16,12 +16,12 @@ class _HomePageState extends State<HomePage> {
   //Tab Bar
   final List<Widget> pages = [
     MyTabBar(),
-    Center(
-      child: Text("Business"),
-    ),
-    Center(
-      child: Text("Notifications"),
-    ),
+    // Center(
+    //   child: Text("Business"),
+    // ),
+    // Center(
+    //   child: Text("Notifications"),
+    // ),
     MyInfoUser(),
   ];
 
