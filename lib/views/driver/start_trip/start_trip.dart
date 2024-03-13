@@ -358,20 +358,15 @@ class _StartTripState extends State<StartTrip> {
                             color: AppColors.textColor,
                           ),
                         ),
-                      Expanded(
-
-                              child: Text(
-
-                                widget.pickAddress,
-
-                                style:  TextStyle(
-                                  fontSize: 15,
-                                  color: AppColors.textColor,
-                                ),
-                              ),
+                        Expanded(
+                          child: Text(
+                            widget.pickAddress,
+                            style: TextStyle(
+                              fontSize: 15,
+                              color: AppColors.textColor,
                             ),
-
-
+                          ),
+                        ),
                       ],
                     ),
                     const SizedBox(
@@ -387,20 +382,15 @@ class _StartTripState extends State<StartTrip> {
                             color: AppColors.textColor,
                           ),
                         ),
-                       Expanded(
-                              child: Text(
-                                widget.dropAddress,
-                                style: const TextStyle(
-                                  fontSize: 15,
-                                  color: AppColors.textColor,
-                                ),
-                              ),
-
+                        Expanded(
+                          child: Text(
+                            widget.dropAddress,
+                            style: const TextStyle(
+                              fontSize: 15,
+                              color: AppColors.textColor,
+                            ),
                           ),
-
-
-
-
+                        ),
                       ],
                     ),
                     const SizedBox(

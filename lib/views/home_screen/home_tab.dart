@@ -45,6 +45,7 @@ class _HomeTabState extends State<HomeTab> {
   String? ongoingvehicleType = '...';
   String? ongoingRideID;
   LatLng? ongoingPickupLocation;
+  LatLng? ongoingPassengerPickupLocation;
   LatLng? ongoingDriverLocation;
   LatLng? ongoingDropLocation;
   String ongoingFirstName = '...';
@@ -105,35 +106,49 @@ class _HomeTabState extends State<HomeTab> {
 
                 if (rideData2['pID'].toString() == userId) {
                   getDriverData(rideData2['driverID'].toString());
-                  setState(() {
-                    driverID = rideData2['driverID'].toString();
-                    isOngoingAvailable = true;
-                    ongoingPickAddress = rideData2['pickAddress'].toString();
-                    ongoingDropAddress = rideData2['dropAddress'].toString();
-                    ongoingtotalKM = rideData2['totalKm'].toString();
-                    ongoingvehicleType = rideData2['vehicleType'].toString();
-                    isRideStarted = rideData2['isStarted'];
-                    ongoingRideID = rideData2['rideID'].toString();
-                    ongoingPickupLocation = LatLng(
-                        double.parse(rideData2['driverLocationLat'].toString()),
-                        double.parse(
-                            rideData2['driverLocationLon'].toString()));
+                  if (mounted) {
+                    setState(() {
+                      driverID = rideData2['driverID'].toString();
+                      isOngoingAvailable = true;
+                      ongoingPickAddress = rideData2['pickAddress'].toString();
+                      ongoingDropAddress = rideData2['dropAddress'].toString();
+                      ongoingtotalKM = rideData2['totalKm'].toString();
+                      ongoingvehicleType = rideData2['vehicleType'].toString();
+                      isRideStarted = rideData2['isStarted'];
+                      ongoingRideID = rideData2['rideID'].toString();
+                      ongoingPickupLocation = LatLng(
+                          double.parse(
+                              rideData2['driverLocationLat'].toString()),
+                          double.parse(
+                              rideData2['driverLocationLon'].toString()));
 
-                    ongoingDriverLocation = LatLng(
-                        double.parse(rideData2['picupLocationLat'].toString()),
-                        double.parse(
-                            rideData2['picupLocationLong'].toString()));
+                      // ongoingPassengerPickupLocation = LatLng(
+                      //     double.parse(
+                      //         rideData2['picupLocationLat'].toString()),
+                      //     double.parse(
+                      //         rideData2['driverLocationLon'].toString()));
 
-                    ongoingDropLocation = LatLng(
-                        double.parse(rideData2['dropLocationLat'].toString()),
-                        double.parse(rideData2['dropLocationLong'].toString()));
-                    ongoingtotalPrice = double.parse(
-                        rideData2['totalPrice'].toStringAsFixed(2));
-                  });
+                      ongoingDriverLocation = LatLng(
+                          double.parse(
+                              rideData2['picupLocationLat'].toString()),
+                          double.parse(
+                              rideData2['picupLocationLong'].toString()));
+
+                      ongoingDropLocation = LatLng(
+                          double.parse(rideData2['dropLocationLat'].toString()),
+                          double.parse(
+                              rideData2['dropLocationLong'].toString()));
+                      ongoingtotalPrice = double.parse(
+                          rideData2['totalPrice'].toStringAsFixed(2));
+                    });
+                  }
                 } else {
-                  setState(() {
+                  if(mounted){
+setState(() {
                     isOngoingAvailable = false;
                   });
+                  }
+                  
                 }
               });
             } else {

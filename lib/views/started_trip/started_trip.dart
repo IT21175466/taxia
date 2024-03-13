@@ -1,16 +1,21 @@
 import 'dart:async';
+import 'dart:io';
 import 'dart:math';
 import 'dart:typed_data';
 import 'dart:ui' as ui;
 import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:taxia/constants/app_colors.dart';
 import 'package:taxia/views/home_screen/home_page.dart';
 import 'package:taxia/views/rating_screen/user_rating.dart';
+import 'package:taxia/widgets/custom_button.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:uuid/uuid.dart';
 
 class TripStarted extends StatefulWidget {
   final String rideID;
@@ -39,9 +44,207 @@ class TripStarted extends StatefulWidget {
   State<TripStarted> createState() => _TripStartedState();
 }
 
-class _TripStartedState extends State<TripStarted> {
+class _TripStartedState extends State<TripStarted>
+    with TickerProviderStateMixin {
   DatabaseReference databaseReference =
       FirebaseDatabase.instance.ref('ongoing_rides');
+
+  DatabaseReference databaseReferenceRedAlerts =
+      FirebaseDatabase.instance.ref('redAlerts');
+
+  bool isRedAlertEnable = false;
+
+  //Get Current Position
+  Future _determinePosition() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      await Geolocator.openAppSettings();
+      return Future.error('Location services are disabled.');
+    }
+
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        return Future.error('Location permissions are denied');
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      return Future.error(
+          'Location permissions are permanently denied, we cannot request permissions.');
+    }
+
+    Position position = await Geolocator.getCurrentPosition();
+    setState(() {
+      alertLocation = LatLng(position.latitude, position.longitude);
+    });
+  }
+
+  // late final _animController = AnimationController(
+  //   vsync: this,
+  //   duration: Duration(seconds: 2),
+  // )..repeat(reverse: true);
+
+  // late final Animation<double> _animation = CurvedAnimation(
+  //   parent: _animController,
+  //   curve: Curves.easeIn,
+  // );
+
+  // @override
+  // void dispose() {
+  //   super.dispose();
+  //   _animController.dispose();
+  // }
+
+  LatLng? alertLocation;
+
+  String alertID = '';
+
+  generatealertID() {
+    setState(() {
+      alertID = Uuid().v4();
+    });
+  }
+
+  void cancelRide() async {
+    try {
+      DatabaseReference databaseReference =
+          await FirebaseDatabase.instance.ref('ongoing_rides');
+
+      databaseReference.child(widget.rideID).remove();
+      print("Sucessfully Deleted!");
+    } catch (e) {
+      print(e);
+    } finally {
+      // setState(() {
+      //   isLoading = false;
+      // });
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            backgroundColor: Colors.red,
+            content: Text(
+              "You canceled the ride!",
+              style: TextStyle(
+                color: Colors.white,
+              ),
+            ),
+          ),
+        );
+        Navigator.pushNamedAndRemoveUntil(context, '/map', (route) => false);
+      }
+    }
+  }
+
+  void redAlertInfoAlertDialog() {
+    if (Platform.isIOS) {
+      showCupertinoDialog(
+        context: context,
+        builder: (ctx) => CupertinoAlertDialog(
+          title: Text(
+            "Red Alert Service",
+            style: TextStyle(
+              fontWeight: FontWeight.w500,
+              fontSize: 20,
+              color: Colors.red,
+            ),
+          ),
+          content: Text(
+            "Do you want to use Red Alert service?",
+            style: TextStyle(
+              fontWeight: FontWeight.w400,
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                //Navigator.of(ctx).pop();
+              },
+              child: const Text(
+                "YES",
+                style: TextStyle(
+                  color: Colors.red,
+                ),
+              ),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(ctx).pop();
+              },
+              child: const Text(
+                "NO",
+                style: TextStyle(
+                  color: Colors.black,
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+    } else {
+      showDialog(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          title: Text(
+            "Red Alert Service",
+            style: TextStyle(
+              fontWeight: FontWeight.w500,
+              fontSize: 20,
+              color: Colors.red,
+            ),
+          ),
+          content: Text(
+            "Do you want to use Red Alert service?",
+            style: TextStyle(
+              fontWeight: FontWeight.w400,
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () async {
+                setState(() {
+                  isRedAlertEnable = true;
+                });
+                Navigator.of(ctx).pop();
+                await _determinePosition();
+                await generatealertID();
+                databaseReferenceRedAlerts.child(alertID).set({
+                  "alertID": widget.rideID,
+                  "rideID": widget.rideID,
+                  "passengerID": widget.userID,
+                  "driver_ID": widget.driverID,
+                  "alertLocationLong": alertLocation!.longitude,
+                  "alertLocationLat": alertLocation!.latitude,
+                  "vehicle_Number": widget.vehicleNumber,
+                });
+              },
+              child: const Text(
+                "YES",
+                style: TextStyle(
+                  color: Colors.red,
+                ),
+              ),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(ctx).pop();
+              },
+              child: const Text(
+                "NO",
+                style: TextStyle(
+                  color: Colors.black,
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+  }
 
   late Uint8List customMarkerIcon;
   List<LatLng> polylineCordinates = [];
@@ -204,6 +407,8 @@ class _TripStartedState extends State<TripStarted> {
 
   @override
   Widget build(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
+    double screenHeigth = MediaQuery.of(context).size.height;
     return Scaffold(
       body: Stack(
         children: [
@@ -262,6 +467,7 @@ class _TripStartedState extends State<TripStarted> {
                         onTap: () {
                           //drowMap();
                           //getDriverData();
+                          cancelRide();
                         },
                         child: Text(
                           "Cancel",
@@ -359,6 +565,139 @@ class _TripStartedState extends State<TripStarted> {
               ),
             ),
           ),
+          Positioned(
+            bottom: 10,
+            right: 10,
+            child: Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(100),
+                color: Colors.red,
+                border: Border.all(
+                  color: Colors.red,
+                ),
+              ),
+              child: GestureDetector(
+                onLongPress: () {
+                  redAlertInfoAlertDialog();
+                },
+                onTap: () {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      backgroundColor: AppColors.accentColor,
+                      content: Text(
+                        "Long press to active Red Alert service.",
+                        style: TextStyle(
+                          color: Colors.black,
+                        ),
+                      ),
+                    ),
+                  );
+                },
+                child: Container(
+                  padding: EdgeInsets.symmetric(vertical: 2, horizontal: 5),
+                  decoration: BoxDecoration(
+                    color: Colors.red,
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.warning,
+                        color: Colors.white,
+                        size: 15,
+                      ),
+                      SizedBox(
+                        width: 5,
+                      ),
+                      Text(
+                        "Red Alert",
+                        style: TextStyle(
+                          fontWeight: FontWeight.w500,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+          isRedAlertEnable
+              ? Positioned(
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  child: Container(
+                    width: screenWidth,
+                    height: screenHeigth,
+                    color: Colors.red.withOpacity(0.85),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Spacer(),
+                        // FadeTransition(
+                        //   opacity: _animation,
+                        //   child: Container(
+                        //     height: 250,
+                        //     width: 250,
+                        //     decoration: BoxDecoration(
+                        //       //color: Colors.white,
+                        //       borderRadius: BorderRadius.circular(100),
+                        //       border: Border.all(
+                        //         color: Colors.white,
+                        //         width: 3,
+                        //       ),
+                        //     ),
+                        //   ),
+                        // ),
+                        SizedBox(
+                          height: 50,
+                        ),
+                        Text(
+                          "Calling Red Alert....",
+                          style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            color: Colors.white,
+                            fontSize: 25,
+                          ),
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Text(
+                          "Your nearby and flego taxi will see your \nrequested help",
+                          style: TextStyle(
+                            fontWeight: FontWeight.w400,
+                            color: Colors.white,
+                            fontSize: 15,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                        SizedBox(
+                          height: 50,
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              isRedAlertEnable = false;
+                            });
+                          },
+                          child: Container(
+                            margin: EdgeInsets.symmetric(horizontal: 15),
+                            child: CustomButton(
+                                text: "I'm Safe",
+                                height: 50,
+                                width: screenWidth,
+                                backgroundColor: Colors.white),
+                          ),
+                        ),
+                        Spacer(),
+                      ],
+                    ),
+                  ),
+                )
+              : SizedBox(),
         ],
       ),
     );

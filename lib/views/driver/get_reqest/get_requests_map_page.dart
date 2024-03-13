@@ -16,6 +16,7 @@ import 'package:taxia/constants/app_colors.dart';
 import 'package:taxia/global/global.dart';
 import 'package:taxia/providers/user/login_provider.dart';
 import 'package:taxia/views/driver/accept_ride/accept_ride.dart';
+import 'package:taxia/views/red_alert/driver_redalert_page.dart';
 import 'package:taxia/widgets/custom_button.dart';
 
 class GetRequestsMap extends StatefulWidget {
@@ -48,6 +49,7 @@ class _GetRequestsMapState extends State<GetRequestsMap> {
   bool isOnline = false;
 
   double distance = 0.00;
+  double redAlertDistance = 0.00;
 
   Set<Marker> markers = Set<Marker>();
 
@@ -99,6 +101,9 @@ class _GetRequestsMapState extends State<GetRequestsMap> {
   }
 
   DatabaseReference databaseReference = FirebaseDatabase.instance.ref('rides');
+
+  DatabaseReference databaseReferenceRedAlerts =
+      FirebaseDatabase.instance.ref('redAlerts');
 
   DatabaseReference scheduledRideDatabaseReference =
       FirebaseDatabase.instance.ref('sheduled_rides');
@@ -198,6 +203,45 @@ class _GetRequestsMapState extends State<GetRequestsMap> {
     });
   }
 
+  //Get Red alert
+  void getRedAlertData() {
+    databaseReferenceRedAlerts.onValue.listen((event) {
+      DataSnapshot dataSnapshot = event.snapshot;
+      Map<dynamic, dynamic>? values = dataSnapshot.value as Map?;
+
+      if (values != null) {
+        values.forEach((key, rideData) {
+          print('Key: $key');
+
+          if (rideData is Map &&
+              rideData.containsKey('alertLocationLong') &&
+              rideData.containsKey('alertLocationLat') &&
+              rideData.containsKey('vehicle_Number')) {
+            // getDistance(
+            //     rideData['pickupAddress'],
+            //     rideData['dropAddress'],
+            //     driverLocation!.latitude,
+            //     driverLocation!.longitude,
+            //     rideData['picupLocationLat'],
+            //     rideData['picupLocationLong'],
+            //     rideData['vehicleType'],
+            //     rideData['dropLocationLat'],
+            //     rideData['dropLocationLong'],
+            //     rideData['vehicleType'],
+            //     double.parse(rideData['totalPrice'].toString()),
+            //     double.parse(rideData['totalKm'].toString()),
+            //     rideData['rideID'],
+            //     rideData['pID']);
+          } else {
+            print('Invalid data structure or missing values for key $key');
+          }
+        });
+      } else {
+        print('No data found under "rides" node.');
+      }
+    });
+  }
+
   //Get user pickup request distance
   void getPickupData() {
     markers.clear();
@@ -241,6 +285,71 @@ class _GetRequestsMapState extends State<GetRequestsMap> {
     });
   }
 
+  //Get red alert distance
+  Future<void> getRedAlertDistance(
+    String? rideID,
+    String? passengerID,
+    String? alertID,
+    String? driverIID,
+    String? alertLocationLong,
+    String? alertLocationLat,
+    String? vehicleNumber,
+    double? driverLocLatitude,
+    double? driverLocLongitude,
+  ) async {
+    String Url =
+        'https://maps.googleapis.com/maps/api/distancematrix/json?destinations=${driverLocLatitude},${driverLocLongitude}&origins=${alertLocationLat},${alertLocationLong}&key=AIzaSyDWlxEQU9GMmFEmZwiT3OGVVxTyc984iNY';
+
+    try {
+      var response = await http.get(
+        Uri.parse(Url),
+      );
+      if (response.statusCode == 200) {
+        Map<String, dynamic> data = jsonDecode(response.body);
+
+        String distanceText =
+            data['rows'][0]['elements'][0]['distance']['text'];
+
+        String durationText =
+            data['rows'][0]['elements'][0]['duration']['text'];
+
+        if (mounted) {
+          setState(() {
+            redAlertDistance =
+                double.parse(distanceText.split(' ')[0].toString());
+          });
+        }
+
+        if (distance < 5.0) {
+          if (mounted) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => DriverRedAlertPage(
+                  rideID: rideID!,
+                  passengerID: passengerID!,
+                  alertID: alertID!,
+                  driverIID: driverIID!,
+                  alertLocationLong: alertLocationLong!,
+                  alertLocationLat: alertLocationLat!,
+                  vehicleNumber: vehicleNumber!,
+                  driverLocLatitude: driverLocLatitude!,
+                  driverLocLongitude: driverLocLongitude!,
+                  distance: distanceText,
+                  timeDuration: durationText,
+                ),
+              ),
+            );
+          }
+        }
+
+        print(response.body);
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
   Future<void> getDistance(
     String? pickAddress,
     String? dropAddress,
@@ -273,9 +382,12 @@ class _GetRequestsMapState extends State<GetRequestsMap> {
         String durationText =
             data['rows'][0]['elements'][0]['duration']['text'];
 
-        setState(() {
-          distance = double.parse(distanceText.split(' ')[0].toString());
-        });
+        if (mounted) {
+          setState(() {
+            distance = double.parse(distanceText.split(' ')[0].toString());
+          });
+        }
+
         print(response.body);
         //print(loginProvider!.vehicleType);
 
@@ -373,27 +485,29 @@ class _GetRequestsMapState extends State<GetRequestsMap> {
             );
 
             //accept or decline the ride request
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => AcceptRide(
-                  rideID: rideID!,
-                  passengerID: passengerID!,
-                  pickupLatLon: LatLng(startLatitude!, startLongitude!),
-                  driverLatLon: LatLng(endLatitude, endLongitude),
-                  distance: distanceText,
-                  timeDuration: durationText,
-                  dropLoationLat: dropLoationLat!,
-                  dropLoationLon: dropLoationLon!,
-                  selectedVehicle: selectedVehicle!,
-                  totalPrice: totalPrice!,
-                  totalKM: totalKM!,
-                  driverID: driverId!,
-                  pickAddress: pickAddress!,
-                  dropAddress: dropAddress!,
+            if (mounted) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => AcceptRide(
+                    rideID: rideID!,
+                    passengerID: passengerID!,
+                    pickupLatLon: LatLng(startLatitude!, startLongitude!),
+                    driverLatLon: LatLng(endLatitude, endLongitude),
+                    distance: distanceText,
+                    timeDuration: durationText,
+                    dropLoationLat: dropLoationLat!,
+                    dropLoationLon: dropLoationLon!,
+                    selectedVehicle: selectedVehicle!,
+                    totalPrice: totalPrice!,
+                    totalKM: totalKM!,
+                    driverID: driverId!,
+                    pickAddress: pickAddress!,
+                    dropAddress: dropAddress!,
+                  ),
                 ),
-              ),
-            );
+              );
+            }
           } else {
             print("Vehicle type not matched!");
           }
