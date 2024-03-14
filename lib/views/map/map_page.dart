@@ -19,7 +19,7 @@ import 'package:taxia/providers/map/map_provider.dart';
 import 'package:taxia/providers/ride/ride_provider.dart';
 import 'package:taxia/providers/user/user_provider.dart';
 import 'package:taxia/views/search_driver/search_driver.dart';
-import 'package:taxia/widgets/custom_button.dart';
+import 'package:taxia/widgets/ride_confirm_button.dart';
 import 'package:uuid/uuid.dart';
 
 class MapPage extends StatefulWidget {
@@ -38,6 +38,8 @@ class _MapPageState extends State<MapPage> {
 
   bool isSelectedLocation = false;
 
+  bool isDays = false;
+
   bool isCar = false;
   bool isTuk = false;
   bool isBike = false;
@@ -55,6 +57,13 @@ class _MapPageState extends State<MapPage> {
   bool isNormalACVan = false;
   bool isKDHFlatroofVan = false;
   bool isKDHHighroofVan = false;
+
+  //for days
+  bool isCarForDays = true;
+  bool isBikeForDays = false;
+  bool isTukForDays = false;
+  bool isVanForDays = false;
+  bool isLorryForDays = false;
 
   String selectedVehicle = '';
   String selectedSubVehicle = '';
@@ -666,909 +675,1528 @@ class _MapPageState extends State<MapPage> {
                 right: 0,
                 bottom: 0,
                 child: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                   color: Colors.white,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        child: Row(
+                      Row(
+                        children: [
+                          GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                isDays = false;
+                                isCarForDays = true;
+                                isBikeForDays = false;
+                                isTukForDays = false;
+                                isVanForDays = false;
+                                isLorryForDays = false;
+                              });
+                            },
+                            child: Container(
+                              height: 40,
+                              width: screenWidth / 2,
+                              decoration: BoxDecoration(
+                                color: isDays
+                                    ? Colors.grey.withOpacity(0.5)
+                                    : Colors.white,
+                              ),
+                              child: Center(
+                                child: Text(
+                                  "Hours",
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                isDays = true;
+                                isCar = false;
+                                isTuk = false;
+                                isBike = false;
+                                isVan = false;
+                                isLorry = false;
+
+                                //subVehicleCar
+                                isBudgetCar = false;
+                                isMiniCar = false;
+                                isSedanCar = false;
+
+                                //subVehicleVan
+                                isMiniVan = false;
+                                isNonACVan = false;
+                                isNormalACVan = false;
+                                isKDHFlatroofVan = false;
+                                isKDHHighroofVan = false;
+                              });
+                            },
+                            child: Container(
+                              height: 40,
+                              width: screenWidth / 2,
+                              decoration: BoxDecoration(
+                                color: isDays
+                                    ? Colors.white
+                                    : Colors.grey.withOpacity(0.5),
+                              ),
+                              child: Center(
+                                child: Text(
+                                  "Days",
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      Visibility(
+                        visible: !isDays,
+                        child: Container(
+                          width: screenWidth,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 10),
+                                child: SingleChildScrollView(
+                                  scrollDirection: Axis.horizontal,
+                                  child: Row(
+                                    children: [
+                                      GestureDetector(
+                                        onTap: () {
+                                          setState(() {
+                                            isCar = true;
+                                            isVan = false;
+                                            isBike = false;
+                                            isLorry = false;
+                                            isTuk = false;
+                                            isNormalACVan = false;
+                                            isMiniVan = false;
+                                            isNonACVan = false;
+                                            isVan = false;
+                                            isKDHFlatroofVan = false;
+                                            isKDHHighroofVan = false;
+                                            selectedVehicle = 'car';
+                                          });
+                                        },
+                                        child: Container(
+                                          decoration: isCar
+                                              ? BoxDecoration(
+                                                  color: const Color.fromARGB(
+                                                      255, 246, 244, 244),
+                                                  border: Border.all(
+                                                    color: Colors.blue,
+                                                  ),
+                                                  borderRadius:
+                                                      BorderRadius.circular(10),
+                                                )
+                                              : const BoxDecoration(),
+                                          padding: EdgeInsets.symmetric(
+                                              horizontal: 20, vertical: 10),
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            children: [
+                                              const Text("Car"),
+                                              Padding(
+                                                padding: EdgeInsets.symmetric(
+                                                  vertical: 5,
+                                                ),
+                                                child: SizedBox(
+                                                  height: 50,
+                                                  child: Image.asset(
+                                                      'assets/images/car.png'),
+                                                ),
+                                              ),
+                                              Text(
+                                                  '${mapProvider.distance.toStringAsFixed(1)} Km'),
+                                              Text(
+                                                'LKR ${(mapProvider.carCharge * mapProvider.distance).toStringAsFixed(2)}',
+                                                style: const TextStyle(
+                                                  fontWeight: FontWeight.w500,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                      GestureDetector(
+                                        onTap: () {
+                                          setState(() {
+                                            isCar = false;
+                                            isBike = false;
+                                            isTuk = false;
+                                            isVan = true;
+                                            isLorry = false;
+                                            isBudgetCar = false;
+                                            isMiniCar = false;
+                                            isSedanCar = false;
+                                            selectedVehicle = 'van';
+                                          });
+                                        },
+                                        child: Container(
+                                          padding: EdgeInsets.symmetric(
+                                              horizontal: 20, vertical: 10),
+                                          decoration: isVan
+                                              ? BoxDecoration(
+                                                  color: const Color.fromARGB(
+                                                      255, 246, 244, 244),
+                                                  border: Border.all(
+                                                    color: Colors.blue,
+                                                  ),
+                                                  borderRadius:
+                                                      BorderRadius.circular(10),
+                                                )
+                                              : const BoxDecoration(),
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            children: [
+                                              const Text("Van"),
+                                              Padding(
+                                                padding: EdgeInsets.symmetric(
+                                                  vertical: 5,
+                                                ),
+                                                child: SizedBox(
+                                                  height: 50,
+                                                  child: Image.asset(
+                                                      'assets/images/van.png'),
+                                                ),
+                                              ),
+                                              Text(
+                                                  '${mapProvider.distance.toStringAsFixed(1)} Km'),
+                                              Text(
+                                                'LKR ${(mapProvider.bikeCharge * mapProvider.distance).toStringAsFixed(2)}',
+                                                style: const TextStyle(
+                                                  fontWeight: FontWeight.w500,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                      GestureDetector(
+                                        onTap: () {
+                                          setState(() {
+                                            isCar = false;
+                                            isBike = false;
+                                            isTuk = false;
+                                            isVan = false;
+                                            isLorry = true;
+                                            isMiniCar = false;
+                                            isBudgetCar = false;
+                                            isSedanCar = false;
+                                            isNormalACVan = false;
+                                            isMiniVan = false;
+                                            isNonACVan = false;
+                                            isVan = false;
+                                            isKDHFlatroofVan = false;
+                                            isKDHHighroofVan = false;
+                                            selectedVehicle = 'lorry';
+                                          });
+                                        },
+                                        child: Container(
+                                          padding: EdgeInsets.symmetric(
+                                              horizontal: 20, vertical: 10),
+                                          decoration: isLorry
+                                              ? BoxDecoration(
+                                                  color: const Color.fromARGB(
+                                                      255, 246, 244, 244),
+                                                  border: Border.all(
+                                                    color: Colors.blue,
+                                                  ),
+                                                  borderRadius:
+                                                      BorderRadius.circular(10),
+                                                )
+                                              : const BoxDecoration(),
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            children: [
+                                              const Text("Lorry"),
+                                              Padding(
+                                                padding: EdgeInsets.symmetric(
+                                                  vertical: 5,
+                                                ),
+                                                child: SizedBox(
+                                                  height: 50,
+                                                  child: Image.asset(
+                                                      'assets/images/lorry.png'),
+                                                ),
+                                              ),
+                                              Text(
+                                                  '${mapProvider.distance.toStringAsFixed(1)} Km'),
+                                              Text(
+                                                'LKR ${(mapProvider.tukCharge * mapProvider.distance).toStringAsFixed(2)}',
+                                                style: const TextStyle(
+                                                  fontWeight: FontWeight.w500,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                      GestureDetector(
+                                        onTap: () {
+                                          setState(() {
+                                            isCar = false;
+                                            isLorry = false;
+                                            isBike = false;
+                                            isTuk = true;
+                                            isVan = false;
+                                            isMiniCar = false;
+                                            isBudgetCar = false;
+                                            isSedanCar = false;
+                                            isNormalACVan = false;
+                                            isMiniVan = false;
+                                            isNonACVan = false;
+                                            isKDHFlatroofVan = false;
+                                            isKDHHighroofVan = false;
+                                            selectedVehicle = 'tuk';
+                                          });
+                                        },
+                                        child: Container(
+                                          padding: EdgeInsets.symmetric(
+                                              horizontal: 20, vertical: 10),
+                                          decoration: isTuk
+                                              ? BoxDecoration(
+                                                  color: const Color.fromARGB(
+                                                      255, 246, 244, 244),
+                                                  border: Border.all(
+                                                    color: Colors.blue,
+                                                  ),
+                                                  borderRadius:
+                                                      BorderRadius.circular(10),
+                                                )
+                                              : const BoxDecoration(),
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            children: [
+                                              const Text("Tuk"),
+                                              Padding(
+                                                padding: EdgeInsets.symmetric(
+                                                  vertical: 5,
+                                                ),
+                                                child: SizedBox(
+                                                  height: 50,
+                                                  child: Image.asset(
+                                                      'assets/images/tuk.png'),
+                                                ),
+                                              ),
+                                              Text(
+                                                  '${mapProvider.distance.toStringAsFixed(1)} Km'),
+                                              Text(
+                                                'LKR ${(mapProvider.tukCharge * mapProvider.distance).toStringAsFixed(2)}',
+                                                style: const TextStyle(
+                                                  fontWeight: FontWeight.w500,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                      GestureDetector(
+                                        onTap: () {
+                                          setState(() {
+                                            isCar = false;
+                                            isBike = true;
+                                            isTuk = false;
+                                            isVan = false;
+                                            isLorry = false;
+                                            isMiniCar = false;
+                                            isBudgetCar = false;
+                                            isSedanCar = false;
+                                            isNormalACVan = false;
+                                            isMiniVan = false;
+                                            isNonACVan = false;
+                                            isKDHFlatroofVan = false;
+                                            isKDHHighroofVan = false;
+                                            selectedVehicle = 'bike';
+                                          });
+                                        },
+                                        child: Container(
+                                          padding: EdgeInsets.symmetric(
+                                              horizontal: 20, vertical: 10),
+                                          decoration: isBike
+                                              ? BoxDecoration(
+                                                  color: const Color.fromARGB(
+                                                      255, 246, 244, 244),
+                                                  border: Border.all(
+                                                    color: Colors.blue,
+                                                  ),
+                                                  borderRadius:
+                                                      BorderRadius.circular(10),
+                                                )
+                                              : const BoxDecoration(),
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            children: [
+                                              const Text("Bike"),
+                                              Padding(
+                                                padding: EdgeInsets.symmetric(
+                                                  vertical: 5,
+                                                ),
+                                                child: SizedBox(
+                                                  height: 50,
+                                                  child: Image.asset(
+                                                      'assets/images/bikeSelect.png'),
+                                                ),
+                                              ),
+                                              Text(
+                                                  '${mapProvider.distance.toStringAsFixed(1)} Km'),
+                                              Text(
+                                                'LKR ${(mapProvider.bikeCharge * mapProvider.distance).toStringAsFixed(2)}',
+                                                style: const TextStyle(
+                                                  fontWeight: FontWeight.w500,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 10),
+                                child: Divider(),
+                              ),
+
+                              Visibility(
+                                visible: isCar,
+                                child: Padding(
+                                  padding: EdgeInsets.symmetric(horizontal: 10),
+                                  child: SingleChildScrollView(
+                                    scrollDirection: Axis.horizontal,
+                                    child: Row(
+                                      children: [
+                                        GestureDetector(
+                                          onTap: () {
+                                            setState(() {
+                                              isBudgetCar = true;
+                                              isMiniCar = false;
+                                              isSedanCar = false;
+                                              isVan = false;
+                                              selectedSubVehicle = 'budgetcar';
+                                            });
+                                          },
+                                          child: Container(
+                                            decoration: isBudgetCar
+                                                ? BoxDecoration(
+                                                    color: const Color.fromARGB(
+                                                        255, 246, 244, 244),
+                                                    border: Border.all(
+                                                      color: Colors.blue,
+                                                    ),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10),
+                                                  )
+                                                : const BoxDecoration(),
+                                            padding: const EdgeInsets.all(10),
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.center,
+                                              children: [
+                                                const Text(
+                                                  "Budget Car",
+                                                  style: TextStyle(
+                                                    fontSize: 11,
+                                                  ),
+                                                ),
+                                                Padding(
+                                                  padding: EdgeInsets.symmetric(
+                                                    vertical: 5,
+                                                  ),
+                                                  child: SizedBox(
+                                                    height: 35,
+                                                    child: Image.asset(
+                                                        'assets/images/car.png'),
+                                                  ),
+                                                ),
+                                                Text(
+                                                  '${mapProvider.distance.toStringAsFixed(1)} Km',
+                                                  style: TextStyle(
+                                                    fontSize: 12,
+                                                  ),
+                                                ),
+                                                Text(
+                                                  'LKR ${(mapProvider.carCharge * mapProvider.distance).toStringAsFixed(2)}',
+                                                  style: const TextStyle(
+                                                    fontWeight: FontWeight.w500,
+                                                    fontSize: 12,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                        GestureDetector(
+                                          onTap: () {
+                                            setState(() {
+                                              isBudgetCar = false;
+                                              isMiniCar = true;
+                                              isVan = false;
+                                              isSedanCar = false;
+                                              selectedSubVehicle = 'minicar';
+                                            });
+                                          },
+                                          child: Container(
+                                            padding: const EdgeInsets.all(10),
+                                            decoration: isMiniCar
+                                                ? BoxDecoration(
+                                                    color: const Color.fromARGB(
+                                                        255, 246, 244, 244),
+                                                    border: Border.all(
+                                                      color: Colors.blue,
+                                                    ),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10),
+                                                  )
+                                                : const BoxDecoration(),
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.center,
+                                              children: [
+                                                const Text(
+                                                  "Mini Car",
+                                                  style: TextStyle(
+                                                    fontSize: 11,
+                                                  ),
+                                                ),
+                                                Padding(
+                                                  padding: EdgeInsets.symmetric(
+                                                    vertical: 5,
+                                                  ),
+                                                  child: SizedBox(
+                                                    height: 35,
+                                                    child: Image.asset(
+                                                        'assets/images/mini_car.png'),
+                                                  ),
+                                                ),
+                                                Text(
+                                                  '${mapProvider.distance.toStringAsFixed(1)} Km',
+                                                  style: TextStyle(
+                                                    fontSize: 12,
+                                                  ),
+                                                ),
+                                                Text(
+                                                  'LKR ${(mapProvider.tukCharge * mapProvider.distance).toStringAsFixed(2)}',
+                                                  style: const TextStyle(
+                                                    fontWeight: FontWeight.w500,
+                                                    fontSize: 12,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                        GestureDetector(
+                                          onTap: () {
+                                            setState(() {
+                                              isBudgetCar = false;
+                                              isVan = false;
+                                              isMiniCar = false;
+                                              isSedanCar = true;
+                                              selectedSubVehicle = 'sedancar';
+                                            });
+                                          },
+                                          child: Container(
+                                            padding: const EdgeInsets.all(10),
+                                            decoration: isSedanCar
+                                                ? BoxDecoration(
+                                                    color: const Color.fromARGB(
+                                                        255, 246, 244, 244),
+                                                    border: Border.all(
+                                                      color: Colors.blue,
+                                                    ),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10),
+                                                  )
+                                                : const BoxDecoration(),
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.center,
+                                              children: [
+                                                const Text(
+                                                  "Sedan Car",
+                                                  style: TextStyle(
+                                                    fontSize: 11,
+                                                  ),
+                                                ),
+                                                Padding(
+                                                  padding: EdgeInsets.symmetric(
+                                                    vertical: 5,
+                                                  ),
+                                                  child: SizedBox(
+                                                    height: 35,
+                                                    child: Image.asset(
+                                                        'assets/images/sedan_car.png'),
+                                                  ),
+                                                ),
+                                                Text(
+                                                  '${mapProvider.distance.toStringAsFixed(1)} Km',
+                                                  style: TextStyle(
+                                                    fontSize: 12,
+                                                  ),
+                                                ),
+                                                Text(
+                                                  'LKR ${(mapProvider.bikeCharge * mapProvider.distance).toStringAsFixed(2)}',
+                                                  style: const TextStyle(
+                                                    fontWeight: FontWeight.w500,
+                                                    fontSize: 12,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              //isVan
+                              Visibility(
+                                visible: isVan,
+                                child: Padding(
+                                  padding: EdgeInsets.symmetric(horizontal: 10),
+                                  child: SingleChildScrollView(
+                                    scrollDirection: Axis.horizontal,
+                                    child: Row(
+                                      children: [
+                                        GestureDetector(
+                                          onTap: () {
+                                            setState(() {
+                                              isNormalACVan = true;
+                                              isMiniVan = false;
+                                              isNonACVan = false;
+                                              isCar = false;
+                                              isKDHFlatroofVan = false;
+                                              isKDHHighroofVan = false;
+                                              selectedSubVehicle =
+                                                  'normalACVan';
+                                            });
+                                          },
+                                          child: Container(
+                                            decoration: isNormalACVan
+                                                ? BoxDecoration(
+                                                    color: const Color.fromARGB(
+                                                        255, 246, 244, 244),
+                                                    border: Border.all(
+                                                      color: Colors.blue,
+                                                    ),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10),
+                                                  )
+                                                : const BoxDecoration(),
+                                            padding: const EdgeInsets.all(10),
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.center,
+                                              children: [
+                                                const Text(
+                                                  "Normal AC Van",
+                                                  style: TextStyle(
+                                                    fontSize: 11,
+                                                  ),
+                                                ),
+                                                Padding(
+                                                  padding: EdgeInsets.symmetric(
+                                                    vertical: 5,
+                                                  ),
+                                                  child: SizedBox(
+                                                    height: 35,
+                                                    child: Image.asset(
+                                                        'assets/images/van.png'),
+                                                  ),
+                                                ),
+                                                Text(
+                                                  '${mapProvider.distance.toStringAsFixed(1)} Km',
+                                                  style: TextStyle(
+                                                    fontSize: 12,
+                                                  ),
+                                                ),
+                                                Text(
+                                                  'LKR ${(mapProvider.carCharge * mapProvider.distance).toStringAsFixed(2)}',
+                                                  style: const TextStyle(
+                                                    fontWeight: FontWeight.w500,
+                                                    fontSize: 12,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                        GestureDetector(
+                                          onTap: () {
+                                            setState(() {
+                                              isCar = false;
+                                              isNormalACVan = false;
+                                              isMiniVan = true;
+                                              isNonACVan = false;
+                                              isKDHFlatroofVan = false;
+                                              isKDHHighroofVan = false;
+                                              selectedSubVehicle = 'miniVan';
+                                            });
+                                          },
+                                          child: Container(
+                                            padding: const EdgeInsets.all(10),
+                                            decoration: isMiniVan
+                                                ? BoxDecoration(
+                                                    color: const Color.fromARGB(
+                                                        255, 246, 244, 244),
+                                                    border: Border.all(
+                                                      color: Colors.blue,
+                                                    ),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10),
+                                                  )
+                                                : const BoxDecoration(),
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.center,
+                                              children: [
+                                                const Text(
+                                                  "Mini Van",
+                                                  style: TextStyle(
+                                                    fontSize: 11,
+                                                  ),
+                                                ),
+                                                Padding(
+                                                  padding: EdgeInsets.symmetric(
+                                                    vertical: 5,
+                                                  ),
+                                                  child: SizedBox(
+                                                    height: 35,
+                                                    child: Image.asset(
+                                                        'assets/images/mini_van.png'),
+                                                  ),
+                                                ),
+                                                Text(
+                                                  '${mapProvider.distance.toStringAsFixed(1)} Km',
+                                                  style: TextStyle(
+                                                    fontSize: 12,
+                                                  ),
+                                                ),
+                                                Text(
+                                                  'LKR ${(mapProvider.tukCharge * mapProvider.distance).toStringAsFixed(2)}',
+                                                  style: const TextStyle(
+                                                    fontWeight: FontWeight.w500,
+                                                    fontSize: 12,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                        GestureDetector(
+                                          onTap: () {
+                                            setState(() {
+                                              isNormalACVan = false;
+                                              isMiniVan = false;
+                                              isCar = false;
+                                              isNonACVan = true;
+                                              isKDHFlatroofVan = false;
+                                              isKDHHighroofVan = false;
+                                              selectedSubVehicle = 'nonACVan';
+                                            });
+                                          },
+                                          child: Container(
+                                            padding: const EdgeInsets.all(10),
+                                            decoration: isNonACVan
+                                                ? BoxDecoration(
+                                                    color: const Color.fromARGB(
+                                                        255, 246, 244, 244),
+                                                    border: Border.all(
+                                                      color: Colors.blue,
+                                                    ),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10),
+                                                  )
+                                                : const BoxDecoration(),
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.center,
+                                              children: [
+                                                const Text(
+                                                  "Non AC Van",
+                                                  style: TextStyle(
+                                                    fontSize: 11,
+                                                  ),
+                                                ),
+                                                Padding(
+                                                  padding: EdgeInsets.symmetric(
+                                                    vertical: 5,
+                                                  ),
+                                                  child: SizedBox(
+                                                    height: 35,
+                                                    child: Image.asset(
+                                                        'assets/images/non_ac_van.png'),
+                                                  ),
+                                                ),
+                                                Text(
+                                                  '${mapProvider.distance.toStringAsFixed(1)} Km',
+                                                  style: TextStyle(
+                                                    fontSize: 12,
+                                                  ),
+                                                ),
+                                                Text(
+                                                  'LKR ${(mapProvider.bikeCharge * mapProvider.distance).toStringAsFixed(2)}',
+                                                  style: const TextStyle(
+                                                    fontWeight: FontWeight.w500,
+                                                    fontSize: 12,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                        GestureDetector(
+                                          onTap: () {
+                                            setState(() {
+                                              isNormalACVan = false;
+                                              isMiniVan = false;
+                                              isCar = false;
+                                              isNonACVan = false;
+                                              isKDHFlatroofVan = true;
+                                              isKDHHighroofVan = false;
+                                              selectedSubVehicle =
+                                                  'kDHFlatroofVan';
+                                            });
+                                          },
+                                          child: Container(
+                                            padding: const EdgeInsets.all(10),
+                                            decoration: isKDHFlatroofVan
+                                                ? BoxDecoration(
+                                                    color: const Color.fromARGB(
+                                                        255, 246, 244, 244),
+                                                    border: Border.all(
+                                                      color: Colors.blue,
+                                                    ),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10),
+                                                  )
+                                                : const BoxDecoration(),
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.center,
+                                              children: [
+                                                const Text(
+                                                  "KDH Flatroof Van",
+                                                  style: TextStyle(
+                                                    fontSize: 11,
+                                                  ),
+                                                ),
+                                                Padding(
+                                                  padding: EdgeInsets.symmetric(
+                                                    vertical: 5,
+                                                  ),
+                                                  child: SizedBox(
+                                                    height: 35,
+                                                    child: Image.asset(
+                                                        'assets/images/kdh_flatroof_van.png'),
+                                                  ),
+                                                ),
+                                                Text(
+                                                  '${mapProvider.distance.toStringAsFixed(1)} Km',
+                                                  style: TextStyle(
+                                                    fontSize: 12,
+                                                  ),
+                                                ),
+                                                Text(
+                                                  'LKR ${(mapProvider.tukCharge * mapProvider.distance).toStringAsFixed(2)}',
+                                                  style: const TextStyle(
+                                                    fontWeight: FontWeight.w500,
+                                                    fontSize: 12,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                        GestureDetector(
+                                          onTap: () {
+                                            setState(() {
+                                              isCar = false;
+                                              isNormalACVan = false;
+                                              isMiniVan = false;
+                                              isNonACVan = false;
+                                              isKDHFlatroofVan = false;
+                                              isKDHHighroofVan = true;
+                                              selectedSubVehicle =
+                                                  'kDHHighroofVan';
+                                            });
+                                          },
+                                          child: Container(
+                                            padding: const EdgeInsets.all(10),
+                                            decoration: isKDHHighroofVan
+                                                ? BoxDecoration(
+                                                    color: const Color.fromARGB(
+                                                        255, 246, 244, 244),
+                                                    border: Border.all(
+                                                      color: Colors.blue,
+                                                    ),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10),
+                                                  )
+                                                : const BoxDecoration(),
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.center,
+                                              children: [
+                                                const Text(
+                                                  "KDH Highroof Van",
+                                                  style: TextStyle(
+                                                    fontSize: 11,
+                                                  ),
+                                                ),
+                                                Padding(
+                                                  padding: EdgeInsets.symmetric(
+                                                    vertical: 5,
+                                                  ),
+                                                  child: SizedBox(
+                                                    height: 35,
+                                                    child: Image.asset(
+                                                        'assets/images/kdh_highroof_an.png'),
+                                                  ),
+                                                ),
+                                                Text(
+                                                  '${mapProvider.distance.toStringAsFixed(1)} Km',
+                                                  style: TextStyle(
+                                                    fontSize: 12,
+                                                  ),
+                                                ),
+                                                Text(
+                                                  'LKR ${(mapProvider.bikeCharge * mapProvider.distance).toStringAsFixed(2)}',
+                                                  style: const TextStyle(
+                                                    fontWeight: FontWeight.w500,
+                                                    fontSize: 12,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 10),
+                                child: Consumer(
+                                  builder: (BuildContext context,
+                                          RideProvider rideProvider,
+                                          Widget? child) =>
+                                      Visibility(
+                                    visible: (isCar && isBudgetCar ||
+                                            isMiniCar ||
+                                            isSedanCar) ||
+                                        (isVan && isMiniVan ||
+                                            isNonACVan ||
+                                            isNormalACVan ||
+                                            isKDHFlatroofVan ||
+                                            isKDHHighroofVan) ||
+                                        isLorry ||
+                                        isTuk ||
+                                        isBike,
+                                    child: GestureDetector(
+                                      onTap: () async {
+                                        await userProvider.getUserData();
+
+                                        double totalCharge = 0.0;
+
+                                        if (selectedVehicle == 'car') {
+                                          totalCharge = mapProvider.carCharge *
+                                              mapProvider.distance;
+                                        } else if (selectedVehicle == 'tuk') {
+                                          totalCharge = mapProvider.tukCharge *
+                                              mapProvider.distance;
+                                        } else if (selectedVehicle == 'bike') {
+                                          totalCharge = mapProvider.bikeCharge *
+                                              mapProvider.distance;
+                                        } else {
+                                          0.0;
+                                        }
+
+                                        databaseReference.child(rideID).set({
+                                          "rideID": rideID,
+                                          "pID": userID,
+                                          "picupLocationLong":
+                                              pickupLocation!.longitude,
+                                          "picupLocationLat":
+                                              pickupLocation!.latitude,
+                                          "dropLocationLong":
+                                              endLocation!.longitude,
+                                          "dropLocationLat":
+                                              endLocation!.latitude,
+                                          "vehicleType": selectedVehicle,
+                                          "totalKm":
+                                              mapProvider.distance.toDouble(),
+                                          "totalPrice": totalCharge,
+                                          "pickupAddress":
+                                              pickupLocationController.text,
+                                          "dropAddress":
+                                              endLocationController.text,
+                                        });
+
+                                        // rideProvider.confirmRide(
+                                        //   Ride(
+                                        //     rideID: rideID,
+                                        //     passengerID: userID!,
+                                        //     picupLocation: pickupLocation!,
+                                        //     dropLocation: endLocation!,
+                                        //     vehicleType: selectedVehicle,
+                                        //     totalKMs: mapProvider.distance,
+                                        //     totalPrice: totalCharge,
+                                        //     dropAddresss: endLocationController.text,
+                                        //     pickupAddress: pickupLocationController.text,
+                                        //   ),
+                                        //   userID!,
+                                        //   context,
+                                        //   rideID,
+                                        // );
+
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) => SearchDriver(
+                                              pickupLocation: pickupLocation!,
+                                              selectedVehicle: selectedVehicle,
+                                              userID: userID!,
+                                              rideID: rideID,
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                      child: RideConfirmButton(
+                                        text: 'CONFIRM',
+                                        height: 50,
+                                        width: screenWidth,
+                                        backgroundColor: Colors.black,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      Visibility(
+                        visible: isDays,
+                        child: Column(
                           children: [
-                            GestureDetector(
-                              onTap: () {
-                                setState(() {
-                                  isCar = true;
-                                  isVan = false;
-                                  isBike = false;
-                                  isLorry = false;
-                                  isTuk = false;
-                                  isNormalACVan = false;
-                                  isMiniVan = false;
-                                  isNonACVan = false;
-                                  isVan = false;
-                                  isKDHFlatroofVan = false;
-                                  isKDHHighroofVan = false;
-                                  selectedVehicle = 'car';
-                                });
-                              },
-                              child: Container(
-                                decoration: isCar
-                                    ? BoxDecoration(
-                                        color: const Color.fromARGB(
-                                            255, 246, 244, 244),
-                                        border: Border.all(
-                                          color: Colors.blue,
-                                        ),
-                                        borderRadius: BorderRadius.circular(10),
-                                      )
-                                    : const BoxDecoration(),
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: 20, vertical: 10),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
+                            Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 10),
+                              child: SingleChildScrollView(
+                                scrollDirection: Axis.horizontal,
+                                child: Row(
                                   children: [
-                                    const Text("Car"),
-                                    Padding(
-                                      padding: EdgeInsets.symmetric(
-                                        vertical: 5,
-                                      ),
-                                      child: SizedBox(
-                                        height: 50,
-                                        child: Image.asset(
-                                            'assets/images/car.png'),
+                                    GestureDetector(
+                                      onTap: () {
+                                        setState(() {
+                                          isCarForDays = true;
+                                          isBikeForDays = false;
+                                          isTukForDays = false;
+                                          isVanForDays = false;
+                                          isLorryForDays = false;
+                                          selectedVehicle = 'carForDays';
+                                        });
+                                      },
+                                      child: Container(
+                                        decoration: isCarForDays
+                                            ? BoxDecoration(
+                                                color: const Color.fromARGB(
+                                                    255, 246, 244, 244),
+                                                border: Border.all(
+                                                  color: Colors.blue,
+                                                ),
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                              )
+                                            : const BoxDecoration(),
+                                        padding: EdgeInsets.symmetric(
+                                            horizontal: 20, vertical: 10),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          children: [
+                                            const Text("Car"),
+                                            Padding(
+                                              padding: EdgeInsets.symmetric(
+                                                vertical: 5,
+                                              ),
+                                              child: SizedBox(
+                                                height: 50,
+                                                child: Image.asset(
+                                                    'assets/images/car.png'),
+                                              ),
+                                            ),
+                                            // Text(
+                                            //     '${mapProvider.distance.toStringAsFixed(1)} Km'),
+                                            // Text(
+                                            //   'LKR ${(mapProvider.carCharge * mapProvider.distance).toStringAsFixed(2)}',
+                                            //   style: const TextStyle(
+                                            //     fontWeight: FontWeight.w500,
+                                            //   ),
+                                            // ),
+                                          ],
+                                        ),
                                       ),
                                     ),
-                                    Text(
-                                        '${mapProvider.distance.toStringAsFixed(1)} Km'),
-                                    Text(
-                                      'LKR ${(mapProvider.carCharge * mapProvider.distance).toStringAsFixed(2)}',
-                                      style: const TextStyle(
-                                        fontWeight: FontWeight.w500,
+                                    GestureDetector(
+                                      onTap: () {
+                                        setState(() {
+                                          isCarForDays = false;
+                                          isBikeForDays = false;
+                                          isTukForDays = true;
+                                          isVanForDays = false;
+                                          isLorryForDays = false;
+                                          selectedVehicle = 'tukForDays';
+                                        });
+                                      },
+                                      child: Container(
+                                        padding: EdgeInsets.symmetric(
+                                            horizontal: 20, vertical: 10),
+                                        decoration: isTukForDays
+                                            ? BoxDecoration(
+                                                color: const Color.fromARGB(
+                                                    255, 246, 244, 244),
+                                                border: Border.all(
+                                                  color: Colors.blue,
+                                                ),
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                              )
+                                            : const BoxDecoration(),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          children: [
+                                            const Text("Tuk"),
+                                            Padding(
+                                              padding: EdgeInsets.symmetric(
+                                                vertical: 5,
+                                              ),
+                                              child: SizedBox(
+                                                height: 50,
+                                                child: Image.asset(
+                                                    'assets/images/tuk.png'),
+                                              ),
+                                            ),
+                                            // Text(
+                                            //     '${mapProvider.distance.toStringAsFixed(1)} Km'),
+                                            // Text(
+                                            //   'LKR ${(mapProvider.tukCharge * mapProvider.distance).toStringAsFixed(2)}',
+                                            //   style: const TextStyle(
+                                            //     fontWeight: FontWeight.w500,
+                                            //   ),
+                                            // ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                    GestureDetector(
+                                      onTap: () {
+                                        setState(() {
+                                          isCarForDays = false;
+                                          isBikeForDays = true;
+                                          isTukForDays = false;
+                                          isVanForDays = false;
+                                          isLorryForDays = false;
+
+                                          selectedVehicle = 'bikeForDays';
+                                        });
+                                      },
+                                      child: Container(
+                                        padding: EdgeInsets.symmetric(
+                                            horizontal: 20, vertical: 10),
+                                        decoration: isBikeForDays
+                                            ? BoxDecoration(
+                                                color: const Color.fromARGB(
+                                                    255, 246, 244, 244),
+                                                border: Border.all(
+                                                  color: Colors.blue,
+                                                ),
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                              )
+                                            : const BoxDecoration(),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          children: [
+                                            const Text("Bike"),
+                                            Padding(
+                                              padding: EdgeInsets.symmetric(
+                                                vertical: 5,
+                                              ),
+                                              child: SizedBox(
+                                                height: 50,
+                                                child: Image.asset(
+                                                    'assets/images/bikeSelect.png'),
+                                              ),
+                                            ),
+                                            // Text(
+                                            //     '${mapProvider.distance.toStringAsFixed(1)} Km'),
+                                            // Text(
+                                            //   'LKR ${(mapProvider.bikeCharge * mapProvider.distance).toStringAsFixed(2)}',
+                                            //   style: const TextStyle(
+                                            //     fontWeight: FontWeight.w500,
+                                            //   ),
+                                            // ),
+                                          ],
+                                        ),
                                       ),
                                     ),
                                   ],
                                 ),
                               ),
                             ),
-                            GestureDetector(
-                              onTap: () {
-                                setState(() {
-                                  isCar = false;
-                                  isBike = false;
-                                  isTuk = false;
-                                  isVan = true;
-                                  isLorry = false;
-                                  isBudgetCar = false;
-                                  isMiniCar = false;
-                                  isSedanCar = false;
-                                  selectedVehicle = 'van';
-                                });
-                              },
-                              child: Container(
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: 20, vertical: 10),
-                                decoration: isVan
-                                    ? BoxDecoration(
-                                        color: const Color.fromARGB(
-                                            255, 246, 244, 244),
-                                        border: Border.all(
-                                          color: Colors.blue,
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            Container(
+                              color: Colors.grey.withOpacity(0.3),
+                              padding: EdgeInsets.symmetric(
+                                  vertical: 10, horizontal: 10),
+                              child: Column(
+                                children: [
+                                  Container(
+                                    height: 45,
+                                    padding:
+                                        EdgeInsets.symmetric(horizontal: 10),
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    child: Row(
+                                      children: [
+                                        Text(
+                                          "2 days",
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w600,
+                                          ),
                                         ),
-                                        borderRadius: BorderRadius.circular(10),
-                                      )
-                                    : const BoxDecoration(),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    const Text("Van"),
-                                    Padding(
-                                      padding: EdgeInsets.symmetric(
-                                        vertical: 5,
-                                      ),
-                                      child: SizedBox(
-                                        height: 50,
-                                        child: Image.asset(
-                                            'assets/images/van.png'),
-                                      ),
+                                        Spacer(),
+                                        Text(
+                                          "300 KM",
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        ),
+                                        Spacer(),
+                                        Text(
+                                          "Rs.47000",
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        ),
+                                      ],
                                     ),
-                                    Text(
-                                        '${mapProvider.distance.toStringAsFixed(1)} Km'),
-                                    Text(
-                                      'LKR ${(mapProvider.bikeCharge * mapProvider.distance).toStringAsFixed(2)}',
-                                      style: const TextStyle(
-                                        fontWeight: FontWeight.w500,
-                                      ),
+                                  ),
+                                  Container(
+                                    height: 45,
+                                    margin: EdgeInsets.only(top: 10),
+                                    padding:
+                                        EdgeInsets.symmetric(horizontal: 10),
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(10),
                                     ),
-                                  ],
-                                ),
+                                    child: Row(
+                                      children: [
+                                        Text(
+                                          "2 days",
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        ),
+                                        Spacer(),
+                                        Text(
+                                          "400 KM",
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        ),
+                                        Spacer(),
+                                        Text(
+                                          "Rs.58000",
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  Container(
+                                    height: 45,
+                                    margin: EdgeInsets.only(top: 10),
+                                    padding:
+                                        EdgeInsets.symmetric(horizontal: 10),
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    child: Row(
+                                      children: [
+                                        Text(
+                                          "3 days",
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        ),
+                                        Spacer(),
+                                        Text(
+                                          "450 KM",
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        ),
+                                        Spacer(),
+                                        Text(
+                                          "Rs.72000",
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  Container(
+                                    height: 45,
+                                    margin: EdgeInsets.only(top: 10),
+                                    padding:
+                                        EdgeInsets.symmetric(horizontal: 10),
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    child: Row(
+                                      children: [
+                                        Text(
+                                          "3 days",
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        ),
+                                        Spacer(),
+                                        Text(
+                                          "600 KM",
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        ),
+                                        Spacer(),
+                                        Text(
+                                          "Rs.87000",
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  Container(
+                                    height: 45,
+                                    margin: EdgeInsets.only(top: 10),
+                                    padding:
+                                        EdgeInsets.symmetric(horizontal: 10),
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    child: Row(
+                                      children: [
+                                        Text(
+                                          "4 days",
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        ),
+                                        Spacer(),
+                                        Text(
+                                          "750 KM",
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        ),
+                                        Spacer(),
+                                        Text(
+                                          "Rs.97000",
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  Container(
+                                    height: 45,
+                                    margin: EdgeInsets.only(top: 10),
+                                    padding:
+                                        EdgeInsets.symmetric(horizontal: 10),
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    child: Row(
+                                      children: [
+                                        Text(
+                                          "4 days",
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        ),
+                                        Spacer(),
+                                        Text(
+                                          "1000 KM",
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        ),
+                                        Spacer(),
+                                        Text(
+                                          "Rs.116000",
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
-                            GestureDetector(
-                              onTap: () {
-                                setState(() {
-                                  isCar = false;
-                                  isBike = false;
-                                  isTuk = false;
-                                  isVan = false;
-                                  isLorry = true;
-                                  isMiniCar = false;
-                                  isBudgetCar = false;
-                                  isSedanCar = false;
-                                  isNormalACVan = false;
-                                  isMiniVan = false;
-                                  isNonACVan = false;
-                                  isVan = false;
-                                  isKDHFlatroofVan = false;
-                                  isKDHHighroofVan = false;
-                                  selectedVehicle = 'lorry';
-                                });
-                              },
-                              child: Container(
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: 20, vertical: 10),
-                                decoration: isLorry
-                                    ? BoxDecoration(
-                                        color: const Color.fromARGB(
-                                            255, 246, 244, 244),
-                                        border: Border.all(
-                                          color: Colors.blue,
+                            Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 10),
+                              child: Consumer(
+                                builder: (BuildContext context,
+                                        RideProvider rideProvider,
+                                        Widget? child) =>
+                                    GestureDetector(
+                                  onTap: () async {
+                                    await userProvider.getUserData();
+
+                                    double totalCharge = 0.0;
+
+                                    if (selectedVehicle == 'car') {
+                                      totalCharge = mapProvider.carCharge *
+                                          mapProvider.distance;
+                                    } else if (selectedVehicle == 'tuk') {
+                                      totalCharge = mapProvider.tukCharge *
+                                          mapProvider.distance;
+                                    } else if (selectedVehicle == 'bike') {
+                                      totalCharge = mapProvider.bikeCharge *
+                                          mapProvider.distance;
+                                    } else {
+                                      0.0;
+                                    }
+
+                                    databaseReference.child(rideID).set({
+                                      "rideID": rideID,
+                                      "pID": userID,
+                                      "picupLocationLong":
+                                          pickupLocation!.longitude,
+                                      "picupLocationLat":
+                                          pickupLocation!.latitude,
+                                      "dropLocationLong":
+                                          endLocation!.longitude,
+                                      "dropLocationLat": endLocation!.latitude,
+                                      "vehicleType": selectedVehicle,
+                                      "totalKm":
+                                          mapProvider.distance.toDouble(),
+                                      "totalPrice": totalCharge,
+                                      "pickupAddress":
+                                          pickupLocationController.text,
+                                      "dropAddress": endLocationController.text,
+                                    });
+
+                                    // rideProvider.confirmRide(
+                                    //   Ride(
+                                    //     rideID: rideID,
+                                    //     passengerID: userID!,
+                                    //     picupLocation: pickupLocation!,
+                                    //     dropLocation: endLocation!,
+                                    //     vehicleType: selectedVehicle,
+                                    //     totalKMs: mapProvider.distance,
+                                    //     totalPrice: totalCharge,
+                                    //     dropAddresss: endLocationController.text,
+                                    //     pickupAddress: pickupLocationController.text,
+                                    //   ),
+                                    //   userID!,
+                                    //   context,
+                                    //   rideID,
+                                    // );
+
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => SearchDriver(
+                                          pickupLocation: pickupLocation!,
+                                          selectedVehicle: selectedVehicle,
+                                          userID: userID!,
+                                          rideID: rideID,
                                         ),
-                                        borderRadius: BorderRadius.circular(10),
-                                      )
-                                    : const BoxDecoration(),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    const Text("Lorry"),
-                                    Padding(
-                                      padding: EdgeInsets.symmetric(
-                                        vertical: 5,
                                       ),
-                                      child: SizedBox(
-                                        height: 50,
-                                        child: Image.asset(
-                                            'assets/images/lorry.png'),
-                                      ),
-                                    ),
-                                    Text(
-                                        '${mapProvider.distance.toStringAsFixed(1)} Km'),
-                                    Text(
-                                      'LKR ${(mapProvider.tukCharge * mapProvider.distance).toStringAsFixed(2)}',
-                                      style: const TextStyle(
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                            GestureDetector(
-                              onTap: () {
-                                setState(() {
-                                  isCar = false;
-                                  isLorry = false;
-                                  isBike = false;
-                                  isTuk = true;
-                                  isVan = false;
-                                  isMiniCar = false;
-                                  isBudgetCar = false;
-                                  isSedanCar = false;
-                                  isNormalACVan = false;
-                                  isMiniVan = false;
-                                  isNonACVan = false;
-                                  isKDHFlatroofVan = false;
-                                  isKDHHighroofVan = false;
-                                  selectedVehicle = 'tuk';
-                                });
-                              },
-                              child: Container(
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: 20, vertical: 10),
-                                decoration: isTuk
-                                    ? BoxDecoration(
-                                        color: const Color.fromARGB(
-                                            255, 246, 244, 244),
-                                        border: Border.all(
-                                          color: Colors.blue,
-                                        ),
-                                        borderRadius: BorderRadius.circular(10),
-                                      )
-                                    : const BoxDecoration(),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    const Text("Tuk"),
-                                    Padding(
-                                      padding: EdgeInsets.symmetric(
-                                        vertical: 5,
-                                      ),
-                                      child: SizedBox(
-                                        height: 50,
-                                        child: Image.asset(
-                                            'assets/images/tuk.png'),
-                                      ),
-                                    ),
-                                    Text(
-                                        '${mapProvider.distance.toStringAsFixed(1)} Km'),
-                                    Text(
-                                      'LKR ${(mapProvider.tukCharge * mapProvider.distance).toStringAsFixed(2)}',
-                                      style: const TextStyle(
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                            GestureDetector(
-                              onTap: () {
-                                setState(() {
-                                  isCar = false;
-                                  isBike = true;
-                                  isTuk = false;
-                                  isVan = false;
-                                  isLorry = false;
-                                  isMiniCar = false;
-                                  isBudgetCar = false;
-                                  isSedanCar = false;
-                                  isNormalACVan = false;
-                                  isMiniVan = false;
-                                  isNonACVan = false;
-                                  isKDHFlatroofVan = false;
-                                  isKDHHighroofVan = false;
-                                  selectedVehicle = 'bike';
-                                });
-                              },
-                              child: Container(
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: 20, vertical: 10),
-                                decoration: isBike
-                                    ? BoxDecoration(
-                                        color: const Color.fromARGB(
-                                            255, 246, 244, 244),
-                                        border: Border.all(
-                                          color: Colors.blue,
-                                        ),
-                                        borderRadius: BorderRadius.circular(10),
-                                      )
-                                    : const BoxDecoration(),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    const Text("Bike"),
-                                    Padding(
-                                      padding: EdgeInsets.symmetric(
-                                        vertical: 5,
-                                      ),
-                                      child: SizedBox(
-                                        height: 50,
-                                        child: Image.asset(
-                                            'assets/images/bikeSelect.png'),
-                                      ),
-                                    ),
-                                    Text(
-                                        '${mapProvider.distance.toStringAsFixed(1)} Km'),
-                                    Text(
-                                      'LKR ${(mapProvider.bikeCharge * mapProvider.distance).toStringAsFixed(2)}',
-                                      style: const TextStyle(
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ),
-                                  ],
+                                    );
+                                  },
+                                  child: RideConfirmButton(
+                                    text: 'CONFIRM',
+                                    height: 50,
+                                    width: screenWidth,
+                                    backgroundColor: Colors.black,
+                                  ),
                                 ),
                               ),
                             ),
                           ],
                         ),
                       ),
-                      Visibility(
-                        visible: isVan || isCar,
-                        child: Divider(),
-                      ),
-                      Visibility(
-                        visible: isCar,
-                        child: SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          child: Row(
-                            children: [
-                              GestureDetector(
-                                onTap: () {
-                                  setState(() {
-                                    isBudgetCar = true;
-                                    isMiniCar = false;
-                                    isSedanCar = false;
-                                    isVan = false;
-                                    selectedSubVehicle = 'budgetcar';
-                                  });
-                                },
-                                child: Container(
-                                  decoration: isBudgetCar
-                                      ? BoxDecoration(
-                                          color: const Color.fromARGB(
-                                              255, 246, 244, 244),
-                                          border: Border.all(
-                                            color: Colors.blue,
-                                          ),
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                        )
-                                      : const BoxDecoration(),
-                                  padding: const EdgeInsets.all(10),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
-                                      const Text(
-                                        "Budget Car",
-                                        style: TextStyle(
-                                          fontSize: 11,
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding: EdgeInsets.symmetric(
-                                          vertical: 5,
-                                        ),
-                                        child: SizedBox(
-                                          height: 35,
-                                          child: Image.asset(
-                                              'assets/images/car.png'),
-                                        ),
-                                      ),
-                                      Text(
-                                        '${mapProvider.distance.toStringAsFixed(1)} Km',
-                                        style: TextStyle(
-                                          fontSize: 12,
-                                        ),
-                                      ),
-                                      Text(
-                                        'LKR ${(mapProvider.carCharge * mapProvider.distance).toStringAsFixed(2)}',
-                                        style: const TextStyle(
-                                          fontWeight: FontWeight.w500,
-                                          fontSize: 12,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              GestureDetector(
-                                onTap: () {
-                                  setState(() {
-                                    isBudgetCar = false;
-                                    isMiniCar = true;
-                                    isVan = false;
-                                    isSedanCar = false;
-                                    selectedSubVehicle = 'minicar';
-                                  });
-                                },
-                                child: Container(
-                                  padding: const EdgeInsets.all(10),
-                                  decoration: isMiniCar
-                                      ? BoxDecoration(
-                                          color: const Color.fromARGB(
-                                              255, 246, 244, 244),
-                                          border: Border.all(
-                                            color: Colors.blue,
-                                          ),
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                        )
-                                      : const BoxDecoration(),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
-                                      const Text(
-                                        "Mini Car",
-                                        style: TextStyle(
-                                          fontSize: 11,
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding: EdgeInsets.symmetric(
-                                          vertical: 5,
-                                        ),
-                                        child: SizedBox(
-                                          height: 35,
-                                          child: Image.asset(
-                                              'assets/images/mini_car.png'),
-                                        ),
-                                      ),
-                                      Text(
-                                        '${mapProvider.distance.toStringAsFixed(1)} Km',
-                                        style: TextStyle(
-                                          fontSize: 12,
-                                        ),
-                                      ),
-                                      Text(
-                                        'LKR ${(mapProvider.tukCharge * mapProvider.distance).toStringAsFixed(2)}',
-                                        style: const TextStyle(
-                                          fontWeight: FontWeight.w500,
-                                          fontSize: 12,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              GestureDetector(
-                                onTap: () {
-                                  setState(() {
-                                    isBudgetCar = false;
-                                    isVan = false;
-                                    isMiniCar = false;
-                                    isSedanCar = true;
-                                    selectedSubVehicle = 'sedancar';
-                                  });
-                                },
-                                child: Container(
-                                  padding: const EdgeInsets.all(10),
-                                  decoration: isSedanCar
-                                      ? BoxDecoration(
-                                          color: const Color.fromARGB(
-                                              255, 246, 244, 244),
-                                          border: Border.all(
-                                            color: Colors.blue,
-                                          ),
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                        )
-                                      : const BoxDecoration(),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
-                                      const Text(
-                                        "Sedan Car",
-                                        style: TextStyle(
-                                          fontSize: 11,
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding: EdgeInsets.symmetric(
-                                          vertical: 5,
-                                        ),
-                                        child: SizedBox(
-                                          height: 35,
-                                          child: Image.asset(
-                                              'assets/images/sedan_car.png'),
-                                        ),
-                                      ),
-                                      Text(
-                                        '${mapProvider.distance.toStringAsFixed(1)} Km',
-                                        style: TextStyle(
-                                          fontSize: 12,
-                                        ),
-                                      ),
-                                      Text(
-                                        'LKR ${(mapProvider.bikeCharge * mapProvider.distance).toStringAsFixed(2)}',
-                                        style: const TextStyle(
-                                          fontWeight: FontWeight.w500,
-                                          fontSize: 12,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      //isVan
-                      Visibility(
-                        visible: isVan,
-                        child: SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          child: Row(
-                            children: [
-                              GestureDetector(
-                                onTap: () {
-                                  setState(() {
-                                    isNormalACVan = true;
-                                    isMiniVan = false;
-                                    isNonACVan = false;
-                                    isCar = false;
-                                    isKDHFlatroofVan = false;
-                                    isKDHHighroofVan = false;
-                                    selectedSubVehicle = 'normalACVan';
-                                  });
-                                },
-                                child: Container(
-                                  decoration: isNormalACVan
-                                      ? BoxDecoration(
-                                          color: const Color.fromARGB(
-                                              255, 246, 244, 244),
-                                          border: Border.all(
-                                            color: Colors.blue,
-                                          ),
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                        )
-                                      : const BoxDecoration(),
-                                  padding: const EdgeInsets.all(10),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
-                                      const Text(
-                                        "Normal AC Van",
-                                        style: TextStyle(
-                                          fontSize: 11,
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding: EdgeInsets.symmetric(
-                                          vertical: 5,
-                                        ),
-                                        child: SizedBox(
-                                          height: 35,
-                                          child: Image.asset(
-                                              'assets/images/van.png'),
-                                        ),
-                                      ),
-                                      Text(
-                                        '${mapProvider.distance.toStringAsFixed(1)} Km',
-                                        style: TextStyle(
-                                          fontSize: 12,
-                                        ),
-                                      ),
-                                      Text(
-                                        'LKR ${(mapProvider.carCharge * mapProvider.distance).toStringAsFixed(2)}',
-                                        style: const TextStyle(
-                                          fontWeight: FontWeight.w500,
-                                          fontSize: 12,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              GestureDetector(
-                                onTap: () {
-                                  setState(() {
-                                    isCar = false;
-                                    isNormalACVan = false;
-                                    isMiniVan = true;
-                                    isNonACVan = false;
-                                    isKDHFlatroofVan = false;
-                                    isKDHHighroofVan = false;
-                                    selectedSubVehicle = 'miniVan';
-                                  });
-                                },
-                                child: Container(
-                                  padding: const EdgeInsets.all(10),
-                                  decoration: isMiniVan
-                                      ? BoxDecoration(
-                                          color: const Color.fromARGB(
-                                              255, 246, 244, 244),
-                                          border: Border.all(
-                                            color: Colors.blue,
-                                          ),
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                        )
-                                      : const BoxDecoration(),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
-                                      const Text(
-                                        "Mini Van",
-                                        style: TextStyle(
-                                          fontSize: 11,
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding: EdgeInsets.symmetric(
-                                          vertical: 5,
-                                        ),
-                                        child: SizedBox(
-                                          height: 35,
-                                          child: Image.asset(
-                                              'assets/images/mini_van.png'),
-                                        ),
-                                      ),
-                                      Text(
-                                        '${mapProvider.distance.toStringAsFixed(1)} Km',
-                                        style: TextStyle(
-                                          fontSize: 12,
-                                        ),
-                                      ),
-                                      Text(
-                                        'LKR ${(mapProvider.tukCharge * mapProvider.distance).toStringAsFixed(2)}',
-                                        style: const TextStyle(
-                                          fontWeight: FontWeight.w500,
-                                          fontSize: 12,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              GestureDetector(
-                                onTap: () {
-                                  setState(() {
-                                    isNormalACVan = false;
-                                    isMiniVan = false;
-                                    isCar = false;
-                                    isNonACVan = true;
-                                    isKDHFlatroofVan = false;
-                                    isKDHHighroofVan = false;
-                                    selectedSubVehicle = 'nonACVan';
-                                  });
-                                },
-                                child: Container(
-                                  padding: const EdgeInsets.all(10),
-                                  decoration: isNonACVan
-                                      ? BoxDecoration(
-                                          color: const Color.fromARGB(
-                                              255, 246, 244, 244),
-                                          border: Border.all(
-                                            color: Colors.blue,
-                                          ),
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                        )
-                                      : const BoxDecoration(),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
-                                      const Text(
-                                        "Non AC Van",
-                                        style: TextStyle(
-                                          fontSize: 11,
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding: EdgeInsets.symmetric(
-                                          vertical: 5,
-                                        ),
-                                        child: SizedBox(
-                                          height: 35,
-                                          child: Image.asset(
-                                              'assets/images/non_ac_van.png'),
-                                        ),
-                                      ),
-                                      Text(
-                                        '${mapProvider.distance.toStringAsFixed(1)} Km',
-                                        style: TextStyle(
-                                          fontSize: 12,
-                                        ),
-                                      ),
-                                      Text(
-                                        'LKR ${(mapProvider.bikeCharge * mapProvider.distance).toStringAsFixed(2)}',
-                                        style: const TextStyle(
-                                          fontWeight: FontWeight.w500,
-                                          fontSize: 12,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              GestureDetector(
-                                onTap: () {
-                                  setState(() {
-                                    isNormalACVan = false;
-                                    isMiniVan = false;
-                                    isCar = false;
-                                    isNonACVan = false;
-                                    isKDHFlatroofVan = true;
-                                    isKDHHighroofVan = false;
-                                    selectedSubVehicle = 'kDHFlatroofVan';
-                                  });
-                                },
-                                child: Container(
-                                  padding: const EdgeInsets.all(10),
-                                  decoration: isKDHFlatroofVan
-                                      ? BoxDecoration(
-                                          color: const Color.fromARGB(
-                                              255, 246, 244, 244),
-                                          border: Border.all(
-                                            color: Colors.blue,
-                                          ),
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                        )
-                                      : const BoxDecoration(),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
-                                      const Text(
-                                        "KDH Flatroof Van",
-                                        style: TextStyle(
-                                          fontSize: 11,
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding: EdgeInsets.symmetric(
-                                          vertical: 5,
-                                        ),
-                                        child: SizedBox(
-                                          height: 35,
-                                          child: Image.asset(
-                                              'assets/images/kdh_flatroof_van.png'),
-                                        ),
-                                      ),
-                                      Text(
-                                        '${mapProvider.distance.toStringAsFixed(1)} Km',
-                                        style: TextStyle(
-                                          fontSize: 12,
-                                        ),
-                                      ),
-                                      Text(
-                                        'LKR ${(mapProvider.tukCharge * mapProvider.distance).toStringAsFixed(2)}',
-                                        style: const TextStyle(
-                                          fontWeight: FontWeight.w500,
-                                          fontSize: 12,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              GestureDetector(
-                                onTap: () {
-                                  setState(() {
-                                    isCar = false;
-                                    isNormalACVan = false;
-                                    isMiniVan = false;
-                                    isNonACVan = false;
-                                    isKDHFlatroofVan = false;
-                                    isKDHHighroofVan = true;
-                                    selectedSubVehicle = 'kDHHighroofVan';
-                                  });
-                                },
-                                child: Container(
-                                  padding: const EdgeInsets.all(10),
-                                  decoration: isKDHHighroofVan
-                                      ? BoxDecoration(
-                                          color: const Color.fromARGB(
-                                              255, 246, 244, 244),
-                                          border: Border.all(
-                                            color: Colors.blue,
-                                          ),
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                        )
-                                      : const BoxDecoration(),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
-                                      const Text(
-                                        "KDH Highroof Van",
-                                        style: TextStyle(
-                                          fontSize: 11,
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding: EdgeInsets.symmetric(
-                                          vertical: 5,
-                                        ),
-                                        child: SizedBox(
-                                          height: 35,
-                                          child: Image.asset(
-                                              'assets/images/kdh_highroof_an.png'),
-                                        ),
-                                      ),
-                                      Text(
-                                        '${mapProvider.distance.toStringAsFixed(1)} Km',
-                                        style: TextStyle(
-                                          fontSize: 12,
-                                        ),
-                                      ),
-                                      Text(
-                                        'LKR ${(mapProvider.bikeCharge * mapProvider.distance).toStringAsFixed(2)}',
-                                        style: const TextStyle(
-                                          fontWeight: FontWeight.w500,
-                                          fontSize: 12,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      Consumer(
-                        builder: (BuildContext context,
-                                RideProvider rideProvider, Widget? child) =>
-                            Visibility(
-                          visible: (isCar && isBudgetCar ||
-                                  isMiniCar ||
-                                  isSedanCar) ||
-                              (isVan && isMiniVan ||
-                                  isNonACVan ||
-                                  isNormalACVan ||
-                                  isKDHFlatroofVan ||
-                                  isKDHHighroofVan) ||
-                              isLorry ||
-                              isTuk ||
-                              isBike,
-                          child: GestureDetector(
-                            onTap: () async {
-                              await userProvider.getUserData();
-
-                              double totalCharge = 0.0;
-
-                              if (selectedVehicle == 'car') {
-                                totalCharge = mapProvider.carCharge *
-                                    mapProvider.distance;
-                              } else if (selectedVehicle == 'tuk') {
-                                totalCharge = mapProvider.tukCharge *
-                                    mapProvider.distance;
-                              } else if (selectedVehicle == 'bike') {
-                                totalCharge = mapProvider.bikeCharge *
-                                    mapProvider.distance;
-                              } else {
-                                0.0;
-                              }
-
-                              databaseReference.child(rideID).set({
-                                "rideID": rideID,
-                                "pID": userID,
-                                "picupLocationLong": pickupLocation!.longitude,
-                                "picupLocationLat": pickupLocation!.latitude,
-                                "dropLocationLong": endLocation!.longitude,
-                                "dropLocationLat": endLocation!.latitude,
-                                "vehicleType": selectedVehicle,
-                                "totalKm": mapProvider.distance.toDouble(),
-                                "totalPrice": totalCharge,
-                                "pickupAddress": pickupLocationController.text,
-                                "dropAddress": endLocationController.text,
-                              });
-
-                              // rideProvider.confirmRide(
-                              //   Ride(
-                              //     rideID: rideID,
-                              //     passengerID: userID!,
-                              //     picupLocation: pickupLocation!,
-                              //     dropLocation: endLocation!,
-                              //     vehicleType: selectedVehicle,
-                              //     totalKMs: mapProvider.distance,
-                              //     totalPrice: totalCharge,
-                              //     dropAddresss: endLocationController.text,
-                              //     pickupAddress: pickupLocationController.text,
-                              //   ),
-                              //   userID!,
-                              //   context,
-                              //   rideID,
-                              // );
-
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => SearchDriver(
-                                    pickupLocation: pickupLocation!,
-                                    selectedVehicle: selectedVehicle,
-                                    userID: userID!,
-                                    rideID: rideID,
-                                  ),
-                                ),
-                              );
-                            },
-                            child: CustomButton(
-                              text: 'CONFIRM',
-                              height: 50,
-                              width: screenWidth,
-                              backgroundColor: AppColors.buttonColor,
-                            ),
-                          ),
-                        ),
-                      ),
-
                       SizedBox(
-                        height: Platform.isIOS ? 15 : null,
+                        height: Platform.isIOS ? 25 : 10,
                       ),
                     ],
                   ),
