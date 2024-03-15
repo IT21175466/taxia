@@ -15,14 +15,19 @@ class CustomElement extends StatelessWidget {
       child: Column(
         children: [
           SizedBox(
-            height: 30,
-            width: 30,
+            height: 50,
+            width: 50,
             child: Image.asset(imagePath),
           ),
           SizedBox(
-            height: 5,
+            height: 8,
           ),
-          Text(label),
+          Text(
+            label,
+            style: TextStyle(
+              fontWeight: FontWeight.w600,
+            ),
+          ),
         ],
       ),
     );

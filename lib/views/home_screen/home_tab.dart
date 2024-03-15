@@ -143,12 +143,11 @@ class _HomeTabState extends State<HomeTab> {
                     });
                   }
                 } else {
-                  if(mounted){
-setState(() {
-                    isOngoingAvailable = false;
-                  });
+                  if (mounted) {
+                    setState(() {
+                      isOngoingAvailable = false;
+                    });
                   }
-                  
                 }
               });
             } else {
@@ -285,275 +284,141 @@ setState(() {
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+      //margin: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(20),
+          topRight: Radius.circular(20),
+        ),
+      ),
       child: SingleChildScrollView(
-        child: Column(
-          children: [
-            GestureDetector(
-              onTap: () {
-                Navigator.pushNamed(context, '/map');
-              },
-              child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 10),
-                height: 50,
-                width: screenWidth,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  border: Border.all(
-                    color: Color.fromARGB(255, 14, 88, 216),
-                    width: 1,
-                  ),
-                ),
-                child: Row(
-                  children: [
-                    Text(
-                      'Where should I go?',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w500,
-                        color: AppColors.grayColor,
-                        fontSize: 16,
-                      ),
-                    ),
-                    Spacer(),
-                    Text("Leave"),
-                    SizedBox(
-                      width: 5,
-                    ),
-                    Text(
-                      "now",
-                      style: TextStyle(
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    Icon(Icons.arrow_drop_down_outlined),
-                  ],
-                ),
-                // TextField(
-                //   decoration: InputDecoration(
-                //     border: OutlineInputBorder(
-                //       borderRadius: BorderRadius.circular(5.0),
-                //     ),
-                //     enabledBorder: OutlineInputBorder(
-                //       borderRadius: BorderRadius.circular(10.0),
-                //       borderSide: const BorderSide(
-                //         color: Color.fromARGB(255, 14, 88, 216),
-                //         width: 1,
-                //       ),
-                //     ),
-                //     labelText: "Where should I go?",
-                //     labelStyle: TextStyle(
-                //       fontWeight: FontWeight.w500,
-                //       color: AppColors.grayColor,
-                //     ),
-                //     suffixIcon: Padding(
-                //       padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                //       child: Row(
-                //         mainAxisSize: MainAxisSize.min,
-                //         children: [
-                //           Text("Leave"),
-                //           SizedBox(
-                //             width: 5,
-                //           ),
-                //           Text(
-                //             "now",
-                //             style: TextStyle(
-                //               fontWeight: FontWeight.w500,
-                //             ),
-                //           ),
-                //           Icon(Icons.arrow_drop_down_outlined),
-                //         ],
-                //       ),
-                //     ),
-                //     contentPadding: const EdgeInsets.symmetric(
-                //         vertical: 16, horizontal: 10),
-                //   ),
-                // ),
+        child: Container(
+          margin: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+          child: Column(
+            children: [
+              SizedBox(
+                height: 10,
               ),
-            ),
-            SizedBox(
-              height: 15,
-            ),
-            Row(
-              children: [
-                Icon(
-                  Icons.home_outlined,
-                  color: Colors.grey,
-                ),
-                SizedBox(
-                  width: 5,
-                ),
-                Text(
-                  "Home",
-                  style: TextStyle(
-                    color: Colors.grey,
-                  ),
-                ),
-                SizedBox(
-                  width: 15,
-                ),
-                Icon(
-                  Icons.work_outline,
-                  color: Colors.grey,
-                ),
-                SizedBox(
-                  width: 5,
-                ),
-                Text(
-                  "Work",
-                  style: TextStyle(
-                    color: Colors.grey,
-                  ),
-                ),
-              ],
-            ),
-            Visibility(
-              visible: isRecordAvailable,
-              child: Container(
-                width: screenWidth,
-                padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-                margin: EdgeInsets.only(top: 10),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(15),
-                  color: Colors.blueAccent.withOpacity(0.2),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Text(
-                          "Sheduled Ride",
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                        Spacer(),
-                        GestureDetector(
-                          onTap: () {
-                            deleteRide();
-                          },
-                          child: Icon(
-                            Icons.delete,
-                            color: Colors.red,
-                            size: 28,
-                          ),
-                        ),
-                      ],
-                    ),
-                    Row(
-                      children: [
-                        Text(
-                          "Pickup - ",
-                          style: TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.w400,
-                            color: AppColors.grayColor,
-                          ),
-                        ),
-                        Text(
-                          pickAddress!,
-                          style: TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.w400,
-                          ),
-                        ),
-                      ],
-                    ),
-                    Row(
-                      children: [
-                        Text(
-                          "Drop - ",
-                          style: TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.w400,
-                            color: AppColors.grayColor,
-                          ),
-                        ),
-                        Text(
-                          dropAddress!,
-                          style: TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.w400,
-                          ),
-                        ),
-                      ],
-                    ),
-                    Row(
-                      children: [
-                        Text(
-                          "Date - ",
-                          style: TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.w400,
-                            color: AppColors.grayColor,
-                          ),
-                        ),
-                        Text(
-                          scheduledDate!,
-                          style: TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.w400,
-                          ),
-                        ),
-                      ],
-                    ),
-                    Row(
-                      children: [
-                        Text(
-                          "Time - ",
-                          style: TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.w400,
-                            color: AppColors.grayColor,
-                          ),
-                        ),
-                        Text(
-                          scheduledTime!,
-                          style: TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.w400,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            Visibility(
-              visible: isOngoingAvailable,
-              child: GestureDetector(
+              GestureDetector(
                 onTap: () {
-                  if (isRideStarted) {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => TripStarted(
-                          rideID: ongoingRideID!,
-                          userID: userId!,
-                          phoneNumber: ongoingPhoneNumber,
-                          firstName: ongoingFirstName,
-                          pickupLocation: ongoingPickupLocation!,
-                          dropLocation: ongoingDropLocation!,
-                          vehicleNumber: ongoingTaxiNumber,
-                          progileImage: 'progileImage',
-                          driverID: driverID!,
+                  Navigator.pushNamed(context, '/map');
+                },
+                child: Container(
+                  padding: EdgeInsets.symmetric(horizontal: 10),
+                  height: 50,
+                  width: screenWidth,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(
+                      color: Color.fromARGB(255, 14, 88, 216),
+                      width: 1,
+                    ),
+                  ),
+                  child: Row(
+                    children: [
+                      Text(
+                        'Where should I go?',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w500,
+                          color: AppColors.grayColor,
+                          fontSize: 16,
                         ),
                       ),
-                    );
-                  } else {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => RideAccepted(
-                            rideID: ongoingRideID!,
-                            userID: userId!,
-                            pickupLocation: ongoingPickupLocation!),
+                      Spacer(),
+                      Text("Leave"),
+                      SizedBox(
+                        width: 5,
                       ),
-                    );
-                  }
-                },
+                      Text(
+                        "now",
+                        style: TextStyle(
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      Icon(Icons.arrow_drop_down_outlined),
+                    ],
+                  ),
+                  // TextField(
+                  //   decoration: InputDecoration(
+                  //     border: OutlineInputBorder(
+                  //       borderRadius: BorderRadius.circular(5.0),
+                  //     ),
+                  //     enabledBorder: OutlineInputBorder(
+                  //       borderRadius: BorderRadius.circular(10.0),
+                  //       borderSide: const BorderSide(
+                  //         color: Color.fromARGB(255, 14, 88, 216),
+                  //         width: 1,
+                  //       ),
+                  //     ),
+                  //     labelText: "Where should I go?",
+                  //     labelStyle: TextStyle(
+                  //       fontWeight: FontWeight.w500,
+                  //       color: AppColors.grayColor,
+                  //     ),
+                  //     suffixIcon: Padding(
+                  //       padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                  //       child: Row(
+                  //         mainAxisSize: MainAxisSize.min,
+                  //         children: [
+                  //           Text("Leave"),
+                  //           SizedBox(
+                  //             width: 5,
+                  //           ),
+                  //           Text(
+                  //             "now",
+                  //             style: TextStyle(
+                  //               fontWeight: FontWeight.w500,
+                  //             ),
+                  //           ),
+                  //           Icon(Icons.arrow_drop_down_outlined),
+                  //         ],
+                  //       ),
+                  //     ),
+                  //     contentPadding: const EdgeInsets.symmetric(
+                  //         vertical: 16, horizontal: 10),
+                  //   ),
+                  // ),
+                ),
+              ),
+              SizedBox(
+                height: 15,
+              ),
+              Row(
+                children: [
+                  Icon(
+                    Icons.home_outlined,
+                    color: Colors.grey,
+                  ),
+                  SizedBox(
+                    width: 5,
+                  ),
+                  Text(
+                    "Home",
+                    style: TextStyle(
+                      color: Colors.grey,
+                    ),
+                  ),
+                  SizedBox(
+                    width: 15,
+                  ),
+                  Icon(
+                    Icons.work_outline,
+                    color: Colors.grey,
+                  ),
+                  SizedBox(
+                    width: 5,
+                  ),
+                  Text(
+                    "Work",
+                    style: TextStyle(
+                      color: Colors.grey,
+                    ),
+                  ),
+                ],
+              ),
+              Visibility(
+                visible: isRecordAvailable,
                 child: Container(
                   width: screenWidth,
                   padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
@@ -568,45 +433,29 @@ setState(() {
                       Row(
                         children: [
                           Text(
-                            "Ongoing Ride ",
+                            "Sheduled Ride",
                             style: TextStyle(
-                              fontSize: 18,
+                              fontSize: 16,
                               fontWeight: FontWeight.w700,
                             ),
                           ),
-                          isRideStarted
-                              ? Text(
-                                  " - Trip Started",
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w400,
-                                  ),
-                                )
-                              : Text(
-                                  "",
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w400,
-                                  ),
-                                ),
                           Spacer(),
-                          Text(
-                            ongoingvehicleType!.toUpperCase(),
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.w700,
-                              color: const Color.fromARGB(255, 92, 92, 92),
+                          GestureDetector(
+                            onTap: () {
+                              deleteRide();
+                            },
+                            child: Icon(
+                              Icons.delete,
+                              color: Colors.red,
+                              size: 28,
                             ),
                           ),
                         ],
                       ),
-                      SizedBox(
-                        height: 5,
-                      ),
                       Row(
                         children: [
                           Text(
-                            "Driver Name - ",
+                            "Pickup - ",
                             style: TextStyle(
                               fontSize: 15,
                               fontWeight: FontWeight.w400,
@@ -614,7 +463,7 @@ setState(() {
                             ),
                           ),
                           Text(
-                            ongoingFirstName,
+                            pickAddress!,
                             style: TextStyle(
                               fontSize: 15,
                               fontWeight: FontWeight.w400,
@@ -633,7 +482,7 @@ setState(() {
                             ),
                           ),
                           Text(
-                            ongoingDropAddress!,
+                            dropAddress!,
                             style: TextStyle(
                               fontSize: 15,
                               fontWeight: FontWeight.w400,
@@ -644,7 +493,7 @@ setState(() {
                       Row(
                         children: [
                           Text(
-                            "Taxi Number - ",
+                            "Date - ",
                             style: TextStyle(
                               fontSize: 15,
                               fontWeight: FontWeight.w400,
@@ -652,7 +501,7 @@ setState(() {
                             ),
                           ),
                           Text(
-                            ongoingTaxiNumber,
+                            scheduledDate!,
                             style: TextStyle(
                               fontSize: 15,
                               fontWeight: FontWeight.w400,
@@ -663,7 +512,7 @@ setState(() {
                       Row(
                         children: [
                           Text(
-                            "Total Price - ",
+                            "Time - ",
                             style: TextStyle(
                               fontSize: 15,
                               fontWeight: FontWeight.w400,
@@ -671,7 +520,7 @@ setState(() {
                             ),
                           ),
                           Text(
-                            "Rs. ${ongoingtotalPrice}",
+                            scheduledTime!,
                             style: TextStyle(
                               fontSize: 15,
                               fontWeight: FontWeight.w400,
@@ -683,168 +532,331 @@ setState(() {
                   ),
                 ),
               ),
-            ),
-            SizedBox(
-              height: 25,
-            ),
-            Row(
-              //Tempory
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    CustomElement(
-                      label: "Taxi",
-                      imagePath: 'assets/images/taxi.png',
-                      onTap: () {
-                        Navigator.pushNamed(context, '/map');
-                      },
-                    ),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    CustomElement(
-                      label: "Show All",
-                      imagePath: 'assets/images/dots.png',
-                      onTap: () {},
-                    ),
-                    // SizedBox(
-                    //   height: 20,
-                    // ),
-                    // CustomElement(
-                    //   label: "Pet",
-                    //   imagePath: 'assets/images/pet.png',
-                    //   onTap: () {},
-                    // ),
-                  ],
-                ),
-                Spacer(),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    CustomElement(
-                      label: "Book Taxi",
-                      imagePath: 'assets/images/bookTaxi.png',
-                      onTap: () {
-                        Navigator.pushNamed(context, '/booktaximap');
-                      },
-                    ),
-                    // SizedBox(
-                    //   height: 20,
-                    // ),
-                    // CustomElement(
-                    //   label: "Rent Car",
-                    //   imagePath: 'assets/images/rentCar.png',
-                    //   onTap: () {},
-                    // ),
-                    // SizedBox(
-                    //   height: 20,
-                    // ),
-                    // CustomElement(
-                    //   label: "Train",
-                    //   imagePath: 'assets/images/train.png',
-                    //   onTap: () {},
-                    // ),
-                  ],
-                ),
-                Spacer(),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    CustomElement(
-                      label: "Bike",
-                      imagePath: 'assets/images/bike.png',
-                      onTap: () {
-                        Navigator.pushNamed(context, '/bookbikemap');
-                      },
-                    ),
-                    // SizedBox(
-                    //   height: 20,
-                    // ),
-                    // CustomElement(
-                    //   label: "Flight",
-                    //   imagePath: 'assets/images/airplane.png',
-                    //   onTap: () {},
-                    // ),
-                    // SizedBox(
-                    //   height: 20,
-                    // ),
-                    // CustomElement(
-                    //   label: "Charter bus",
-                    //   imagePath: 'assets/images/charter.png',
-                    //   onTap: () {},
-                    // ),
-                  ],
-                ),
-                Spacer(),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    // CustomElement(
-                    //   label: "Parking",
-                    //   imagePath: 'assets/images/parking.png',
-                    //   onTap: () {},
-                    // ),
-                    // SizedBox(
-                    //   height: 20,
-                    // ),
-                    // CustomElement(
-                    //   label: "EV Charge",
-                    //   imagePath: 'assets/images/charging.png',
-                    //   onTap: () {},
-                    // ),
-                    // SizedBox(
-                    //   height: 20,
-                    // ),
-
-                    CustomElement(
-                      label: "XD",
-                      imagePath: 'assets/images/delivery.png',
-                      onTap: () {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(
-                                'This feature not available at this moment'),
+              Visibility(
+                visible: isOngoingAvailable,
+                child: GestureDetector(
+                  onTap: () {
+                    if (isRideStarted) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => TripStarted(
+                            rideID: ongoingRideID!,
+                            userID: userId!,
+                            phoneNumber: ongoingPhoneNumber,
+                            firstName: ongoingFirstName,
+                            pickupLocation: ongoingPickupLocation!,
+                            dropLocation: ongoingDropLocation!,
+                            vehicleNumber: ongoingTaxiNumber,
+                            progileImage: 'progileImage',
+                            driverID: driverID!,
                           ),
-                        );
-                      },
+                        ),
+                      );
+                    } else {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => RideAccepted(
+                              rideID: ongoingRideID!,
+                              userID: userId!,
+                              pickupLocation: ongoingPickupLocation!),
+                        ),
+                      );
+                    }
+                  },
+                  child: Container(
+                    width: screenWidth,
+                    padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                    margin: EdgeInsets.only(top: 10),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(15),
+                      color: Colors.blueAccent.withOpacity(0.2),
                     ),
-                  ],
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Text(
+                              "Ongoing Ride ",
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                            isRideStarted
+                                ? Text(
+                                    " - Trip Started",
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w400,
+                                    ),
+                                  )
+                                : Text(
+                                    "",
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w400,
+                                    ),
+                                  ),
+                            Spacer(),
+                            Text(
+                              ongoingvehicleType!.toUpperCase(),
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.w700,
+                                color: const Color.fromARGB(255, 92, 92, 92),
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(
+                          height: 5,
+                        ),
+                        Row(
+                          children: [
+                            Text(
+                              "Driver Name - ",
+                              style: TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w400,
+                                color: AppColors.grayColor,
+                              ),
+                            ),
+                            Text(
+                              ongoingFirstName,
+                              style: TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            Text(
+                              "Drop - ",
+                              style: TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w400,
+                                color: AppColors.grayColor,
+                              ),
+                            ),
+                            Text(
+                              ongoingDropAddress!,
+                              style: TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            Text(
+                              "Taxi Number - ",
+                              style: TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w400,
+                                color: AppColors.grayColor,
+                              ),
+                            ),
+                            Text(
+                              ongoingTaxiNumber,
+                              style: TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            Text(
+                              "Total Price - ",
+                              style: TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w400,
+                                color: AppColors.grayColor,
+                              ),
+                            ),
+                            Text(
+                              "Rs. ${ongoingtotalPrice}",
+                              style: TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
-                //Spacer(),
-                // Column(
-                //   crossAxisAlignment: CrossAxisAlignment.center,
-                //   children: [
-                //     CustomElement(
-                //       label: "Driver",
-                //       imagePath: 'assets/images/driverElement.png',
-                //       onTap: () {},
-                //     ),
-                //     SizedBox(
-                //       height: 20,
-                //     ),
-                //     CustomElement(
-                //       label: "Request",
-                //       imagePath: 'assets/images/request.png',
-                //       onTap: () {},
-                //     ),
-                //     SizedBox(
-                //       height: 20,
-                //     ),
-                //     CustomElement(
-                //       label: "Request",
-                //       imagePath: 'assets/images/request.png',
-                //       onTap: () {},
-                //     ),
-                //   ],
-                // ),
-              ],
-            ),
-            SizedBox(
-              height: 20,
-            ),
-          ],
+              ),
+              SizedBox(
+                height: 25,
+              ),
+              Row(
+                //Tempory
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      CustomElement(
+                        label: "Taxi",
+                        imagePath: 'assets/images/taxi.png',
+                        onTap: () {
+                          Navigator.pushNamed(context, '/map');
+                        },
+                      ),
+                      // SizedBox(
+                      //   height: 20,
+                      // ),
+                      // CustomElement(
+                      //   label: "Show All",
+                      //   imagePath: 'assets/images/dots.png',
+                      //   onTap: () {},
+                      // ),
+                      // SizedBox(
+                      //   height: 20,
+                      // ),
+                      // CustomElement(
+                      //   label: "Pet",
+                      //   imagePath: 'assets/images/pet.png',
+                      //   onTap: () {},
+                      // ),
+                    ],
+                  ),
+                  Spacer(),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      // CustomElement(
+                      //   label: "Book Taxi",
+                      //   imagePath: 'assets/images/bookTaxi.png',
+                      //   onTap: () {
+                      //     Navigator.pushNamed(context, '/booktaximap');
+                      //   },
+                      // ),
+                      // SizedBox(
+                      //   height: 20,
+                      // ),
+                      // CustomElement(
+                      //   label: "Rent Car",
+                      //   imagePath: 'assets/images/rentCar.png',
+                      //   onTap: () {},
+                      // ),
+                      // SizedBox(
+                      //   height: 20,
+                      // ),
+                      // CustomElement(
+                      //   label: "Train",
+                      //   imagePath: 'assets/images/train.png',
+                      //   onTap: () {},
+                      // ),
+                    ],
+                  ),
+                  //Spacer(),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      CustomElement(
+                        label: "Bike",
+                        imagePath: 'assets/images/bike.png',
+                        onTap: () {
+                          Navigator.pushNamed(context, '/bookbikemap');
+                        },
+                      ),
+                      // SizedBox(
+                      //   height: 20,
+                      // ),
+                      // CustomElement(
+                      //   label: "Flight",
+                      //   imagePath: 'assets/images/airplane.png',
+                      //   onTap: () {},
+                      // ),
+                      // SizedBox(
+                      //   height: 20,
+                      // ),
+                      // CustomElement(
+                      //   label: "Charter bus",
+                      //   imagePath: 'assets/images/charter.png',
+                      //   onTap: () {},
+                      // ),
+                    ],
+                  ),
+                  Spacer(),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      // CustomElement(
+                      //   label: "Parking",
+                      //   imagePath: 'assets/images/parking.png',
+                      //   onTap: () {},
+                      // ),
+                      // SizedBox(
+                      //   height: 20,
+                      // ),
+                      // CustomElement(
+                      //   label: "EV Charge",
+                      //   imagePath: 'assets/images/charging.png',
+                      //   onTap: () {},
+                      // ),
+                      // SizedBox(
+                      //   height: 20,
+                      // ),
+
+                      CustomElement(
+                        label: "XD",
+                        imagePath: 'assets/images/delivery.png',
+                        onTap: () {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                  'This feature not available at this moment'),
+                            ),
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                  //Spacer(),
+                  // Column(
+                  //   crossAxisAlignment: CrossAxisAlignment.center,
+                  //   children: [
+                  //     CustomElement(
+                  //       label: "Driver",
+                  //       imagePath: 'assets/images/driverElement.png',
+                  //       onTap: () {},
+                  //     ),
+                  //     SizedBox(
+                  //       height: 20,
+                  //     ),
+                  //     CustomElement(
+                  //       label: "Request",
+                  //       imagePath: 'assets/images/request.png',
+                  //       onTap: () {},
+                  //     ),
+                  //     SizedBox(
+                  //       height: 20,
+                  //     ),
+                  //     CustomElement(
+                  //       label: "Request",
+                  //       imagePath: 'assets/images/request.png',
+                  //       onTap: () {},
+                  //     ),
+                  //   ],
+                  // ),
+                ],
+              ),
+              SizedBox(
+                height: 20,
+              ),
+            ],
+          ),
         ),
       ),
     );

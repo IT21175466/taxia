@@ -26,24 +26,38 @@ class _InfoPageState extends State<InfoPage> {
     double screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
       appBar: AppBar(
+        leading: GestureDetector(
+          onTap: () {
+            Navigator.pop(context);
+          },
+          child: Image.asset('assets/images/backbtn.png'),
+        ),
         title: Text(
           "My Info",
           style: TextStyle(
-            fontWeight: FontWeight.w500,
+            fontWeight: FontWeight.w700,
           ),
         ),
         backgroundColor: AppColors.accentColor,
+        automaticallyImplyLeading: false,
       ),
       body: Consumer(
         builder:
             (BuildContext context, UserProvider userProvider, Widget? child) =>
                 Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(20),
+              topRight: Radius.circular(20),
+            ),
+          ),
           height: screenHeight,
           width: screenWidth,
-          padding: EdgeInsets.symmetric(vertical: 15, horizontal: 10),
+          margin: EdgeInsets.only(top: 20),
+          padding: EdgeInsets.symmetric(vertical: 15, horizontal: 20),
           child: Column(
             children: [
-              Divider(),
               Row(
                 children: [
                   Text(
@@ -72,7 +86,6 @@ class _InfoPageState extends State<InfoPage> {
                   ),
                 ],
               ),
-              Divider(),
               SizedBox(
                 height: 15,
               ),
@@ -97,6 +110,7 @@ class _InfoPageState extends State<InfoPage> {
           ),
         ),
       ),
+      backgroundColor: AppColors.accentColor,
     );
   }
 }

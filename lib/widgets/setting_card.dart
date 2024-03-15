@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 class SettingCard extends StatelessWidget {
+  //final String icon;
   final String title;
   const SettingCard({super.key, required this.title});
 
@@ -18,11 +19,19 @@ class SettingCard extends StatelessWidget {
       ),
       child: Row(
         children: [
+          // SizedBox(
+          //   width: 20,
+          //   height: 20,
+          //   child: Image.asset(icon),
+          // ),
+          // SizedBox(
+          //   width: 5,
+          // ),
           Text(
             title,
             style: TextStyle(
               fontSize: 16,
-              fontWeight: FontWeight.w500,
+              fontWeight: FontWeight.w400,
             ),
           ),
           Spacer(),

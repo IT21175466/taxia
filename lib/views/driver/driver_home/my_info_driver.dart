@@ -65,7 +65,10 @@ class _MyInfoDriverState extends State<MyInfoDriver> {
                   ),
                 );
               },
-              child: SettingCard(title: "My Info"),
+              child: SettingCard(
+                title: "My Info",
+                //icon: 'assets/images/myInfo.png',
+              ),
             ),
             GestureDetector(
               onTap: () {
@@ -78,7 +81,10 @@ class _MyInfoDriverState extends State<MyInfoDriver> {
                   ),
                 );
               },
-              child: SettingCard(title: "Coupens"),
+              child: SettingCard(
+                title: "Coupens",
+                //icon: 'assets/images/myInfo.png',
+              ),
             ),
             GestureDetector(
               onTap: () {
@@ -89,9 +95,11 @@ class _MyInfoDriverState extends State<MyInfoDriver> {
                   ),
                 );
               },
-              child: SettingCard(title: "Ride History"),
+              child: SettingCard(
+                title: "Ride History",
+                //icon: 'assets/images/myInfo.png',
+              ),
             ),
-            SettingCard(title: "Language"),
           ],
         ),
       ),

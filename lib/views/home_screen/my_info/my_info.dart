@@ -23,7 +23,7 @@ class _MyInfoUserState extends State<MyInfoUser> {
         title: Text(
           "Settings",
           style: TextStyle(
-            fontWeight: FontWeight.w500,
+            fontWeight: FontWeight.w700,
           ),
         ),
         backgroundColor: AppColors.accentColor,
@@ -31,6 +31,13 @@ class _MyInfoUserState extends State<MyInfoUser> {
       body: Container(
         width: screenWidth,
         height: screenHeight,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(20),
+            topRight: Radius.circular(20),
+          ),
+        ),
         padding: EdgeInsets.symmetric(
           horizontal: 20,
         ),
@@ -48,7 +55,10 @@ class _MyInfoUserState extends State<MyInfoUser> {
                   ),
                 );
               },
-              child: SettingCard(title: "My Info"),
+              child: SettingCard(
+                title: "My Info",
+                //icon: 'assets/images/myInfo.png',
+              ),
             ),
             GestureDetector(
               onTap: () {
@@ -59,12 +69,15 @@ class _MyInfoUserState extends State<MyInfoUser> {
                   ),
                 );
               },
-              child: SettingCard(title: "Ride History"),
+              child: SettingCard(
+                title: "Ride History",
+                //icon: 'assets/images/rideHistory.png',
+              ),
             ),
-            SettingCard(title: "Language"),
           ],
         ),
       ),
+      backgroundColor: AppColors.accentColor,
     );
   }
 }
