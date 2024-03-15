@@ -20,100 +20,123 @@ class _UserRideHistoryState extends State<UserRideHistory> {
     double screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
       appBar: AppBar(
+        leading: GestureDetector(
+          onTap: () {
+            Navigator.pop(context);
+          },
+          child: Image.asset('assets/images/backbtn.png'),
+        ),
+        automaticallyImplyLeading: false,
         title: Text(
           "Ride History",
           style: TextStyle(
-            fontWeight: FontWeight.w500,
+            fontWeight: FontWeight.w700,
           ),
         ),
         backgroundColor: AppColors.accentColor,
       ),
-      body: Consumer(
-        builder:
-            (BuildContext context, UserProvider userProvider, Widget? child) =>
-                Container(
-          height: screenHeight,
-          width: screenWidth,
-          padding: EdgeInsets.only(
-            top: 10,
-            left: 10,
-            right: 10,
+      body: Column(
+        children: [
+          SizedBox(
+            height: 20,
           ),
-          color: const Color.fromARGB(255, 213, 213, 213),
-          child: StreamBuilder(
-            stream: FirebaseFirestore.instance
-                .collection('Rides')
-                .doc(globalUserID)
-                .collection("Users")
-                .snapshots(),
-            builder: (context, snapshot) {
-              if (snapshot.hasError) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(
-                      'Connection Error!',
-                      style: TextStyle(
-                        fontFamily: 'Poppins',
-                        fontWeight: FontWeight.w600,
-                        fontSize: 16,
-                      ),
-                    ),
-                  ),
-                );
-              }
-
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                Center(
-                  child: Text(
-                    'Loading.....',
-                    style: TextStyle(
-                      fontFamily: 'Poppins',
-                      fontWeight: FontWeight.w600,
-                      fontSize: 16,
-                    ),
-                  ),
-                );
-              }
-              if (snapshot.hasData) {
-                var docs = snapshot.data!.docs;
-                return ListView.builder(
-                    itemCount: docs.length,
-                    itemBuilder: (context, index) {
-                      return HistoryRideCard(
-                        vehicleType: docs[index]['vehicleType'],
-                        dateAndTime: docs[index]['trip_Date'],
-                        pickupLocation: docs[index]['pickAddress'],
-                        dropLocation: docs[index]['dropAddress'],
-                        totalPrice:
-                            double.parse(docs[index]['totalPrice'].toString()),
-                        totalKM: double.parse(
-                          docs[index]['totalKMs'].toString(),
-                        ),
-                        ratingStars: double.parse(
-                            docs[index]['rating_Starts'].toString()),
-                      );
-                      // QuizHistoryCard(
-                      //   title: docs[index]['QuizName'],
-                      //   marks: docs[index]['Marks'],
-                      //   didDate: docs[index]['Date'],
-                      //   id: docs[index]['StudentID'],
-                      // );
-                    });
-              }
-              return Center(
-                child: Text(
-                  'No Docs',
-                  style: TextStyle(
-                    fontFamily: 'Poppins',
-                    fontWeight: FontWeight.w600,
-                    fontSize: 16,
+          Expanded(
+            child: Consumer(
+              builder: (BuildContext context, UserProvider userProvider,
+                      Widget? child) =>
+                  Container(
+                height: screenHeight,
+                width: screenWidth,
+                padding: EdgeInsets.only(
+                  top: 10,
+                  left: 10,
+                  right: 10,
+                ),
+                decoration: BoxDecoration(
+                  color: const Color.fromARGB(255, 248, 248, 248),
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(20),
+                    topRight: Radius.circular(20),
                   ),
                 ),
-              );
-            },
+                child: StreamBuilder(
+                  stream: FirebaseFirestore.instance
+                      .collection('Rides')
+                      .doc(globalUserID)
+                      .collection("Users")
+                      .snapshots(),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasError) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(
+                            'Connection Error!',
+                            style: TextStyle(
+                              fontFamily: 'Poppins',
+                              fontWeight: FontWeight.w600,
+                              fontSize: 16,
+                            ),
+                          ),
+                        ),
+                      );
+                    }
+
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      Center(
+                        child: Text(
+                          'Loading.....',
+                          style: TextStyle(
+                            fontFamily: 'Poppins',
+                            fontWeight: FontWeight.w600,
+                            fontSize: 16,
+                          ),
+                        ),
+                      );
+                    }
+                    if (snapshot.hasData) {
+                      var docs = snapshot.data!.docs;
+                      return ListView.builder(
+                          itemCount: docs.length,
+                          itemBuilder: (context, index) {
+                            return HistoryRideCard(
+                              vehicleType: docs[index]['vehicleType'],
+                              dateAndTime: docs[index]['trip_Date'],
+                              pickupLocation: docs[index]['pickAddress'],
+                              dropLocation: docs[index]['dropAddress'],
+                              totalPrice: double.parse(
+                                  docs[index]['totalPrice'].toString()),
+                              totalKM: double.parse(
+                                docs[index]['totalKMs'].toString(),
+                              ),
+                              ratingStars: double.parse(
+                                  docs[index]['rating_Starts'].toString()),
+                            );
+                            // QuizHistoryCard(
+                            //   title: docs[index]['QuizName'],
+                            //   marks: docs[index]['Marks'],
+                            //   didDate: docs[index]['Date'],
+                            //   id: docs[index]['StudentID'],
+                            // );
+                          });
+                    }
+                    return Center(
+                      child: Text(
+                        'No Docs',
+                        style: TextStyle(
+                          fontFamily: 'Poppins',
+                          fontWeight: FontWeight.w600,
+                          fontSize: 16,
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ),
           ),
-        ),
+        ],
       ),
+      backgroundColor: AppColors.accentColor,
     );
   }
 }

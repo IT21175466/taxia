@@ -40,7 +40,7 @@ class _MyInfoDriverState extends State<MyInfoDriver> {
         title: Text(
           "Settings",
           style: TextStyle(
-            fontWeight: FontWeight.w500,
+            fontWeight: FontWeight.w700,
           ),
         ),
         backgroundColor: AppColors.accentColor,
@@ -48,6 +48,13 @@ class _MyInfoDriverState extends State<MyInfoDriver> {
       body: Container(
         width: screenWidth,
         height: screenHeight,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(20),
+            topRight: Radius.circular(20),
+          ),
+        ),
         padding: EdgeInsets.symmetric(
           horizontal: 20,
         ),
@@ -67,7 +74,7 @@ class _MyInfoDriverState extends State<MyInfoDriver> {
               },
               child: SettingCard(
                 title: "My Info",
-                //icon: 'assets/images/myInfo.png',
+                icon: 'assets/images/myInfo.png',
               ),
             ),
             GestureDetector(
@@ -83,7 +90,7 @@ class _MyInfoDriverState extends State<MyInfoDriver> {
               },
               child: SettingCard(
                 title: "Coupens",
-                //icon: 'assets/images/myInfo.png',
+                icon: 'assets/images/coupens.png',
               ),
             ),
             GestureDetector(
@@ -97,12 +104,27 @@ class _MyInfoDriverState extends State<MyInfoDriver> {
               },
               child: SettingCard(
                 title: "Ride History",
-                //icon: 'assets/images/myInfo.png',
+                icon: 'assets/images/rideHistory.png',
+              ),
+            ),
+            GestureDetector(
+              onTap: () {
+                // Navigator.push(
+                //   context,
+                //   MaterialPageRoute(
+                //     builder: (context) => UserRideHistory(),
+                //   ),
+                // );
+              },
+              child: SettingCard(
+                title: "Contact us",
+                icon: 'assets/images/contactUS.png',
               ),
             ),
           ],
         ),
       ),
+      backgroundColor: AppColors.accentColor,
     );
   }
 }

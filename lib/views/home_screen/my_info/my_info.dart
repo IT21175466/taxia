@@ -57,7 +57,7 @@ class _MyInfoUserState extends State<MyInfoUser> {
               },
               child: SettingCard(
                 title: "My Info",
-                //icon: 'assets/images/myInfo.png',
+                icon: 'assets/images/myInfo.png',
               ),
             ),
             GestureDetector(
@@ -71,7 +71,21 @@ class _MyInfoUserState extends State<MyInfoUser> {
               },
               child: SettingCard(
                 title: "Ride History",
-                //icon: 'assets/images/rideHistory.png',
+                icon: 'assets/images/rideHistory.png',
+              ),
+            ),
+            GestureDetector(
+              onTap: () {
+                // Navigator.push(
+                //   context,
+                //   MaterialPageRoute(
+                //     builder: (context) => UserRideHistory(),
+                //   ),
+                // );
+              },
+              child: SettingCard(
+                title: "Contact us",
+                icon: 'assets/images/contactUS.png',
               ),
             ),
           ],

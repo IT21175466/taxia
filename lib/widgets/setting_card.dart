@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 
 class SettingCard extends StatelessWidget {
-  //final String icon;
+  final String icon;
   final String title;
-  const SettingCard({super.key, required this.title});
+  const SettingCard({super.key, required this.title, required this.icon});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(vertical: 12, horizontal: 10),
+      padding: EdgeInsets.symmetric(vertical: 18, horizontal: 10),
       decoration: BoxDecoration(
         border: Border(
           bottom: BorderSide(
@@ -19,14 +19,14 @@ class SettingCard extends StatelessWidget {
       ),
       child: Row(
         children: [
-          // SizedBox(
-          //   width: 20,
-          //   height: 20,
-          //   child: Image.asset(icon),
-          // ),
-          // SizedBox(
-          //   width: 5,
-          // ),
+          SizedBox(
+            width: 20,
+            height: 20,
+            child: Image.asset(icon),
+          ),
+          SizedBox(
+            width: 10,
+          ),
           Text(
             title,
             style: TextStyle(
