@@ -158,12 +158,18 @@ class _StartTripState extends State<StartTrip> {
       showDialog(
         context: context,
         builder: (ctx) => AlertDialog(
-          title: const Text("Taxia"),
+          backgroundColor: Colors.white,
+          title:  Center(
+            child: Text("Taxia", style: TextStyle(
+              fontWeight: FontWeight.w700,
+            ),),
+          ),
           content:  Column(
             children: [
               Container(
                 padding:
                 const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+
                 width: screenWidth,
                 decoration: const BoxDecoration(
                   color: Colors.blue,
@@ -242,40 +248,7 @@ class _StartTripState extends State<StartTrip> {
                         ),
                       ],
                     ),
-                    const SizedBox(
-                      height: 30,
-                    ),
-                    GestureDetector(
-                      onTap: () async {
-                        await launchUrl(
-                          Uri.parse(
-                              'google.navigation:q=${widget.dropAddress}&key=AIzaSyDWlxEQU9GMmFEmZwiT3OGVVxTyc984iNY'),
-                        );
-                      },
-                      child: const Row(
-                        children: [
-                          Text(
-                            'Navigate to drop Location',
-                            style: TextStyle(
-                              fontSize: 18,
-                              color: AppColors.textColor,
-                            ),
-                          ),
-                          Spacer(),
-                          // loading
-                          //     ? SizedBox(
-                          //         height: 30,
-                          //         width: 30,
-                          //         child: CircularProgressIndicator(),
-                          //       )
-                          //     :
-                          Icon(
-                            Icons.navigation,
-                            color: AppColors.grayColor,
-                          ),
-                        ],
-                      ),
-                    ),
+
                   ],
                 ),
               ),
@@ -377,44 +350,52 @@ class _StartTripState extends State<StartTrip> {
                     Row(
                       children: [
                         Text(
-                          'Total KM - ',
+                          'Trip start time - ',
                           style: const TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.w600,
                             color: AppColors.textColor,
                           ),
                         ),
-                        Text(
-                          '$totalKms KM',
-                          style: const TextStyle(
-                            fontSize: 18,
-                            color: AppColors.textColor,
+                        Expanded(
+                          child: Text(
+                            "10.00 am",
+                            style: const TextStyle(
+                              fontSize: 15,
+                              color: AppColors.textColor,
+                            ),
                           ),
                         ),
                       ],
                     ),
+
                     const SizedBox(
                       height: 15,
                     ),
                     Row(
                       children: [
                         Text(
-                          'Total Price - ',
+                          'Ref no - ',
                           style: const TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.w600,
                             color: AppColors.textColor,
                           ),
                         ),
-                        Text(
-                          'Rs. $totalAmount',
-                          style: const TextStyle(
-                            fontSize: 18,
-                            color: AppColors.textColor,
+                        Expanded(
+                          child: Text(
+                            "#2225TYNSO",
+                            style: const TextStyle(
+                              fontSize: 15,
+                              color: AppColors.textColor,
+                            ),
                           ),
                         ),
                       ],
                     ),
+
+
+
                   ],
                 ),
               ),
@@ -430,9 +411,14 @@ class _StartTripState extends State<StartTrip> {
                 Navigator.of(ctx).pop();
               },
               child: Container(
-                color: Colors.green,
+                width: screenWidth,
+                color: Colors.black,
                 padding: const EdgeInsets.all(14),
-                child: const Text("okay"),
+                child: Center(
+                  child: const Text("OK", style: TextStyle(
+                    color: AppColors.accentColor,
+                  ),),
+                ),
               ),
             ),
           ],
@@ -447,58 +433,216 @@ class _StartTripState extends State<StartTrip> {
                 Container(
           width: screenWidth,
           height: screenHeight,
-          padding: const EdgeInsets.symmetric(horizontal: 15),
+
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(
-                height: AppBar().preferredSize.height,
-              ),
+
               Container(
                 height: screenHeight / 2,
+                width: screenWidth,
+                padding: const EdgeInsets.symmetric(horizontal: 15),
                 color: AppColors.accentColor,
                 child: Column(
                   children: [
-                    Image.asset('assets/images/backbtn.png'),
+                    SizedBox(
+                      height: AppBar().preferredSize.height,
+                    ),
+                    Row(
+                      children: [
+                        Image.asset('assets/images/backbtn.png'),
+                        Spacer(),
+                      ],
+                    ),
+                    SizedBox(
+                      height:10,
+                    ),
+                    Row(
+                      children: [
+                        isStarted
+                            ? const Text(
+                          'On Hire',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w500,
+                            fontSize: 16,
+                            color: Colors.black,
+                          ),
+                        )
+                            : const Text(
+                          'Ready To Start',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w500,
+                            fontSize: 16,
+                            color: Colors.black,
+                          ),
+                        ),
+                        Spacer(),
+                        GestureDetector(
+                          onTap: rideDetailsAlert,
+                          child: Text(
+                            'Hire Details',
+                            style: TextStyle(
+                              fontWeight: FontWeight.w500,
+                              fontSize: 16,
+                              color: Colors.black,
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
+                    Spacer(),
+                    Text(
+                      totalAmount!,
+                      style: TextStyle(
+                        fontWeight: FontWeight.w700,
+                        fontSize: 45,
+                        color: Color.fromARGB(255, 15, 106, 106),
+                      ),
+                    ),
+                    Text(
+                      'Toral fare (LKR)',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w500,
+                        fontSize: 18,
+                        color: Colors.black,
+                      ),
+                    ),
+                    Spacer(),
+
+
                   ],
                 ),
               ),
-              Row(
-                children: [
-                  isStarted
-                      ? const Text(
-                    'On Hire',
-                    style: TextStyle(
-                      fontWeight: FontWeight.w500,
-                      fontSize: 20,
-                      color: Colors.black,
-                    ),
-                  )
-                      : const Text(
-                    'Ready To Start',
-                    style: TextStyle(
-                      fontWeight: FontWeight.w500,
-                      fontSize: 20,
-                      color: Colors.black,
-                    ),
-                  ),
-                  Spacer(),
-                  Text(
-                    'Hire Details',
-                    style: TextStyle(
-                      fontWeight: FontWeight.w500,
-                      fontSize: 20,
-                      color: Colors.black,
-                    ),
-                  )
-                ],
-              ),
 
-              const SizedBox(
-                height: 20,
-              ),
+              Container(
+                width: screenWidth,
+                height: screenHeight / 2,
+                color: Colors.black,
+                padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                child: Column(
+                  children: [
+                    Row(
+                      children: [
+                        Column(
+                          children: [
+                            Text(
+                              '$totalKms Km',
+                              style: TextStyle(
+                                fontWeight: FontWeight.w600,
+                                fontSize: 20,
+                                color: Colors.white,
+                              ),
+                            ),
+                            Text(
+                              'Package distance',
+                              style: TextStyle(
+                                fontWeight: FontWeight.w600,
+                                fontSize: 16,
+                                color: AppColors.accentColor,
+                              ),
+                            ),
+                          ],
+                        ),
+                        Spacer(),
+                        Column(
+                          children: [
+                            Text(
+                              '0.00 Km',
+                              style: TextStyle(
+                                fontWeight: FontWeight.w600,
+                                fontSize: 20,
+                                color: Colors.white,
+                              ),
+                            ),
+                            Text(
+                              'Extra distance',
+                              style: TextStyle(
+                                fontWeight: FontWeight.w600,
+                                fontSize: 16,
+                                color: AppColors.accentColor,
+                              ),
+                            ),
+                          ],
+                        ),
 
-              isStarted
-                  ? Row(
+                      ],
+                    ),
+
+                    SizedBox(
+                      height: 40,
+                    ),
+                    Row(
+                      children: [
+                        Column(
+                          children: [
+                            Text(
+                              '00:00:00',
+                              style: TextStyle(
+                                fontWeight: FontWeight.w600,
+                                fontSize: 16,
+                                color: Colors.white,
+                              ),
+                            ),
+                            Text(
+                              'Waiting time',
+                              style: TextStyle(
+                                fontWeight: FontWeight.w600,
+                                fontSize: 12,
+                                color: AppColors.accentColor,
+                              ),
+                            ),
+                          ],
+                        ),
+                        Spacer(),
+                        Column(
+                          children: [
+                            Text(
+                              '00:00',
+                              style: TextStyle(
+                                fontWeight: FontWeight.w600,
+                                fontSize: 16,
+                                color: Colors.white,
+                              ),
+                            ),
+                            Text(
+                              'Waiting fare (LKR)',
+                              style: TextStyle(
+                                fontWeight: FontWeight.w600,
+                                fontSize: 12,
+                                color: AppColors.accentColor,
+                              ),
+                            ),
+                          ],
+                        ),
+
+                        Spacer(),
+                        Column(
+                          children: [
+                            Text(
+                              '00:00:00',
+                              style: TextStyle(
+                                fontWeight: FontWeight.w600,
+                                fontSize: 16,
+                                color: Colors.white,
+                              ),
+                            ),
+                            Text(
+                              'Base hours',
+                              style: TextStyle(
+                                fontWeight: FontWeight.w600,
+                                fontSize: 12,
+                                color: AppColors.accentColor,
+                              ),
+                            ),
+                          ],
+                        ),
+
+
+                      ],
+                    ),
+                    Spacer(),
+                    isStarted
+                        ? Row(
                       children: [
                         Expanded(
                           child: GestureDetector(
@@ -566,26 +710,26 @@ class _StartTripState extends State<StartTrip> {
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) => DriverRating(
-                                              passengerID: widget.passengerID,
-                                              rideID: widget.rideID,
-                                              firstName: widget.firstName,
-                                              progileImage: '',
-                                            )));
+                                          passengerID: widget.passengerID,
+                                          rideID: widget.rideID,
+                                          firstName: widget.firstName,
+                                          progileImage: '',
+                                        )));
                               }
                             },
                             child: rideProvider.loading
                                 ? const SizedBox(
-                                    child: Center(
-                                      child: CircularProgressIndicator(),
-                                    ),
-                                  )
+                              child: Center(
+                                child: CircularProgressIndicator(),
+                              ),
+                            )
                                 : CustomButton(
-                                    text: "End Trip",
-                                    height: 55,
-                                    width: screenWidth,
-                                    backgroundColor:
-                                        const Color.fromARGB(250, 225, 105, 0),
-                                  ),
+                              text: "End Trip",
+                              height: 55,
+                              width: screenWidth,
+                              backgroundColor:
+                              const Color.fromARGB(250, 225, 105, 0),
+                            ),
                           ),
                         ),
                         const SizedBox(
@@ -601,7 +745,7 @@ class _StartTripState extends State<StartTrip> {
                         )
                       ],
                     )
-                  : GestureDetector(
+                        : GestureDetector(
                       onTap: () async {
                         setState(() {
                           isStarted = true;
@@ -621,6 +765,45 @@ class _StartTripState extends State<StartTrip> {
                         backgroundColor: AppColors.buttonColor,
                       ),
                     ),
+                    Spacer(),
+                    Row(
+                      children: [
+                        Text(
+                          'SOS',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 15,
+                            color: AppColors.accentColor,
+                          ),
+                        ),
+                        Spacer(),
+                        GestureDetector(
+                          onTap: () async {
+                            await launchUrl(
+                              Uri.parse(
+                                  'google.navigation:q=${widget.dropAddress}&key=AIzaSyDWlxEQU9GMmFEmZwiT3OGVVxTyc984iNY'),
+                            );
+                          },
+                          child: Text(
+                            'Navigation',
+                            style: TextStyle(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 15,
+                              color: AppColors.accentColor,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                  ],
+                ),
+              ),
+
+
+
             ],
           ),
         ),
