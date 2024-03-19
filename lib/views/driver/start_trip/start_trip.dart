@@ -148,44 +148,22 @@ class _StartTripState extends State<StartTrip> {
   //   });
   // }
 
+
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
-    return Scaffold(
-      body: Consumer(
-        builder:
-            (BuildContext context, RideProvider rideProvider, Widget? child) =>
-                Container(
-          width: screenWidth,
-          height: screenHeight,
-          padding: const EdgeInsets.symmetric(horizontal: 15),
-          child: Column(
+
+    void rideDetailsAlert() {
+      showDialog(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          title: const Text("Taxia"),
+          content:  Column(
             children: [
-              SizedBox(
-                height: AppBar().preferredSize.height,
-              ),
-              isStarted
-                  ? const Text(
-                      'You Started The Trip',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w500,
-                        fontSize: 20,
-                      ),
-                    )
-                  : const Text(
-                      'Ready To Start The Trip',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w500,
-                        fontSize: 20,
-                      ),
-                    ),
-              const SizedBox(
-                height: 20,
-              ),
               Container(
                 padding:
-                    const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                 width: screenWidth,
                 decoration: const BoxDecoration(
                   color: Colors.blue,
@@ -208,7 +186,7 @@ class _StartTripState extends State<StartTrip> {
 
               Container(
                 padding:
-                    const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                 decoration: BoxDecoration(
                   borderRadius: const BorderRadius.only(
                     bottomLeft: Radius.circular(5),
@@ -308,7 +286,7 @@ class _StartTripState extends State<StartTrip> {
               ),
               Container(
                 padding:
-                    const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                 width: screenWidth,
                 decoration: const BoxDecoration(
                   color: AppColors.accentColor,
@@ -331,7 +309,7 @@ class _StartTripState extends State<StartTrip> {
 
               Container(
                 padding:
-                    const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                 decoration: BoxDecoration(
                   borderRadius: const BorderRadius.only(
                     bottomLeft: Radius.circular(5),
@@ -444,6 +422,81 @@ class _StartTripState extends State<StartTrip> {
               const SizedBox(
                 height: 30,
               ),
+            ],
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(ctx).pop();
+              },
+              child: Container(
+                color: Colors.green,
+                padding: const EdgeInsets.all(14),
+                child: const Text("okay"),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
+    return Scaffold(
+      body: Consumer(
+        builder:
+            (BuildContext context, RideProvider rideProvider, Widget? child) =>
+                Container(
+          width: screenWidth,
+          height: screenHeight,
+          padding: const EdgeInsets.symmetric(horizontal: 15),
+          child: Column(
+            children: [
+              SizedBox(
+                height: AppBar().preferredSize.height,
+              ),
+              Container(
+                height: screenHeight / 2,
+                color: AppColors.accentColor,
+                child: Column(
+                  children: [
+                    Image.asset('assets/images/backbtn.png'),
+                  ],
+                ),
+              ),
+              Row(
+                children: [
+                  isStarted
+                      ? const Text(
+                    'On Hire',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w500,
+                      fontSize: 20,
+                      color: Colors.black,
+                    ),
+                  )
+                      : const Text(
+                    'Ready To Start',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w500,
+                      fontSize: 20,
+                      color: Colors.black,
+                    ),
+                  ),
+                  Spacer(),
+                  Text(
+                    'Hire Details',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w500,
+                      fontSize: 20,
+                      color: Colors.black,
+                    ),
+                  )
+                ],
+              ),
+
+              const SizedBox(
+                height: 20,
+              ),
+
               isStarted
                   ? Row(
                       children: [
