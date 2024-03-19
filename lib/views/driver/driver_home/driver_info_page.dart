@@ -26,6 +26,7 @@ class _DriverInfoPageState extends State<DriverInfoPage> {
     double screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: Text(
           "My Info",
           style: TextStyle(
@@ -40,7 +41,15 @@ class _DriverInfoPageState extends State<DriverInfoPage> {
                 Container(
           height: screenHeight,
           width: screenWidth,
-          padding: EdgeInsets.symmetric(vertical: 15, horizontal: 10),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(20),
+              topRight: Radius.circular(20),
+            ),
+          ),
+          margin: EdgeInsets.only(top: 20),
+          padding: EdgeInsets.symmetric(vertical: 15, horizontal: 20),
           child: SingleChildScrollView(
             child: Column(
               children: [
@@ -114,6 +123,7 @@ class _DriverInfoPageState extends State<DriverInfoPage> {
           ),
         ),
       ),
+      backgroundColor: AppColors.accentColor,
     );
   }
 }

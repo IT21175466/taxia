@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
-class CustomButton extends StatelessWidget {
+class RideConfirmButton extends StatelessWidget {
   final String text;
   final double height;
   final double width;
   final Color backgroundColor;
 
-  CustomButton({
+  RideConfirmButton({
     required this.text,
     required this.height,
     required this.width,
@@ -20,7 +20,7 @@ class CustomButton extends StatelessWidget {
       width: width,
       decoration: BoxDecoration(
         color: backgroundColor,
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(5),
         boxShadow: [
           BoxShadow(
             color: Colors.grey.withOpacity(0.5),
@@ -33,9 +33,9 @@ class CustomButton extends StatelessWidget {
         child: Text(
           text,
           style: TextStyle(
-            fontWeight: FontWeight.w600,
+            fontWeight: FontWeight.w400,
             fontSize: 18,
-            color: Colors.black,
+            color: Colors.white,
           ),
         ),
       ),

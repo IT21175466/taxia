@@ -15,14 +15,14 @@ class _UserInfoCardState extends State<UserInfoCard> {
     double screenWidth = MediaQuery.of(context).size.width;
     return Container(
       margin: EdgeInsets.symmetric(vertical: 5),
-      padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+      padding: EdgeInsets.symmetric(vertical: 10),
       width: screenWidth,
       decoration: BoxDecoration(
-        color: Color.fromARGB(255, 229, 229, 229),
-        borderRadius: BorderRadius.circular(15),
-        // border: Border.all(
-        //   color: Colors.grey,
-        // ),
+        border: Border(
+          bottom: BorderSide(
+            color: Colors.grey,
+          ),
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
